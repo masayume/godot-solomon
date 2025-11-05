@@ -1,0 +1,88 @@
+from: https://chatgpt.com/c/68f251c3-5d6c-832a-924e-04a27a23e3a8 (firefox)
+
+🧭 Project Roadmap (6–8 Sessions)
+
+Session 1: Setup + Godot Basics
+Goal: Learn the editor, nodes, and GDScript syntax.
+- Install Godot (latest 4.x version).
+- Create a new project (PacmanClone).
+- Learn about Scenes, Nodes, and Scripts.
+- Implement a static maze (just a TileMap).
+- Write a simple movement script for Pac-Man (arrow keys, grid-based movement).
+
+Key Learning:
+- Scene system
+- Input actions (Input.is_action_pressed())
+- Vector2, signals, and _process()
+
+Session 2: Smooth Movement & Collision
+Goal: Make Pac-Man move smoothly and collide with walls.
+- Add a CollisionShape2D and RigidBody2D or CharacterBody2D.
+- Use move_and_slide() or move_and_collide().
+- Ensure Pac-Man stops at walls.
+- Add a “tunnel” teleport between sides.
+
+Key Learning:
+- Physics system
+- Movement vectors
+- Collision layers and masks
+
+Session 3: Pellets + Score
+Goal: Add collectible dots and score tracking.
+- Place pellets with a TileMap or as individual nodes.
+- Detect collisions with pellets.
+- Add a score label.
+- Remove pellets on collection.
+
+Key Learning:
+- Signals (body_entered, area_entered)
+- Modifying nodes at runtime
+- UI with Label and CanvasLayer
+
+Session 4: Ghosts (Enemies)
+Goal: Introduce basic ghosts.
+- Create a Ghost scene.
+- Add simple patrol AI (random or path-based).
+- Detect collision with Pac-Man → restart level.
+
+Key Learning:
+- AI basics
+- Timer nodes
+- Respawning / resetting scenes
+
+Session 5: Power Pellets + Ghost Scared Mode
+- Goal: Add power-ups that make ghosts vulnerable.
+- Add power pellet nodes.
+- Change ghost color/state when eaten.
+- Implement a timer for scared mode.
+
+Key Learning:
+- State management
+- Scene signals
+- Timers
+
+Session 6: Polish + UI
+Goal: Make it look and feel like Pac-Man.
+- Add sound and animations.
+- Add start and game over screens.
+- Improve maze visuals.
+
+Key Learning:
+- AnimationPlayer
+- AudioStreamPlayer2D
+- Scene transitions
+
+Optional Sessions
+- Pathfinding using A* for smarter ghosts
+- Score saving / high scores
+- Multiple levels or custom mazes
+
+🧩 Recommended Open Source Projects (for reference / reverse engineering)
+
+These are free, open-source Godot Pac-Man clones — perfect for learning structure and comparing approaches.
+
+Pacman Godot Clone (by MiskatonicStudio)
+🔗 https://github.com/MiskatonicStudio/pacman-godot
+
+
+
