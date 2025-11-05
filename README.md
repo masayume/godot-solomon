@@ -1,2 +1,3 @@
 # godot-solomon
-Solomon's Key Inspired Platform
+Solomon's Key Inspired Platform in Godot
+
