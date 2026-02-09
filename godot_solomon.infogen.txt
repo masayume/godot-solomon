@@ -1,5 +1,13 @@
 from: https://chatgpt.com/c/68f251c3-5d6c-832a-924e-04a27a23e3a8 (firefox)
 
+[URL]
+http://192.168.122.35/godot/solomon.php
+
+[TODO]
+> holden reference gallery in solomon.php for the main character (http://192.168.122.35/inspire/PROJECTS/solomon-reference/@REFERENCES/art/EnkZYtfVgAIhJKT.jpg)
+
+
+
 🧭 Project Roadmap (6–8 Sessions)
 
 Session 1: Setup + Godot Basics
