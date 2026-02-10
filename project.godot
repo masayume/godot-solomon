@@ -11,5 +11,17 @@ config_version=5
 [application]
 
 config/name="godot-solomon"
+run/main_scene="uid://bjhdvsuhrq1pv"
 config/features=PackedStringArray("4.5", "Forward Plus")
 config/icon="res://icon.svg"
+
+[autoload]
+
+GameConfig="*res://scripts/game_config.gd"
+
+[input]
+
+Fire={
+"deadzone": 0.2,
+"events": []
+}
