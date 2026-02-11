@@ -1,3 +1,10 @@
 [gd_scene format=3 uid="uid://8frp0amxh3ha"]
 
-[node name="Block" type="Node2D"]
+[ext_resource type="Texture2D" uid="uid://dtambsxlwm25g" path="res://graphics/blocks/block-earth-idle.png" id="1_01uos"]
+
+[node name="Block" type="Node2D" unique_id=812684096]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=350425268]
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=501595180]
+texture = ExtResource("1_01uos")
