@@ -1,10 +1,12 @@
-[gd_scene format=3 uid="uid://8frp0amxh3ha"]
+[gd_scene format=3 uid="uid://cmfv6ufnt48d0"]
 
 [ext_resource type="Texture2D" uid="uid://dtambsxlwm25g" path="res://graphics/blocks/block-earth-idle.png" id="1_01uos"]
+[ext_resource type="Script" uid="uid://cc0rakttpikiv" path="res://scripts/block.gd" id="1_bwmav"]
 
-[node name="Block" type="Node2D" unique_id=812684096]
+[node name="Block" type="StaticBody2D" unique_id=515026469]
+script = ExtResource("1_bwmav")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=350425268]
+[node name="CharacterBody2D" type="CharacterBody2D" parent="." unique_id=1068226798]
 
-[node name="Sprite2D" type="Sprite2D" parent="." unique_id=501595180]
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=2090647155]
 texture = ExtResource("1_01uos")
