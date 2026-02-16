@@ -1,9 +1,12 @@
 [gd_scene format=3 uid="uid://dysur6fd2rpkb"]
 
+[ext_resource type="Texture2D" uid="uid://dnj3qd3yxdmmj" path="res://sprites/player/player-idle-frames.png" id="1_p0vlq"]
+
 [node name="Player" type="Node2D" unique_id=404308876]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=2053116779]
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1724168563]
+texture = ExtResource("1_p0vlq")
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1891465561]
