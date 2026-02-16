@@ -1,0 +1,21 @@
+{
+  "id": 1,
+  "name": "Test Room",
+  "time_limit": 999,
+
+  "tile_size": 64,
+
+  "player_start": [2, 8],
+
+  "blocks": [
+	  { "pos": [2,9], "family": "earth" },
+	  { "pos": [3,9], "family": "earth" },
+	  { "pos": [4,9], "family": "stone" },
+	  { "pos": [5,9], "family": "stone" },
+	  { "pos": [2,8], "family": "lava" },
+	  { "pos": [3,8], "family": "lava" },
+	  { "pos": [4,8], "family": "ice" },
+	  { "pos": [5,8], "family": "ice" }
+  ]
+
+}

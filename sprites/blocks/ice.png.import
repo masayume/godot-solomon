@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dtambsxlwm25g"
-path="res://.godot/imported/block-earth-idle.png-24a15ed546df1874a136f1ce5e34f2e4.ctex"
+uid="uid://woou527wxyq0"
+path="res://.godot/imported/ice.png-1d1b7ffc797d4c091f1bedd940c8d801.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://graphics/blocks/block-earth-idle.png"
-dest_files=["res://.godot/imported/block-earth-idle.png-24a15ed546df1874a136f1ce5e34f2e4.ctex"]
+source_file="res://sprites/blocks/ice.png"
+dest_files=["res://.godot/imported/ice.png-1d1b7ffc797d4c091f1bedd940c8d801.ctex"]
 
 [params]
 

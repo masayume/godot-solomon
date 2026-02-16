@@ -1,31 +1,19 @@
 extends Node
 
-var config := ConfigFile.new()
-
-var game := {}
-var player := {}
-var blocks := {}
-var magic := {}
-var scoring := {}
+var blocks_data = {}
 
 func _ready():
 	load_config()
 
 func load_config():
-	var err = config.load("res://config/game.cfg")
+	var cfg = ConfigFile.new()
+	var err = cfg.load("res://data/blocks.cfg")
 	if err != OK:
-		push_error("Failed to load game.cfg")
+		print("Failed to load blocks.cfg")
 		return
 
-	game = load_section("game")
-	player = load_section("player")
-	blocks = load_section("blocks")
-	magic = load_section("magic")
-	scoring = load_section("scoring")
-
-func load_section(section_name: String) -> Dictionary:
-	var dict := {}
-	var keys = config.get_section_keys(section_name)
-	for key in keys:
-		dict[key] = config.get_value(section_name, key)
-	return dict
+	for section in cfg.get_sections():
+		var d = {}
+		for key in cfg.get_section_keys(section):
+			d[key] = cfg.get_value(section, key)
+		blocks_data[section] = d
