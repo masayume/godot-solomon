@@ -3,6 +3,8 @@ extends Node2D
 @export var block_scene: PackedScene
 @export var player_scene: PackedScene
 
+@onready var level_label: Label = $UI/LevelInfo
+
 func _ready():
 	load_level(99)
 
@@ -12,6 +14,9 @@ func load_level(id: int):
 	var data = JSON.parse_string(file.get_as_text())
 
 	var tile_size = data["tile_size"]
+
+	# show level info: level_loader reads it → exposes it → UI displays it.
+	level_label.text = "LEVEL %d - %s" % [data["id"], data["name"]]
 
 	# Spawn player
 	var p = player_scene.instantiate()

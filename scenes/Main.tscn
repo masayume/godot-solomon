@@ -3,8 +3,17 @@
 [ext_resource type="Script" uid="uid://gqo5fp0jx2ps" path="res://scripts/level_loader.gd" id="1_elqb8"]
 [ext_resource type="PackedScene" uid="uid://cmfv6ufnt48d0" path="res://scenes/Block.tscn" id="2_0bbpv"]
 [ext_resource type="PackedScene" uid="uid://dysur6fd2rpkb" path="res://scenes/Player.tscn" id="3_rarhs"]
+[ext_resource type="FontFile" uid="uid://bhbeh5aarkk70" path="res://resources/fonts/solomons-key.ttf" id="4_rarhs"]
 
 [node name="Main" type="Node2D" unique_id=802376119]
 script = ExtResource("1_elqb8")
 block_scene = ExtResource("2_0bbpv")
 player_scene = ExtResource("3_rarhs")
+
+[node name="UI" type="CanvasLayer" parent="." unique_id=1473752072]
+
+[node name="LevelInfo" type="Label" parent="UI" unique_id=2078616138]
+offset_right = 40.0
+offset_bottom = 23.0
+theme_override_fonts/font = ExtResource("4_rarhs")
+text = "LEVEL"
