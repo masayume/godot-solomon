@@ -29,6 +29,6 @@ func load_level(id: int):
 	# Spawn blocks
 	for b in data["blocks"]:
 		var block = block_scene.instantiate()
-		block.position = Vector2(b["pos"][0] * tile_size, b["pos"][1] * tile_size)
+		block.position = Vector2(b["pos"][0] * tile_size, -b["pos"][1] * tile_size)
 		block.family = b["family"]
 		add_child(block)
