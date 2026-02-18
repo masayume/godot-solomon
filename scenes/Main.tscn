@@ -6,6 +6,10 @@
 [ext_resource type="FontFile" uid="uid://bhbeh5aarkk70" path="res://resources/fonts/solomons-key.ttf" id="4_rarhs"]
 
 [node name="Main" type="Node2D" unique_id=802376119]
+
+[node name="LevelRoot" type="Node2D" parent="." unique_id=1167918664]
+
+[node name="Level" type="Node2D" parent="LevelRoot" unique_id=1707388413]
 script = ExtResource("1_elqb8")
 block_scene = ExtResource("2_0bbpv")
 player_scene = ExtResource("3_rarhs")
@@ -17,3 +21,8 @@ offset_right = 40.0
 offset_bottom = 23.0
 theme_override_fonts/font = ExtResource("4_rarhs")
 text = "LEVEL"
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=324845360]
+zoom = Vector2(0.7, 0.7)
+
+[node name="Player" parent="." unique_id=404308876 instance=ExtResource("3_rarhs")]

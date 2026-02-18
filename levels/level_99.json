@@ -5,21 +5,27 @@
 
   "tile_size": 64,
 
-  "player_start": [5, 2],
+  "player_start": [3, -7],
 
   "blocks": [
 
-	{"pos": [3,4],"family":"blue_flame"},	{"pos": [11,4],"family":"blue_flame"},
+	{"pos": [3,4],"family":"blue-flame"},	{"pos": [11,4],"family":"blue-flame"},
 	{"pos": [10,2],"family":"key"},	
 	{"pos": [7,10],"family":"door-closed"},	
+
+	{"pos": [7,7],"family":"gold-bell"},	
+	{"pos": [6,7],"family":"blue-lantern"},	
+	{"pos": [8,7],"family":"blue-lantern"},	
+	{"pos": [2,6],"family":"green-orb"},	
+	{"pos": [12,6],"family":"green-orb"},	
 
 
 	{"pos": [5,8],"family":"stone"},	{"pos": [9,8],"family":"stone"},
 	{"pos": [5,6],"family":"stone"},	{"pos": [9,6],"family":"stone"},
 	{"pos": [5,7],"family":"earth"},	{"pos": [9,7],"family":"earth"},
 
-	{"pos": [0,0],"family":"ice"},
-	{"pos": [14,11],"family":"ice"},
+	{"pos": [0,0],"family":"ice"},	{"pos": [14,11],"family":"ice"},
+	{"pos": [0,11],"family":"ice"},
 
 	{"pos": [6,8],"family":"earth"},	{"pos": [7,8],"family":"earth"},	{"pos": [8,8],"family":"earth"},
 	{"pos": [6,6],"family":"earth"},	{"pos": [7,6],"family":"earth"},	{"pos": [8,6],"family":"earth"},

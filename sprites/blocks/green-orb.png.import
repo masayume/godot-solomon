@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bw0jvlno5phu0"
-path="res://.godot/imported/blue_flame.png-cc69a0eecd3c8b868f6717f2fc6c4d05.ctex"
+uid="uid://cr48qq8cpsdhw"
+path="res://.godot/imported/green-orb.png-ec27ae897a4f70eb4b38f1ef1f268046.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://sprites/blocks/blue_flame.png"
-dest_files=["res://.godot/imported/blue_flame.png-cc69a0eecd3c8b868f6717f2fc6c4d05.ctex"]
+source_file="res://sprites/blocks/green-orb.png"
+dest_files=["res://.godot/imported/green-orb.png-ec27ae897a4f70eb4b38f1ef1f268046.ctex"]
 
 [params]
 
