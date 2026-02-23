@@ -4,43 +4,63 @@
   "time_limit": 999,
 
   "tile_size": 64,
+  "block_width": 16,
+  "block_height": 12,
 
-  "player_start": [3, -7],
+  "player_start": [3, 7],
 
   "blocks": [
 
-	{"pos": [3,4],"family":"blue-flame"},	{"pos": [11,4],"family":"blue-flame"},
-	{"pos": [10,2],"family":"key"},	
-	{"pos": [7,10],"family":"door-closed"},	
+	{"pos": [1,1],"family":"ice"},
+	{"pos": [16,1],"family":"ice"},
+	{"pos": [1,12],"family":"ice"},
+	{"pos": [16,12],"family":"ice"},
 
-	{"pos": [7,7],"family":"gold-bell"},	
-	{"pos": [6,7],"family":"blue-lantern"},	
-	{"pos": [8,7],"family":"blue-lantern"},	
-	{"pos": [2,6],"family":"green-orb"},	
-	{"pos": [12,6],"family":"green-orb"},	
+	{"pos": [4,5],"family":"blue-flame"},	{"pos": [12,5],"family":"blue-flame"},
+	{"pos": [11,3],"family":"key"},	
+	{"pos": [8,11],"family":"door-closed"},	
+
+	{"pos": [8,8],"family":"gold-bell"},	
+	{"pos": [7,8],"family":"blue-lantern"},	
+	{"pos": [9,8],"family":"blue-lantern"},	
+	{"pos": [3,7],"family":"green-orb"},	
+	{"pos": [13,7],"family":"green-orb"},	
 
 
-	{"pos": [5,8],"family":"stone"},	{"pos": [9,8],"family":"stone"},
-	{"pos": [5,6],"family":"stone"},	{"pos": [9,6],"family":"stone"},
-	{"pos": [5,7],"family":"earth"},	{"pos": [9,7],"family":"earth"},
+	{"pos": [6,9],"family":"stone"},	{"pos": [10,9],"family":"stone"},
+	{"pos": [6,7],"family":"stone"},	{"pos": [10,7],"family":"stone"},
+	{"pos": [6,8],"family":"earth"},	{"pos": [10,8],"family":"earth"},
 
-	{"pos": [0,0],"family":"ice"},	{"pos": [14,11],"family":"ice"},
-	{"pos": [0,11],"family":"ice"},
+	{"pos": [7,9],"family":"earth"},	{"pos": [8,9],"family":"earth"},	{"pos": [9,9],"family":"earth"},
+	{"pos": [7,7],"family":"earth"},	{"pos": [8,7],"family":"earth"},	{"pos": [9,7],"family":"earth"},
+	{"pos": [7,6],"family":"earth"},	{"pos": [8,6],"family":"earth"},	{"pos": [9,6],"family":"earth"},
 
-	{"pos": [6,8],"family":"earth"},	{"pos": [7,8],"family":"earth"},	{"pos": [8,8],"family":"earth"},
-	{"pos": [6,6],"family":"earth"},	{"pos": [7,6],"family":"earth"},	{"pos": [8,6],"family":"earth"},
-	{"pos": [6,5],"family":"earth"},	{"pos": [7,5],"family":"earth"},	{"pos": [8,5],"family":"earth"},
+	{"pos": [10,4],"family":"stone"},	{"pos": [12,4],"family":"stone"},
+	{"pos": [4,4],"family":"stone"},	{"pos": [6,4],"family":"stone"},
+	{"pos": [10,2],"family":"stone"},	{"pos": [12,2],"family":"stone"},
+	{"pos": [4,2],"family":"stone"},	
 
-	{"pos": [9,3],"family":"stone"},	{"pos": [11,3],"family":"stone"},
-	{"pos": [3,3],"family":"stone"},	{"pos": [5,3],"family":"stone"},
-	{"pos": [9,1],"family":"stone"},	{"pos": [11,1],"family":"stone"},
-	{"pos": [3,1],"family":"stone"},	
+	{"pos": [5,4],"family":"earth"},	{"pos": [11,4],"family":"earth"},	
+	{"pos": [4,3],"family":"earth"},	{"pos": [6,3],"family":"earth"},	{"pos": [7,3],"family":"earth"},
+	{"pos": [8,3],"family":"earth"},	{"pos": [9,3],"family":"earth"},	{"pos": [10,3],"family":"earth"},
+	{"pos": [12,3],"family":"earth"},	
+	{"pos": [5,2],"family":"earth"},	{"pos": [6,2],"family":"earth"},	{"pos": [11,2],"family":"earth"},
 
-	{"pos": [4,3],"family":"earth"},	{"pos": [10,3],"family":"earth"},	
-	{"pos": [3,2],"family":"earth"},	{"pos": [5,2],"family":"earth"},	{"pos": [6,2],"family":"earth"},
-	{"pos": [7,2],"family":"earth"},	{"pos": [8,2],"family":"earth"},	{"pos": [9,2],"family":"earth"},
-	{"pos": [11,2],"family":"earth"},	
-	{"pos": [4,1],"family":"earth"},	{"pos": [5,1],"family":"earth"},	{"pos": [10,1],"family":"earth"},
+],
+
+  "blocks.REF": [
+
+	{"pos": [8,1],"family":"ice"},
+	{"pos": [1,1],"family":"ice"},
+	{"pos": [16,1],"family":"ice"},
+
+	{"pos": [8,6],"family":"ice"},
+	{"pos": [1,6],"family":"ice"},
+	{"pos": [16,6],"family":"ice"},
+
+	{"pos": [8,12],"family":"ice"},
+	{"pos": [1,12],"family":"ice"},
+	{"pos": [16,12],"family":"ice"},
 
 ],
 
