@@ -3,33 +3,35 @@ extends CharacterBody2D
 @onready var speed = GameConfig.gamedata.move_speed
 @onready var jump_force = GameConfig.gamedata.jump_force
 @onready var gravity = GameConfig.gamedata.gravity
-	
-func _ready():
-	var ts = GameConfig.gamedata.TILE_SIZE
-	var level = get_parent().get_node("LevelRoot/Level")
-
-	var tile_x = 6
-	var tile_y = 4
-
-	global_position = level.position + Vector2(tile_x, tile_y) * ts + Vector2(ts/2, ts/2)
-
-
-func _physics_process(delta):
-	velocity.y += gravity * delta
-	move_and_slide()
 
 @export var block_scene: PackedScene
 var tile_size = 64
+	
+func _ready():
+	var ts = GameConfig.gamedata.TILE_SIZE
+	print("ts: " + str(ts))
+
+func _physics_process(delta):
+	# velocity.y += gravity * delta
+	move_and_slide()
 
 func _input(event):
 	if event.is_action_pressed("Fire"):
-		create_block()
+		print("create_block()")
 
-func create_block():
-	var dir = Vector2.RIGHT  # later: use facing
-	var grid_pos = (position / tile_size).floor()
-	var target = grid_pos + dir
+func spawn_at(tile_x: int, tile_y: int, x_off: float, y_off: float):
+	# Get tile size from config (single source of truth)
+	var tile_size = GameConfig.gamedata.TILE_SIZE
+	# Convert grid coordinates into pixel position
 
-	var block = block_scene.instantiate()
-	block.position = target * tile_size
-	get_parent().add_child(block)
+	global_position = GameConfig.grid_to_local(
+
+		tile_x,        # player grid X
+		tile_y,        # player grid Y
+		tile_size,
+		x_off,
+		y_off
+	)
+
+
+	

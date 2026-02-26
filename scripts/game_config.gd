@@ -2,6 +2,7 @@ extends Node
 
 var blocks_data = {}
 var gamedata = {}
+var gridutils = {}
 
 func _ready():
 	load_config()
@@ -33,3 +34,14 @@ func load_config():
 	gamedata.move_speed = cfg.get_value("player", "move_speed", 100)
 	gamedata.jump_force = cfg.get_value("player", "jump_force", 300)
 	gamedata.gravity = cfg.get_value("player", "gravity", 800)
+
+func grid_to_local(tile_x: int, tile_y: int, tile_size: int, x_off: float, y_off: float) -> Vector2:    
+	# Convert grid X coordinate into pixel X position
+	var world_x = tile_x * tile_size + x_off
+
+	# Convert grid Y coordinate into pixel Y position
+	# Negative because your grid grows upward, but Godot Y grows downward
+	var world_y = -tile_y * tile_size - y_off
+
+	# Return final local position in pixels
+	return Vector2(world_x, world_y)

@@ -7,14 +7,14 @@
   "block_width": 16,
   "block_height": 12,
 
-  "player_start": [3, 7],
+  "player_start": [5, 2],
 
   "blocks": [
 
 	{"pos": [1,1],"family":"ice"},
-	{"pos": [16,1],"family":"ice"},
+	{"pos": [15,1],"family":"ice"},
 	{"pos": [1,12],"family":"ice"},
-	{"pos": [16,12],"family":"ice"},
+	{"pos": [15,12],"family":"ice"},
 
 	{"pos": [4,5],"family":"blue-flame"},	{"pos": [12,5],"family":"blue-flame"},
 	{"pos": [11,3],"family":"key"},	
@@ -45,6 +45,40 @@
 	{"pos": [8,3],"family":"earth"},	{"pos": [9,3],"family":"earth"},	{"pos": [10,3],"family":"earth"},
 	{"pos": [12,3],"family":"earth"},	
 	{"pos": [5,2],"family":"earth"},	{"pos": [6,2],"family":"earth"},	{"pos": [11,2],"family":"earth"},
+
+	{"pos": [0,0],"family":"stone"},	{"pos": [16,0],"family":"stone"},
+	{"pos": [0,1],"family":"stone"},	{"pos": [16,1],"family":"stone"},
+	{"pos": [0,2],"family":"stone"},	{"pos": [16,2],"family":"stone"},
+	{"pos": [0,3],"family":"stone"},	{"pos": [16,3],"family":"stone"},
+	{"pos": [0,4],"family":"stone"},	{"pos": [16,4],"family":"stone"},
+	{"pos": [0,5],"family":"stone"},	{"pos": [16,5],"family":"stone"},
+	{"pos": [0,6],"family":"stone"},	{"pos": [16,6],"family":"stone"},
+	{"pos": [0,7],"family":"stone"},	{"pos": [16,7],"family":"stone"},
+	{"pos": [0,8],"family":"stone"},	{"pos": [16,8],"family":"stone"},
+	{"pos": [0,9],"family":"stone"},	{"pos": [16,9],"family":"stone"},
+	{"pos": [0,10],"family":"stone"},	{"pos": [16,10],"family":"stone"},
+	{"pos": [0,11],"family":"stone"},	{"pos": [16,11],"family":"stone"},
+	{"pos": [0,12],"family":"stone"},	{"pos": [16,12],"family":"stone"},
+	{"pos": [0,13],"family":"stone"},	{"pos": [16,13],"family":"stone"},
+
+	{"pos": [0,0],"family":"stone"},	{"pos": [0,13],"family":"stone"},
+	{"pos": [1,0],"family":"stone"},	{"pos": [1,13],"family":"stone"},
+	{"pos": [2,0],"family":"stone"},	{"pos": [2,13],"family":"stone"},
+	{"pos": [3,0],"family":"stone"},	{"pos": [3,13],"family":"stone"},
+	{"pos": [4,0],"family":"stone"},	{"pos": [4,13],"family":"stone"},
+	{"pos": [5,0],"family":"stone"},	{"pos": [5,13],"family":"stone"},
+	{"pos": [6,0],"family":"stone"},	{"pos": [6,13],"family":"stone"},
+	{"pos": [7,0],"family":"stone"},	{"pos": [7,13],"family":"stone"},
+	{"pos": [8,0],"family":"stone"},	{"pos": [8,13],"family":"stone"},
+	{"pos": [9,0],"family":"stone"},	{"pos": [9,13],"family":"stone"},
+	{"pos": [10,0],"family":"stone"},	{"pos": [10,13],"family":"stone"},
+	{"pos": [11,0],"family":"stone"},	{"pos": [11,13],"family":"stone"},
+	{"pos": [12,0],"family":"stone"},	{"pos": [12,13],"family":"stone"},
+	{"pos": [13,0],"family":"stone"},	{"pos": [13,13],"family":"stone"},
+	{"pos": [14,0],"family":"stone"},	{"pos": [14,13],"family":"stone"},
+	{"pos": [15,0],"family":"stone"},	{"pos": [15,13],"family":"stone"},
+
+	
 
 ],
 
