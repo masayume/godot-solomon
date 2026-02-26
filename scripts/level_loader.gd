@@ -5,41 +5,73 @@ extends Node2D
 
 @onready var level_label: Label = $"../../UI/LevelInfo"
 
+var tile_size
+var off_xp 
+
 func _ready():
 	load_level(99)
-
+	
 #func grid_to_local(tile_x: int, tile_y: int, ts: int, xoff, yoff) -> Vector2:
 #	return Vector2(
 #		xoff + tile_x * ts,
 #		-yoff - tile_y * ts
 #	)
 
-func spawn_player_deferred(start, x_off, y_off):
+func spawn_player_deferred(px, py, x_off, y_off):
 	var player = player_scene.instantiate()
 
+	var x_corrected = (x_off + off_xp)
+	player.position = GameConfig.grid_to_local(
+		px, py,
+		tile_size,      # size of one tile in pixels
+		x_corrected,    # horizontal centering offset
+		y_off           # vertical centering offset
+	)
+
 	# Add player safely after tree is ready
-	get_parent().call_deferred("add_child", player)
+#	get_parent().call_deferred("add_child", player)
+
+	player = player_scene.instantiate()
+
+	# Add safely
+	# get_parent().call_deferred("add_child", player)
+	call_deferred("add_child", player)
+
+	# Wait one frame before positioning
+	await get_tree().process_frame
+
+	player.spawn_at(px, py, x_off, y_off)
 
 	# Also defer the spawn call to next frame
 	player.call_deferred(
 		"spawn_at",
-		start[0],
-		start[1],
+		px,
+		py,
 		x_off,
 		y_off
 	)
+
 
 func load_level(id: int):
 	var path = "res://levels/level_%02d.json" % id
 	var file = FileAccess.open(path, FileAccess.READ)
 	var data = JSON.parse_string(file.get_as_text())
 
-	var tile_size = data["tile_size"]
+	tile_size = data["tile_size"]
 	var width = data["block_width"]
 	var height = data["block_height"]
 	var player_start = data["player_start"]
 
 	var screen_size = get_viewport_rect().size
+
+	var level_pixel_size = Vector2(
+		width * tile_size,
+		height * tile_size
+	)
+	
+	var LevelRoot = get_parent()
+	LevelRoot.position.x = -128 + (screen_size.x - level_pixel_size.x) / 2
+	LevelRoot.position.y = -(screen_size.y - level_pixel_size.y) / 2
 	
 	# show level info: level_loader reads it → exposes it → UI displays it.
 	level_label.text = "LEVEL %d - %s" % [data["id"], data["name"]]
@@ -47,20 +79,20 @@ func load_level(id: int):
 	var x_off = (-screen_size[0] / 2) + ((width / 2) * tile_size) / 2
 	var y_off = -((height / 2) * tile_size) 
 
-	# Spawn Player AFTER offsets are known
-	var player = player_scene.instantiate()
-	# Add to the SAME parent as Level
-	# Don't call add_child() while the scene tree is still inside _ready() construction.
-	# Godot prevents modifying the tree while it's building it.
-	get_parent().call_deferred("add_child", player)
+	off_xp = GameConfig.gamedata.off_xp
+	print("off_xp: " + str(off_xp) + " x_off: " + str(x_off))
+	var x_corrected = x_off + off_xp
 	
+	# Spawn Player AFTER offsets are known
+	# Don't call add_child() while the scene tree is still inside _ready() construction.
+	# Godot prevents modifying the tree while it's building it.	
 	spawn_player_deferred(
-		Vector2(player_start[0],   # grid X
-		player_start[1]),   # grid Y
-		x_off,             # same centering offset used for blocks
+		player_start[0],   # grid X
+		player_start[1],   # grid Y
+		x_corrected,       # same centering offset used for blocks
 		y_off
 	)
-	print("player_start: [" + str(player_start[0]) + ","  + str(player_start[1]) + "] x_off:"  + str(x_off) + " y_off:"  + str(y_off))
+	# print("player_start: [" + str(player_start[0]) + ","  + str(player_start[1]) + "] x_off:"  + str(x_off) + " y_off:"  + str(y_off))
 
 
 	# Spawn blocks
@@ -83,6 +115,10 @@ func load_level(id: int):
 
 		# Assign gameplay property
 		block.family = b["family"]
+		
+#		if (block.family == "ice"):
+#			print("ICE x_off:", x_off)
+			
 
 		# Add block to Level node
 		add_child(block)

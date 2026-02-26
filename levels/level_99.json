@@ -7,14 +7,11 @@
   "block_width": 16,
   "block_height": 12,
 
-  "player_start": [5, 2],
+  "player_start": [5, 3],
 
   "blocks": [
 
 	{"pos": [1,1],"family":"ice"},
-	{"pos": [15,1],"family":"ice"},
-	{"pos": [1,12],"family":"ice"},
-	{"pos": [15,12],"family":"ice"},
 
 	{"pos": [4,5],"family":"blue-flame"},	{"pos": [12,5],"family":"blue-flame"},
 	{"pos": [11,3],"family":"key"},	

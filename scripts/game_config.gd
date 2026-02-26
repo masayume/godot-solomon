@@ -31,9 +31,10 @@ func load_config():
 	gamedata.LEVEL_HEIGHT = gdcfg.get_value("screen", "LEVEL_HEIGHT")
 	
 	# Read values from the config file
-	gamedata.move_speed = cfg.get_value("player", "move_speed", 100)
-	gamedata.jump_force = cfg.get_value("player", "jump_force", 300)
-	gamedata.gravity = cfg.get_value("player", "gravity", 800)
+	gamedata.move_speed = gdcfg.get_value("player", "move_speed", 100)
+	gamedata.jump_force = gdcfg.get_value("player", "jump_force", 300)
+	gamedata.gravity = gdcfg.get_value("player", "gravity", 800)
+	gamedata.off_xp = gdcfg.get_value("player", "off_xp", 200)
 
 func grid_to_local(tile_x: int, tile_y: int, tile_size: int, x_off: float, y_off: float) -> Vector2:    
 	# Convert grid X coordinate into pixel X position
