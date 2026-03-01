@@ -4,6 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://cmfv6ufnt48d0" path="res://scenes/Block.tscn" id="2_0bbpv"]
 [ext_resource type="PackedScene" uid="uid://dysur6fd2rpkb" path="res://scenes/Player.tscn" id="3_rarhs"]
 [ext_resource type="FontFile" uid="uid://bhbeh5aarkk70" path="res://resources/fonts/solomons-key.ttf" id="4_rarhs"]
+[ext_resource type="Script" uid="uid://y8obvetxc8um" path="res://scripts/collision_debug.gd" id="4_vcsgt"]
 
 [node name="Main" type="Node2D" unique_id=802376119]
 
@@ -13,6 +14,9 @@
 script = ExtResource("1_elqb8")
 block_scene = ExtResource("2_0bbpv")
 player_scene = ExtResource("3_rarhs")
+
+[node name="DebugCollider" type="Node2D" parent="LevelRoot" unique_id=96074542]
+script = ExtResource("4_vcsgt")
 
 [node name="UI" type="CanvasLayer" parent="." unique_id=1473752072]
 

@@ -6,16 +6,18 @@ extends CharacterBody2D
 @onready var off_xp = GameConfig.gamedata.off_xp
 
 @export var block_scene: PackedScene
-var tile_size = 64
+# var tile_size = 64
 	
 func _ready():
-	var ts = GameConfig.gamedata.TILE_SIZE
+	print("Player ready:", self)
+	# var ts = GameConfig.gamedata.TILE_SIZE
 	# print("ts: " + str(ts))
-	# print("Player ready:", self)
 	
 func _physics_process(delta):
-	# velocity.y += gravity * delta
+	if not is_on_floor():
+		velocity.y += gravity * delta 
 	move_and_slide()
+
 
 func _input(event):
 	if event.is_action_pressed("Fire"):

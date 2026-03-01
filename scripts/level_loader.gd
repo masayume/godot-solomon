@@ -104,6 +104,15 @@ func load_level(id: int):
 		var block_x = b["pos"][0]
 		var block_y = b["pos"][1]
 
+		# Assign gameplay property
+		block.family = b["family"]
+
+		# Add block to Level node
+		block.add_to_group("debug_collision")
+		add_child(block)
+		
+		# await get_tree().process_frame
+		
 		# Convert grid position into pixel position
 		block.position = GameConfig.grid_to_local(
 			block_x,        # grid column
@@ -113,16 +122,22 @@ func load_level(id: int):
 			y_off           # vertical centering offset
 		)
 
-		# Assign gameplay property
-		block.family = b["family"]
 		
 #		if (block.family == "ice"):
 #			print("ICE x_off:", x_off)
 			
-
-		# Add block to Level node
-		add_child(block)
-
+		# DEBUGGING 
+		var shape = block.get_node("CollisionShape2D")
+		print("---- BLOCK TREE ----")
+		print(block.get_tree_string_pretty())
+		print("Block global:", block.global_position)
+		print("Shape global:", shape.global_position)
+		print("Shape local:", shape.position)
+		print("Shape parent:", shape.get_parent())
+		print(block.get_class())
+		shape.debug_color = Color(randf(), randf(), randf())
+		print("Top level:", shape.top_level)
+		
 #	for b in data["blocks"]:
 #		var block = block_scene.instantiate()
 #		var block_x = (b["pos"][0])
