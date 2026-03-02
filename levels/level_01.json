@@ -1,20 +1,17 @@
 {
-  "id": 99,
-  "name": "Test Room",
+  "id": 1,
+  "name": "Level 1-1",
   "time_limit": 999,
 
   "tile_size": 64,
   "block_width": 16,
   "block_height": 12,
 
-  "player_start": [3, 7],
+  "player_start": [5, 3],
 
   "blocks": [
 
 	{"pos": [1,1],"family":"ice"},
-	{"pos": [15,1],"family":"ice"},
-	{"pos": [1,12],"family":"ice"},
-	{"pos": [15,12],"family":"ice"},
 
 	{"pos": [4,5],"family":"blue-flame"},	{"pos": [12,5],"family":"blue-flame"},
 	{"pos": [11,3],"family":"key"},	
@@ -80,33 +77,6 @@
 
 	
 
-],
-
-  "blocks.REF": [
-
-	{"pos": [8,1],"family":"ice"},
-	{"pos": [1,1],"family":"ice"},
-	{"pos": [16,1],"family":"ice"},
-
-	{"pos": [8,6],"family":"ice"},
-	{"pos": [1,6],"family":"ice"},
-	{"pos": [16,6],"family":"ice"},
-
-	{"pos": [8,12],"family":"ice"},
-	{"pos": [1,12],"family":"ice"},
-	{"pos": [16,12],"family":"ice"},
-
-],
-
-  "blocks2": [
-	  { "pos": [2,9], "family": "earth" },
-	  { "pos": [3,9], "family": "earth" },
-	  { "pos": [4,9], "family": "stone" },
-	  { "pos": [5,9], "family": "stone" },
-	  { "pos": [2,8], "family": "lava" },
-	  { "pos": [3,8], "family": "lava" },
-	  { "pos": [4,8], "family": "ice" },
-	  { "pos": [5,8], "family": "ice" }
-  ]
+]
 
 }

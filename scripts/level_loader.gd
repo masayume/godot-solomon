@@ -9,7 +9,7 @@ var tile_size
 var off_xp 
 
 func _ready():
-	load_level(99)
+	load_level(3)
 	
 #func grid_to_local(tile_x: int, tile_y: int, ts: int, xoff, yoff) -> Vector2:
 #	return Vector2(
