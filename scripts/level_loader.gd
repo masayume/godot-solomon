@@ -2,9 +2,11 @@ extends Node2D
 
 @export var block_scene: PackedScene
 @export var player_scene: PackedScene
+@export var monster_scene: PackedScene
 
 @onready var level_label: Label = $"../../UI/LevelInfo"
 
+#var monster_scene = preload("res://Monster.tscn")
 var tile_size
 var off_xp 
 
@@ -17,6 +19,12 @@ func _ready():
 #		-yoff - tile_y * ts
 #	)
 
+func spawn_monster(tile_x, tile_y):
+	var monster = monster_scene.instantiate()
+	monster.position = Vector2(tile_x * tile_size, tile_y * tile_size)
+#	level.add_child(monster)
+	call_deferred("add_child", monster)
+		
 func spawn_player_deferred(px, py, x_off, y_off):
 	var player = player_scene.instantiate()
 
@@ -127,22 +135,15 @@ func load_level(id: int):
 #			print("ICE x_off:", x_off)
 			
 		# DEBUGGING 
-		var shape = block.get_node("CollisionShape2D")
-		print("---- BLOCK TREE ----")
-		print(block.get_tree_string_pretty())
-		print("Block global:", block.global_position)
-		print("Shape global:", shape.global_position)
-		print("Shape local:", shape.position)
-		print("Shape parent:", shape.get_parent())
-		print(block.get_class())
-		shape.debug_color = Color(randf(), randf(), randf())
-		print("Top level:", shape.top_level)
+func debug_block(block):
+	var shape = block.get_node("CollisionShape2D")
+	print("---- BLOCK TREE ----")
+	print(block.get_tree_string_pretty())
+	print("Block global:", block.global_position)
+	print("Shape global:", shape.global_position)
+	print("Shape local:", shape.position)
+	print("Shape parent:", shape.get_parent())
+	print(block.get_class())
+	shape.debug_color = Color(randf(), randf(), randf())
+	print("Top level:", shape.top_level)
 		
-#	for b in data["blocks"]:
-#		var block = block_scene.instantiate()
-#		var block_x = (b["pos"][0])
-#		var block_y = (b["pos"][1])
-#		block.position = GameConfig.grid_to_local(block_x, block_y, tile_size, x_off, y_off)
-#		block.family = b["family"]
-#		print("block.family: " + str(block.family) + "; block position " + str(block.position) )
-#		add_child(block)
