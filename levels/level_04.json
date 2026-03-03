@@ -1,0 +1,130 @@
+{
+  "blocks": [
+    {
+      "pos": [
+        2,
+        5
+      ],
+      "family": "stone"
+    },
+    {
+      "pos": [
+        3,
+        5
+      ],
+      "family": "stone"
+    },
+    {
+      "pos": [
+        4,
+        5
+      ],
+      "family": "stone"
+    },
+    {
+      "pos": [
+        1,
+        5
+      ],
+      "family": "stone"
+    },
+    {
+      "pos": [
+        8,
+        5
+      ],
+      "family": "stone"
+    },
+    {
+      "pos": [
+        12,
+        5
+      ],
+      "family": "stone"
+    },
+    {
+      "pos": [
+        13,
+        5
+      ],
+      "family": "stone"
+    },
+    {
+      "pos": [
+        14,
+        5
+      ],
+      "family": "stone"
+    },
+    {
+      "pos": [
+        15,
+        5
+      ],
+      "family": "stone"
+    },
+    {
+      "pos": [
+        10,
+        7
+      ],
+      "family": "stone"
+    },
+    {
+      "pos": [
+        6,
+        7
+      ],
+      "family": "stone"
+    },
+    {
+      "pos": [
+        8,
+        9
+      ],
+      "family": "stone"
+    },
+    {
+      "pos": [
+        1,
+        9
+      ],
+      "family": "stone"
+    },
+    {
+      "pos": [
+        2,
+        9
+      ],
+      "family": "stone"
+    },
+    {
+      "pos": [
+        15,
+        9
+      ],
+      "family": "stone"
+    },
+    {
+      "pos": [
+        14,
+        9
+      ],
+      "family": "stone"
+    },
+    {
+      "pos": [
+        5,
+        3
+      ],
+      "family": "earth"
+    },
+    {
+      "pos": [
+        11,
+        3
+      ],
+      "family": "earth"
+    }
+  ]
+}
