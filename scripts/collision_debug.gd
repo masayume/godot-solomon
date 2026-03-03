@@ -3,7 +3,9 @@ extends Node2D
 var shapes := []
 
 func _ready():
-	collect_shapes()
+	set_process(false)
+#	set_process_draw(false)
+#	collect_shapes()
 
 func collect_shapes():
 	shapes.clear()
@@ -12,11 +14,6 @@ func collect_shapes():
 		var shape = node.get_node_or_null("CollisionShape2D")
 		if shape:
 			shapes.append(shape)
-
-#func _draw():
-#	for s in shapes:
-#		var pos = s.global_position
-#		draw_circle(to_local(pos), 4.0, Color.RED)
 
 func _draw():
 	for s in shapes:
