@@ -37,6 +37,19 @@ func load_config():
 	gamedata.off_xp = gdcfg.get_value("player", "off_xp", 200)
 
 func grid_to_local(tile_x: int, tile_y: int, tile_size: int, x_off: float, y_off: float) -> Vector2:    
+	var half_tile = tile_size / 2.0
+	
+	# 1. (tile_x - 1) makes grid 1 start at 0 pixels.
+	# 2. Add half_tile to center the player/block origin in the grid cell.
+	var world_x = (tile_x - 1) * tile_size + x_off + half_tile
+
+	# Negative because logic Y grows UP (1 to 11), but Godot Y grows DOWN.
+	# Subtract half_tile to stay centered in the cell vertically.
+	var world_y = -(tile_y - 1) * tile_size - y_off - half_tile
+
+	return Vector2(world_x, world_y)
+
+func grid_to_localOLD(tile_x: int, tile_y: int, tile_size: int, x_off: float, y_off: float) -> Vector2:    
 	# Convert grid X coordinate into pixel X position
 	var world_x = tile_x * tile_size + x_off
 

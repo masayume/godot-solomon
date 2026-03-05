@@ -8,56 +8,38 @@ extends Node2D
 
 #var monster_scene = preload("res://Monster.tscn")
 var tile_size
-var off_xp 
 
 func _ready():
 	load_level(2)
-	
-#func grid_to_local(tile_x: int, tile_y: int, ts: int, xoff, yoff) -> Vector2:
-#	return Vector2(
-#		xoff + tile_x * ts,
-#		-yoff - tile_y * ts
-#	)
 
 func spawn_monster(tile_x, tile_y):
 	var monster = monster_scene.instantiate()
 	monster.position = Vector2(tile_x * tile_size, tile_y * tile_size)
 #	level.add_child(monster)
 	call_deferred("add_child", monster)
-		
+
+func spawn_player(px, py, x_off, y_off):
+
+	var player = player_scene.instantiate()
+
+	# add to the SAME node that holds the blocks
+	add_child(player)
+
+	# now the transform chain is correct
+	player.spawn_at(px, py, x_off, y_off)
+
 func spawn_player_deferred(px, py, x_off, y_off):
 	var player = player_scene.instantiate()
 
-	var x_corrected = (x_off + off_xp)
-	player.position = GameConfig.grid_to_local(
-		px, py,
-		tile_size,      # size of one tile in pixels
-		x_corrected,    # horizontal centering offset
-		y_off           # vertical centering offset
-	)
+	# Add player safely to scene
+	add_child(player)
+	# call_deferred("add_child", player)
 
-	# Add player safely after tree is ready
-#	get_parent().call_deferred("add_child", player)
-
-	player = player_scene.instantiate()
-
-	# Add safely
-	# get_parent().call_deferred("add_child", player)
-	call_deferred("add_child", player)
-
-	# Wait one frame before positioning
+	# Wait one frame so the node exists in the tree
 	await get_tree().process_frame
 
+	# Let the player script place itself
 	player.spawn_at(px, py, x_off, y_off)
-
-	# Also defer the spawn call to next frame
-	player.call_deferred(
-		"spawn_at",
-		px,
-		py,
-		x_off,
-		y_off
-	)
 
 
 func load_level(id: int):
@@ -78,7 +60,8 @@ func load_level(id: int):
 	)
 	
 	var LevelRoot = get_parent()
-	LevelRoot.position.x = -128 + (screen_size.x - level_pixel_size.x) / 2
+#	LevelRoot.position.x = -128 + (screen_size.x - level_pixel_size.x) / 2
+	LevelRoot.position.x = (screen_size.x - level_pixel_size.x) / 2
 	LevelRoot.position.y = -(screen_size.y - level_pixel_size.y) / 2
 	
 	# show level info: level_loader reads it → exposes it → UI displays it.
@@ -87,20 +70,17 @@ func load_level(id: int):
 	var x_off = (-screen_size[0] / 2) + ((width / 2) * tile_size) / 2
 	var y_off = -((height / 2) * tile_size) 
 
-	off_xp = GameConfig.gamedata.off_xp
-	print("off_xp: " + str(off_xp) + " x_off: " + str(x_off))
-	var x_corrected = x_off + off_xp
-	
 	# Spawn Player AFTER offsets are known
 	# Don't call add_child() while the scene tree is still inside _ready() construction.
 	# Godot prevents modifying the tree while it's building it.	
-	spawn_player_deferred(
+#	spawn_player_deferred(
+	spawn_player(
 		player_start[0],   # grid X
 		player_start[1],   # grid Y
-		x_corrected,       # same centering offset used for blocks
+		x_off,       	   # same centering offset used for blocks
 		y_off
 	)
-	# print("player_start: [" + str(player_start[0]) + ","  + str(player_start[1]) + "] x_off:"  + str(x_off) + " y_off:"  + str(y_off))
+	print("player_start: [" + str(player_start[0]) + ","  + str(player_start[1]) + "] x_off:"  + str(x_off) + " y_off:"  + str(y_off))
 
 
 	# Spawn blocks
@@ -129,12 +109,8 @@ func load_level(id: int):
 			x_off,          # horizontal centering offset
 			y_off           # vertical centering offset
 		)
-
-		
-#		if (block.family == "ice"):
-#			print("ICE x_off:", x_off)
-			
-		# DEBUGGING 
+					
+# DEBUGGING 
 func debug_block(block):
 	var shape = block.get_node("CollisionShape2D")
 	print("---- BLOCK TREE ----")
