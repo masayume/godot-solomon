@@ -17,11 +17,22 @@ func _ready():
 	# print("ts: " + str(ts))
 	
 func _physics_process(delta):
-	velocity.x = 0
+
+	# Apply gravity
 	if not is_on_floor():
 		velocity.y += gravity * delta 
 	move_and_slide()
 
+	# Horizontal movement
+	var direction = Input.get_axis("move_left", "move_right")
+	velocity.x = direction * speed
+
+	# Jump
+	if Input.is_action_just_pressed("jump") and is_on_floor():
+		velocity.y = -jump_force
+
+	# Move the body
+	move_and_slide()
 
 func _input(event):
 	if event.is_action_pressed("Fire"):
