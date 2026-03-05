@@ -18,6 +18,12 @@ func spawn_monster(tile_x, tile_y):
 #	level.add_child(monster)
 	call_deferred("add_child", monster)
 
+func _on_player_fire(pos, dir):
+	create_or_destroy_block(pos, dir)
+
+func create_or_destroy_block(pos, dir):
+	print("create/destry block at: " + str(pos) + " " + str(dir))
+	
 func spawn_player(px, py, x_off, y_off):
 
 	var player = player_scene.instantiate()
@@ -27,20 +33,7 @@ func spawn_player(px, py, x_off, y_off):
 
 	# now the transform chain is correct
 	player.spawn_at(px, py, x_off, y_off)
-
-func spawn_player_deferred(px, py, x_off, y_off):
-	var player = player_scene.instantiate()
-
-	# Add player safely to scene
-	add_child(player)
-	# call_deferred("add_child", player)
-
-	# Wait one frame so the node exists in the tree
-	await get_tree().process_frame
-
-	# Let the player script place itself
-	player.spawn_at(px, py, x_off, y_off)
-
+	player.fire_pressed.connect(_on_player_fire)
 
 func load_level(id: int):
 	var path = "res://levels/level_%02d.json" % id
@@ -70,10 +63,6 @@ func load_level(id: int):
 	var x_off = (-screen_size[0] / 2) + ((width / 2) * tile_size) / 2
 	var y_off = -((height / 2) * tile_size) 
 
-	# Spawn Player AFTER offsets are known
-	# Don't call add_child() while the scene tree is still inside _ready() construction.
-	# Godot prevents modifying the tree while it's building it.	
-#	spawn_player_deferred(
 	spawn_player(
 		player_start[0],   # grid X
 		player_start[1],   # grid Y

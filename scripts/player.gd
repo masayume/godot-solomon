@@ -6,13 +6,16 @@ extends CharacterBody2D
 @onready var off_xp = GameConfig.gamedata.off_xp
 
 @export var block_scene: PackedScene
-# var tile_size = 64
-	
+var tile_size = 64
+var facing = 1
+
+signal fire_pressed(position, direction)
+
 func _ready():
 	print("Player ready:", self)
 	print("PLAYER world:", global_position)
 	print("SPRITE local:", $Sprite2D.position)
-	
+
 	# var ts = GameConfig.gamedata.TILE_SIZE
 	# print("ts: " + str(ts))
 	
@@ -25,18 +28,25 @@ func _physics_process(delta):
 
 	# Horizontal movement
 	var direction = Input.get_axis("move_left", "move_right")
+	if direction != 0:
+		facing = direction
 	velocity.x = direction * speed
 
 	# Jump
 	if Input.is_action_just_pressed("jump") and is_on_floor():
 		velocity.y = -jump_force
 
+	if Input.is_action_just_pressed("fire"):
+		fire_pressed.emit(global_position, facing)
+				
 	# Move the body
 	move_and_slide()
 
+
+	
 func _input(event):
-	if event.is_action_pressed("Fire"):
-		print("is_action_pressed(Fire)")
+	if event.is_action_pressed("fire"):
+		print("is_action_pressed(fire)")
 
 
 func spawn_at(tile_x: int, tile_y: int, x_off: float, y_off: float):
