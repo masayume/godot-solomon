@@ -8,6 +8,8 @@ extends CharacterBody2D
 @export var block_scene: PackedScene
 var tile_size = 64
 var facing = 1
+var level_loader
+var level
 
 signal fire_pressed(position, direction)
 
@@ -15,7 +17,9 @@ func _ready():
 	print("Player ready:", self)
 	print("PLAYER world:", global_position)
 	print("SPRITE local:", $Sprite2D.position)
-
+	level_loader = get_parent().get_parent()
+	level = get_parent()
+	
 	# var ts = GameConfig.gamedata.TILE_SIZE
 	# print("ts: " + str(ts))
 	
@@ -38,10 +42,20 @@ func _physics_process(delta):
 
 	if Input.is_action_just_pressed("fire"):
 		fire_pressed.emit(global_position, facing)
+
+		var grid = GameConfig.world_to_grid(
+			global_position,
+			level.x_off,
+			level.y_off,
+			tile_size
+		)
+
+		print("PLAYER WORLD:", global_position)
+		print("PLAYER GRID:", grid)
+
 				
 	# Move the body
 	move_and_slide()
-
 
 	
 func _input(event):
@@ -51,7 +65,7 @@ func _input(event):
 
 func spawn_at(tile_x: int, tile_y: int, x_off: float, y_off: float):
 	# Get tile size from config (single source of truth)
-	var tile_size = GameConfig.gamedata.TILE_SIZE
+	tile_size = GameConfig.gamedata.TILE_SIZE
 	# Convert grid coordinates into pixel position
 	
 	print("spawn_at: " + str(x_off))

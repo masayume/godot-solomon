@@ -49,13 +49,12 @@ func grid_to_local(tile_x: int, tile_y: int, tile_size: int, x_off: float, y_off
 
 	return Vector2(world_x, world_y)
 
-func grid_to_localOLD(tile_x: int, tile_y: int, tile_size: int, x_off: float, y_off: float) -> Vector2:    
-	# Convert grid X coordinate into pixel X position
-	var world_x = tile_x * tile_size + x_off
+func world_to_grid(world_pos: Vector2, x_off: float, y_off: float, tile_size: int) -> Vector2i:
 
-	# Convert grid Y coordinate into pixel Y position
-	# Negative because your grid grows upward, but Godot Y grows downward
-	var world_y = -tile_y * tile_size - y_off
+	var local_x = world_pos.x - x_off
+	var local_y = world_pos.y + y_off
 
-	# Return final local position in pixels
-	return Vector2(world_x, world_y)
+	var grid_x = floor(local_x / tile_size)
+	var grid_y = - (floor(local_y / tile_size)) + 1
+
+	return Vector2i(grid_x, grid_y)

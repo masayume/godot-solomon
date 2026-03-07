@@ -8,6 +8,8 @@ extends Node2D
 
 #var monster_scene = preload("res://Monster.tscn")
 var tile_size
+var x_off: float
+var y_off: float
 
 func _ready():
 	load_level(2)
@@ -60,8 +62,8 @@ func load_level(id: int):
 	# show level info: level_loader reads it → exposes it → UI displays it.
 	level_label.text = "LEVEL %d - %s" % [data["id"], data["name"]]
 
-	var x_off = (-screen_size[0] / 2) + ((width / 2) * tile_size) / 2
-	var y_off = -((height / 2) * tile_size) 
+	x_off = (-screen_size[0] / 2) + ((width / 2) * tile_size) / 2
+	y_off = -((height / 2) * tile_size) 
 
 	spawn_player(
 		player_start[0],   # grid X
