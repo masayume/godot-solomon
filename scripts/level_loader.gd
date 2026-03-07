@@ -116,7 +116,13 @@ func load_level(id: int):
 		block.family = b["family"]
 
 		# Add block to Level node
+
+		###DEBUG
 		block.add_to_group("debug_collision")
+
+#		var collidable = GameConfig.get_value("blocks", block.family + "_collidable", true)
+#		block.set_collidable(collidable)
+		
 		add_child(block)
 		
 		# await get_tree().process_frame
@@ -129,7 +135,14 @@ func load_level(id: int):
 			x_off,          # horizontal centering offset
 			y_off           # vertical centering offset
 		)
-					
+
+# func create_block(cell, block_type):
+#	var block = block_scene.instantiate()
+#	block.position = grid_to_world(cell)
+#	add_child(block)
+#	var collidable = config.get_value("blocks", block_type + "_collidable", true)
+#	block.set_collidable(collidable)
+
 # DEBUGGING 
 func debug_block(block):
 	var shape = block.get_node("CollisionShape2D")

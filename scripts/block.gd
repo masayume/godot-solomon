@@ -5,6 +5,7 @@ extends StaticBody2D
 @export var family: String = "earth"
 
 @onready var sprite: Sprite2D = $Sprite2D
+@onready var collider = $CollisionShape2D
 
 func _ready():
 	set_texture()
@@ -20,5 +21,5 @@ func set_random_variant():
 	sprite.region_enabled = true
 	sprite.region_rect = Rect2(x, 0, tile_size, tile_size)
 
-# func tile_to_world(x, y):
-#	return Level.position + Vector2(x, y) * gamedata[TILE_SIZE] + Vector2(gamedata[TILE_SIZE]/2, gamedata[TILE_SIZE]/2)
+func set_collidable(enabled: bool):
+	collider.disabled = !enabled

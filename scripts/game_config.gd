@@ -9,7 +9,7 @@ func _ready():
 
 func load_config():
 	var cfg = ConfigFile.new()
-	var err = cfg.load("res://data/blocks.cfg")
+	var err = cfg.load("res://config/blocks.cfg")
 	if err != OK:
 		print("Failed to load blocks.cfg")
 		return
