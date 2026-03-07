@@ -51,7 +51,7 @@ func _physics_process(delta):
 	if Input.is_action_just_pressed("fire"):
 		fire_pressed.emit(global_position, facing)
 
-		var grid = GameConfig.world_to_grid(
+		var _grid = GameConfig.world_to_grid(
 			global_position,
 			level.x_off,
 			level.y_off,

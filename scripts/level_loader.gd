@@ -5,6 +5,7 @@ extends Node2D
 @export var monster_scene: PackedScene
 
 @onready var level_label: Label = $"../../UI/LevelInfo"
+const Grid = preload("res://scripts/grid.gd")
 
 #var monster_scene = preload("res://Monster.tscn")
 var tile_size
@@ -13,7 +14,7 @@ var y_off: float
 
 func _ready():
 	center_level()
-	load_level(3)
+	load_level(2)
 
 func center_level():
 	# print("THIS NODE:", get_path())
@@ -24,7 +25,7 @@ func center_level():
 		print("ERROR: level_root not found")
 		return
 
-	var tile_size = GameConfig.gamedata.TILE_SIZE
+	tile_size = GameConfig.gamedata.TILE_SIZE
 	var width = GameConfig.gamedata.LEVEL_WIDTH
 	var height = GameConfig.gamedata.LEVEL_HEIGHT
 
@@ -48,8 +49,13 @@ func _on_player_fire(pos, dir):
 	create_or_destroy_block(pos, dir)
 
 func create_or_destroy_block(pos, dir):
-	print("create/destry block at: " + str(pos) + " " + str(dir))
-	
+	print("create/destroy block at: " + str(pos) + " " + str(dir))
+
+	var cell = Grid.world_to_grid(pos, x_off, y_off, tile_size)
+
+	print(cell)
+
+
 func spawn_player(px, py, x_off, y_off):
 
 	var player = player_scene.instantiate()
