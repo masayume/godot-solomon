@@ -7,16 +7,16 @@ extends CharacterBody2D
 
 @export var block_scene: PackedScene
 var tile_size = 64
-var facing = 1
+var facing := 1   # 1 = right, -1 = left
 var level_loader
 var level
 
 signal fire_pressed(position, direction)
 
 func _ready():
-	print("Player ready:", self)
-	print("PLAYER world:", global_position)
-	print("SPRITE local:", $Sprite2D.position)
+#	print("Player ready:", self)
+#	print("PLAYER world:", global_position)
+#	print("SPRITE local:", $Sprite2D.position)
 	level_loader = get_parent().get_parent()
 	level = get_parent()
 	
@@ -29,6 +29,14 @@ func _physics_process(delta):
 	if not is_on_floor():
 		velocity.y += gravity * delta 
 	move_and_slide()
+
+	if Input.is_action_pressed("move_left"):
+		facing = -1
+
+	if Input.is_action_pressed("move_right"):
+		facing = 1
+
+	$Sprite2D.flip_h = facing == 1
 
 	# Horizontal movement
 	var direction = Input.get_axis("move_left", "move_right")
@@ -50,8 +58,8 @@ func _physics_process(delta):
 			tile_size
 		)
 
-		print("PLAYER WORLD:", global_position)
-		print("PLAYER GRID:", grid)
+#		print("PLAYER WORLD:", global_position)
+#		print("PLAYER GRID:", grid)
 
 				
 	# Move the body
@@ -68,8 +76,8 @@ func spawn_at(tile_x: int, tile_y: int, x_off: float, y_off: float):
 	tile_size = GameConfig.gamedata.TILE_SIZE
 	# Convert grid coordinates into pixel position
 	
-	print("spawn_at: " + str(x_off))
-	print("parent:", get_parent())
+#	print("spawn_at: " + str(x_off))
+#	print("parent:", get_parent())
 	position = GameConfig.grid_to_local(
 			tile_x, 
 			tile_y, 

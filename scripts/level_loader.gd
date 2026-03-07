@@ -12,8 +12,32 @@ var x_off: float
 var y_off: float
 
 func _ready():
-	load_level(7)
+	center_level()
+	load_level(3)
 
+func center_level():
+	# print("THIS NODE:", get_path())
+	var screen_size = get_viewport_rect().size
+	var level_root = get_parent()
+
+	if level_root == null:
+		print("ERROR: level_root not found")
+		return
+
+	var tile_size = GameConfig.gamedata.TILE_SIZE
+	var width = GameConfig.gamedata.LEVEL_WIDTH
+	var height = GameConfig.gamedata.LEVEL_HEIGHT
+
+	var level_pixels = Vector2(width * tile_size, height * tile_size)
+
+	level_root.position = (screen_size - level_pixels) / 2 + Vector2(0, 512.0)
+	print("LEVEL POSITION:", level_root.position)
+
+###DEBUG
+#func _process(delta):
+#	print("LEVEL POS:", position)
+
+		
 func spawn_monster(tile_x, tile_y):
 	var monster = monster_scene.instantiate()
 	monster.position = Vector2(tile_x * tile_size, tile_y * tile_size)
@@ -55,9 +79,8 @@ func load_level(id: int):
 	)
 	
 	var LevelRoot = get_parent()
-#	LevelRoot.position.x = -128 + (screen_size.x - level_pixel_size.x) / 2
 	LevelRoot.position.x = (screen_size.x - level_pixel_size.x) / 2
-	LevelRoot.position.y = -(screen_size.y - level_pixel_size.y) / 2
+	LevelRoot.position.y = -tile_size -(screen_size.y - level_pixel_size.y) / 2
 	
 	# show level info: level_loader reads it → exposes it → UI displays it.
 	level_label.text = "LEVEL %d - %s" % [data["id"], data["name"]]
@@ -71,7 +94,7 @@ func load_level(id: int):
 		x_off,       	   # same centering offset used for blocks
 		y_off
 	)
-	print("player_start: [" + str(player_start[0]) + ","  + str(player_start[1]) + "] x_off:"  + str(x_off) + " y_off:"  + str(y_off))
+	# print("player_start: [" + str(player_start[0]) + ","  + str(player_start[1]) + "] x_off:"  + str(x_off) + " y_off:"  + str(y_off))
 
 
 	# Spawn blocks
