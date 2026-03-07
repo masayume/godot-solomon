@@ -12,7 +12,7 @@ var x_off: float
 var y_off: float
 
 func _ready():
-	load_level(2)
+	load_level(7)
 
 func spawn_monster(tile_x, tile_y):
 	var monster = monster_scene.instantiate()
