@@ -11,10 +11,11 @@ const Grid = preload("res://scripts/grid.gd")
 var tile_size
 var x_off: float
 var y_off: float
+var blocks := {} 	## blocks dictionary to check/update; Vector2i  →  Block node
 
 func _ready():
 	center_level()
-	load_level(2)
+	load_level(99)
 
 func center_level():
 	# print("THIS NODE:", get_path())
@@ -49,14 +50,24 @@ func _on_player_fire(pos, dir):
 	create_or_destroy_block(pos, dir)
 
 func create_or_destroy_block(pos, dir):
-	print("create/destroy block at: " + str(pos) + " " + str(dir))
 
 	var cell = Grid.world_to_grid(pos, x_off, y_off, tile_size)
 
-	print("cell: " + str(cell))
-#	add_block(b["pos"][0], b["pos"][1], b["family"])
-	add_block(cell[0], cell[1], 'earth')
-	
+#	print("create/destroy block at: " + str(pos) + " " + str(dir))
+
+	if blocks.has(cell):
+		var block = blocks[cell]
+		
+		if block.family == "earth":
+			block.queue_free()
+			blocks.erase(cell)
+
+	else:
+		add_block(cell[0], cell[1], 'earth')
+
+
+###DEBUGz	
+#	print(blocks)zzz
 
 func spawn_player(px, py, x_off, y_off):
 
@@ -133,10 +144,14 @@ func add_block(bx, by, type):
 	block.family = type
 	
 	block.add_to_group("debug_collision")
-		
-	add_child(block)
 
-	print(str(type) + " block added at [" + str(bx) + "," + str(by) + "]")
+	add_child(block)
+	var cell = Vector2i(bx, by)
+	blocks[cell] = block
+
+	
+###DEBUG
+#	print(str(type) + " block added at [" + str(bx) + "," + str(by) + "]")
 		
 	block.position = GameConfig.grid_to_local(
 		block_x,        # grid column
