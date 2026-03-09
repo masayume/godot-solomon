@@ -1,6 +1,5 @@
 extends Node
 
-var blocks_data = {}
 var gamedata = {}
 var blockdata = {}
 var gridutils = {}
@@ -19,15 +18,7 @@ func load_config():
 		var data := {}
 		for key in cfg.get_section_keys(section):
 			data[key] = cfg.get_value(section, key)
-
 		blockdata[section] = data
-
-
-	for section in cfg.get_sections():
-		var d = {}
-		for key in cfg.get_section_keys(section):
-			d[key] = cfg.get_value(section, key)
-		blocks_data[section] = d
 
 	var gdcfg = ConfigFile.new()
 	err = gdcfg.load("res://config/game.cfg")
