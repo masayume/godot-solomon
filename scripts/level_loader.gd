@@ -53,8 +53,10 @@ func create_or_destroy_block(pos, dir):
 
 	var cell = Grid.world_to_grid(pos, x_off, y_off, tile_size)
 
-	print(cell)
-
+	print("cell: " + str(cell))
+#	add_block(b["pos"][0], b["pos"][1], b["family"])
+	add_block(cell[0], cell[1], 'earth')
+	
 
 func spawn_player(px, py, x_off, y_off):
 
@@ -106,42 +108,44 @@ func load_level(id: int):
 	# Spawn blocks
 	for b in data["blocks"]:
 		# Create a new block instance from scene
-		var block = block_scene.instantiate()
 
-		# Extract grid coordinates from JSON
-		var block_x = b["pos"][0]
-		var block_y = b["pos"][1]
-
-		# Assign gameplay property
-		block.family = b["family"]
-
-		# Add block to Level node
-
-		###DEBUG
-		block.add_to_group("debug_collision")
+		add_block(b["pos"][0], b["pos"][1], b["family"])
+#		var block = block_scene.instantiate()
 
 #		var collidable = GameConfig.get_value("blocks", block.family + "_collidable", true)
 #		block.set_collidable(collidable)
-		
-		add_child(block)
-		
+				
 		# await get_tree().process_frame
 		
-		# Convert grid position into pixel position
-		block.position = GameConfig.grid_to_local(
-			block_x,        # grid column
-			block_y,        # grid row
-			tile_size,      # size of one tile in pixels
-			x_off,          # horizontal centering offset
-			y_off           # vertical centering offset
-		)
-
 # func create_block(cell, block_type):
 #	var block = block_scene.instantiate()
 #	block.position = grid_to_world(cell)
 #	add_child(block)
 #	var collidable = config.get_value("blocks", block_type + "_collidable", true)
 #	block.set_collidable(collidable)
+
+func add_block(bx, by, type):
+	var block = block_scene.instantiate()
+
+	var block_x = bx
+	var block_y = by
+
+	block.family = type
+	
+	block.add_to_group("debug_collision")
+		
+	add_child(block)
+
+	print(str(type) + " block added at [" + str(bx) + "," + str(by) + "]")
+		
+	block.position = GameConfig.grid_to_local(
+		block_x,        # grid column
+		block_y,        # grid row
+		tile_size,      # size of one tile in pixels
+		x_off,          # horizontal centering offset
+		y_off           # vertical centering offset
+	)	
+
 
 # DEBUGGING 
 func debug_block(block):
