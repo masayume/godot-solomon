@@ -54,6 +54,7 @@ func create_or_destroy_block(pos, dir):
 	var cell = Grid.world_to_grid(pos, x_off, y_off, tile_size)
 
 #	print("create/destroy block at: " + str(pos) + " " + str(dir))
+# var destructible = config.get_value("block_" + block.block_type, "destructible", false)
 
 	if blocks.has(cell):
 		var block = blocks[cell]

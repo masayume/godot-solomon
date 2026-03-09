@@ -2,6 +2,7 @@ extends Node
 
 var blocks_data = {}
 var gamedata = {}
+var blockdata = {}
 var gridutils = {}
 
 func _ready():
@@ -13,6 +14,14 @@ func load_config():
 	if err != OK:
 		print("Failed to load blocks.cfg")
 		return
+
+	for section in cfg.get_sections():
+		var data := {}
+		for key in cfg.get_section_keys(section):
+			data[key] = cfg.get_value(section, key)
+
+		blockdata[section] = data
+
 
 	for section in cfg.get_sections():
 		var d = {}
