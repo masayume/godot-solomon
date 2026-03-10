@@ -14,6 +14,8 @@
 	{"pos": [14,10],"family":"key"},	
 	{"pos": [14,4],"family":"door-closed"},	
 
+	{"pos": [3,4],"family": "shield"	},
+
 	{"pos": [2,11],"family": "shield"	},
 	{"pos": [4,11],"family": "shield"	},
 

@@ -15,6 +15,7 @@ var is_crouching = false
 signal fire_pressed(position, direction)
 
 func _ready():
+	z_index = 10
 #	print("Player ready:", self)
 #	print("PLAYER world:", global_position)
 #	print("SPRITE local:", $Sprite2D.position)
