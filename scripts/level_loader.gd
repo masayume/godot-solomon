@@ -51,22 +51,26 @@ func _on_player_fire(pos, dir):
 
 func create_or_destroy_block(pos, dir):
 
-	print("Available keys: ", GameConfig.blockdata.keys())
 	var cell = Grid.world_to_grid(pos, x_off, y_off, tile_size)
 
 #	print("create/destroy block at: " + str(pos) + " " + str(dir))
 # var destructible = config.get_value("block_" + block.block_type, "destructible", false)
 
-	if blocks.has(cell):
-		var block = blocks[cell]
+#	var dir = Vector2i(1,0)   # right
+#	var dir = Vector2i(-1,0)  # left
+	var target = Vector2i(cell.x + dir, cell.y)
+	
+	if blocks.has(target):
+		var block = blocks[target]
 		
 #		if block.family == "earth":
 		if GameConfig.blockdata[block.family]["destructible"]:
 			block.queue_free()
-			blocks.erase(cell)
+			blocks.erase(target)
 
 	else:
-		add_block(cell[0], cell[1], 'earth')
+#		add_block(cell[0], cell[1], 'earth')
+		add_block(target.x, target.y, 'earth')
 
 
 ###DEBUGz	

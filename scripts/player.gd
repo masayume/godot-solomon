@@ -10,6 +10,7 @@ var tile_size = 64
 var facing := 1   # 1 = right, -1 = left
 var level_loader
 var level
+var is_crouching = false
 
 signal fire_pressed(position, direction)
 
@@ -36,6 +37,17 @@ func _physics_process(delta):
 	if Input.is_action_pressed("move_right"):
 		facing = 1
 
+	# Detect Input
+	if Input.is_action_pressed("crouch") and is_on_floor():
+		crouch()
+	elif is_crouching:
+		# Check if there's room to stand up!
+#		if not is_something_above_head():
+			stand_up()
+
+	# (Your existing movement logic here...)
+	# If crouching, you might want to multiply speed by 0.5 or 0.
+	
 	$Sprite2D.flip_h = facing == 1
 
 	# Horizontal movement
@@ -59,11 +71,28 @@ func _physics_process(delta):
 		)
 
 #		print("PLAYER WORLD:", global_position)
-#		print("PLAYER GRID:", grid)
+		print("PLAYER GRID:", _grid)
 
-				
+	if is_crouching: velocity.x = 0
+	
 	# Move the body
 	move_and_slide()
+
+func crouch():
+	if is_crouching: return
+	is_crouching = true
+	
+	# Shrink the collision rectangle
+#	collision_shape.shape.size.y = crouching_shape_height
+#	collision_shape.position.y = crouching_position_y
+	
+	# Update visual (assuming you have a crouch frame)
+	# sprite.frame = CROUCH_FRAME_ID 
+
+func stand_up():
+	is_crouching = false
+#	collision_shape.shape.size.y = standing_shape_height
+#	collision_shape.position.y = standing_position_y
 
 	
 func _input(event):

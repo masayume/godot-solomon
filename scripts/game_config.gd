@@ -57,4 +57,5 @@ func world_to_grid(world_pos: Vector2, x_off: float, y_off: float, tile_size: in
 	var grid_x = floor(local_x / tile_size) 
 	var grid_y = - (floor(local_y / tile_size)) + 1
 
+#	print("world_to_grid:" + str(grid_x) + " " + str(grid_y)) 
 	return Vector2i(grid_x, grid_y)
