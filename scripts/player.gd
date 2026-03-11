@@ -4,15 +4,16 @@ extends CharacterBody2D
 @onready var jump_force = GameConfig.gamedata.jump_force
 @onready var gravity = GameConfig.gamedata.gravity
 @onready var off_xp = GameConfig.gamedata.off_xp
+@onready var sprite = $Sprite2D
 
 @export var block_scene: PackedScene
 var tile_size = 64
 var facing := 1   # 1 = right, -1 = left
 var level_loader
 var level
-var is_crouching = false
+var crouching = false
 
-signal fire_pressed(position, direction)
+signal fire_pressed(position, direction, crouching)
 
 func _ready():
 	z_index = 10
@@ -41,7 +42,7 @@ func _physics_process(delta):
 	# Detect Input
 	if Input.is_action_pressed("crouch") and is_on_floor():
 		crouch()
-	elif is_crouching:
+	elif crouching:
 		# Check if there's room to stand up!
 #		if not is_something_above_head():
 			stand_up()
@@ -62,7 +63,7 @@ func _physics_process(delta):
 		velocity.y = -jump_force
 
 	if Input.is_action_just_pressed("fire"):
-		fire_pressed.emit(global_position, facing)
+		fire_pressed.emit(global_position, facing, crouching)
 
 		var _grid = GameConfig.world_to_grid(
 			global_position,
@@ -74,14 +75,23 @@ func _physics_process(delta):
 #		print("PLAYER WORLD:", global_position)
 		print("PLAYER GRID:", _grid)
 
-	if is_crouching: velocity.x = 0
+	if crouching: velocity.x = 0
 	
 	# Move the body
 	move_and_slide()
 
+func update_animation():
+
+	if crouching:
+		print("crouched")
+#		sprite.texture = crouch_texture
+	else:
+		print("standing")
+#		sprite.texture = stand_texture
+		
 func crouch():
-	if is_crouching: return
-	is_crouching = true
+	if crouching: return
+	crouching = true
 	
 	# Shrink the collision rectangle
 #	collision_shape.shape.size.y = crouching_shape_height
@@ -91,7 +101,7 @@ func crouch():
 	# sprite.frame = CROUCH_FRAME_ID 
 
 func stand_up():
-	is_crouching = false
+	crouching = false
 #	collision_shape.shape.size.y = standing_shape_height
 #	collision_shape.position.y = standing_position_y
 

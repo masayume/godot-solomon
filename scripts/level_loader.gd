@@ -46,10 +46,10 @@ func spawn_monster(tile_x, tile_y):
 #	level.add_child(monster)
 	call_deferred("add_child", monster)
 
-func _on_player_fire(pos, dir):
-	create_or_destroy_block(pos, dir)
+func _on_player_fire(pos, dir, crouching):
+	create_or_destroy_block(pos, dir, crouching)
 
-func create_or_destroy_block(pos, dir):
+func create_or_destroy_block(pos, dir, crouching):
 
 	var cell = Grid.world_to_grid(pos, x_off, y_off, tile_size)
 
@@ -59,7 +59,10 @@ func create_or_destroy_block(pos, dir):
 #	var dir = Vector2i(1,0)   # right
 #	var dir = Vector2i(-1,0)  # left
 	var target = Vector2i(cell.x + dir, cell.y)
-	
+
+	if crouching:
+		cell.y -= 1
+			
 	if blocks.has(target):
 		var block = blocks[target]
 		
@@ -76,6 +79,7 @@ func create_or_destroy_block(pos, dir):
 ###DEBUGz	
 #	print(blocks)zzz
 
+
 func spawn_player(px, py, x_off, y_off):
 
 	var player = player_scene.instantiate()
@@ -86,6 +90,7 @@ func spawn_player(px, py, x_off, y_off):
 	# now the transform chain is correct
 	player.spawn_at(px, py, x_off, y_off)
 	player.fire_pressed.connect(_on_player_fire)
+
 
 func load_level(id: int):
 	var path = "res://levels/level_%02d.json" % id
