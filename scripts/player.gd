@@ -48,7 +48,8 @@ func _physics_process(delta):
 	elif crouching:
 		# Check if there's room to stand up!
 #		if not is_something_above_head():
-			stand_up()
+		stand_up()
+		update_animation()
 
 	# (Your existing movement logic here...)
 	# If crouching, you might want to multiply speed by 0.5 or 0.
@@ -86,10 +87,8 @@ func _physics_process(delta):
 func update_animation():
 
 	if crouching:
-		print("crouched")
 		sprite.texture = crouch_texture
 	else:
-		print("standing")
 		sprite.texture = idle_texture
 		
 func crouch():
