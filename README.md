@@ -14,7 +14,7 @@ LevelRoot (Node2D)
 
 # Grid System
 
-The world is a 15sx12 blocks tile grid. Tile size comes from configuration files (res://config/game.cfg).
+The world is a 15 x 12 blocks tile grid. Tile size comes from configuration files (res://config/game.cfg).
 Grid origin is bottom-left (positive Y goes upward in grid space instead of the Godot world space default (downward)).
 
 There are two space coordinates core _conversion functions_ exist:
