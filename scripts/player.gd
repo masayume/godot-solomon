@@ -5,6 +5,8 @@ extends CharacterBody2D
 @onready var gravity = GameConfig.gamedata.gravity
 @onready var off_xp = GameConfig.gamedata.off_xp
 @onready var sprite = $Sprite2D
+var crouch_texture = preload("res://sprites/player/player-crouch-frames.png")
+var idle_texture = preload("res://sprites/player/player-idle-frames.png")
 
 @export var block_scene: PackedScene
 var tile_size = 64
@@ -42,6 +44,7 @@ func _physics_process(delta):
 	# Detect Input
 	if Input.is_action_pressed("crouch") and is_on_floor():
 		crouch()
+		update_animation()
 	elif crouching:
 		# Check if there's room to stand up!
 #		if not is_something_above_head():
@@ -84,10 +87,10 @@ func update_animation():
 
 	if crouching:
 		print("crouched")
-#		sprite.texture = crouch_texture
+		sprite.texture = crouch_texture
 	else:
 		print("standing")
-#		sprite.texture = stand_texture
+		sprite.texture = idle_texture
 		
 func crouch():
 	if crouching: return
