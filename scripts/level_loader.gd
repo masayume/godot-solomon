@@ -80,7 +80,7 @@ func create_or_destroy_block(pos, dir, crouching):
 #	print(blocks)zzz
 
 
-func spawn_player(px, py, x_off, y_off):
+func spawn_player(px, py, xoff, yoff):
 
 	var player = player_scene.instantiate()
 
@@ -88,7 +88,7 @@ func spawn_player(px, py, x_off, y_off):
 	add_child(player)
 
 	# now the transform chain is correct
-	player.spawn_at(px, py, x_off, y_off)
+	player.spawn_at(px, py, xoff, yoff)
 	player.fire_pressed.connect(_on_player_fire)
 
 

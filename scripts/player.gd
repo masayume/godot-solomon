@@ -55,7 +55,7 @@ func _physics_process(delta):
 	# Horizontal movement
 	var direction = Input.get_axis("move_left", "move_right")
 	if direction != 0:
-		facing = direction
+		facing = int(direction)
 	velocity.x = direction * speed
 
 	# Jump
