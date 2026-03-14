@@ -58,10 +58,11 @@ func create_or_destroy_block(pos, dir, crouching):
 
 #	var dir = Vector2i(1,0)   # right
 #	var dir = Vector2i(-1,0)  # left
-	var target = Vector2i(cell.x + dir, cell.y)
 
 	if crouching:
 		cell.y -= 1
+
+	var target = Vector2i(cell.x + dir, cell.y)
 			
 	if blocks.has(target):
 		var block = blocks[target]
