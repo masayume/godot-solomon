@@ -64,7 +64,9 @@ blockdata = {
 
 # Monster System
 
-Monsters are instantiated at runtime from monster.tscn scene.
+[Solomon's Key Monster Reference](https://strategywiki.org/wiki/Solomon%27s_Key/Enemies)
+
+Monsters are instantiated at runtime from Monster.tscn scene.
 
 res://config/monsters.cfg
 Defines properties of each monster type: earth (default), stone, door, key, etc.
@@ -72,7 +74,7 @@ Defines properties of each monster type: earth (default), stone, door, key, etc.
 Example monsters.cfg:
 
 ```
-[earth]
+[ghost]
 destructible=true
 collidable=true
 ```
