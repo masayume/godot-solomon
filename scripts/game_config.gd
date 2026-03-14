@@ -3,6 +3,7 @@ extends Node
 var gamedata = {}
 var blockdata = {}
 var gridutils = {}
+var monsterdata = {}
 
 func _ready():
 	load_config()
@@ -19,6 +20,18 @@ func load_config():
 		for key in cfg.get_section_keys(section):
 			data[key] = cfg.get_value(section, key)
 		blockdata[section] = data
+
+	var mcfg = ConfigFile.new()
+	err = cfg.load("res://config/monsters.cfg")
+	if err != OK:
+		print("Failed to load monsters.cfg")
+		return
+
+	for section in mcfg.get_sections():
+		var data := {}
+		for key in mcfg.get_section_keys(section):
+			data[key] = mcfg.get_value(section, key)
+		monsterdata[section] = data
 
 	var gdcfg = ConfigFile.new()
 	err = gdcfg.load("res://config/game.cfg")

@@ -29,7 +29,15 @@ world_to_grid(world_pos, x_off, y_off, tile_size)
 There are two configuration files.
 
 res://config/game.cfg
-General game settings like tile size, player attributes and screen values.
+General *game settings* like tile size, player attributes and screen values.
+
+res://config/blocks.cfg
+Defines properties of each block type: earth (default), stone, door, key, etc. See below.
+
+
+# Block System
+
+Blocks are instantiated at runtime from Block.tscn scene.
 
 res://config/blocks.cfg
 Defines properties of each block type: earth (default), stone, door, key, etc.
@@ -54,10 +62,32 @@ blockdata = {
 }
 ```
 
-# Block System
+# Monster System
 
-Blocks are instantiated from Block.tscn scene.
+Monsters are instantiated at runtime from monster.tscn scene.
 
+res://config/monsters.cfg
+Defines properties of each monster type: earth (default), stone, door, key, etc.
+
+Example monsters.cfg:
+
+```
+[earth]
+destructible=true
+collidable=true
+```
+
+These values are loaded into _GameConfig.monsterdata_ dictionary
+
+Example structure:
+
+```
+monsterdata = {
+  "ghost": {"destructible": true, "collidable": true},
+  "goblin": {"destructible": false, "collidable": true},
+  "spark": {"destructible": false, "collidable": false}
+}
+```
 
 # Level System
 
