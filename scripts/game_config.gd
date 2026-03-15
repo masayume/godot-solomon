@@ -9,10 +9,12 @@ func _ready():
 	load_config()
 
 func load_config():
+
+	# LOAD BLOCKS CONFIGURATION DATA	
 	var cfg = ConfigFile.new()
 	var err = cfg.load("res://config/blocks.cfg")
 	if err != OK:
-		print("Failed to load blocks.cfg")
+		print("ERROR: Failed to load blocks.cfg")
 		return
 
 	for section in cfg.get_sections():
@@ -21,10 +23,11 @@ func load_config():
 			data[key] = cfg.get_value(section, key)
 		blockdata[section] = data
 
+	# LOAD MONSTERS CONFIGURATION DATA	
 	var mcfg = ConfigFile.new()
 	err = mcfg.load("res://config/monsters.cfg")
 	if err != OK:
-		print("Failed to load monsters.cfg")
+		print("ERROR: Failed to load monsters.cfg")
 		return
 
 	for section in mcfg.get_sections():
@@ -33,21 +36,28 @@ func load_config():
 			data[key] = mcfg.get_value(section, key)
 		monsterdata[section] = data
 
+	# LOAD GAME CONFIGURATION DATA	
 	var gdcfg = ConfigFile.new()
 	err = gdcfg.load("res://config/game.cfg")
 	if err != OK:
-		print("Failed to load game.cfg")
+		print("ERROR: Failed to load game.cfg")
 		return
 
-	gamedata.TILE_SIZE = gdcfg.get_value("screen", "TILE_SIZE")
-	gamedata.LEVEL_WIDTH = gdcfg.get_value("screen", "LEVEL_WIDTH")
-	gamedata.LEVEL_HEIGHT = gdcfg.get_value("screen", "LEVEL_HEIGHT")
+	for section in gdcfg.get_sections():
+		var data := {}
+		for key in gdcfg.get_section_keys(section):
+			data[key] = gdcfg.get_value(section, key)
+		gamedata[section] = data
+		
+#	gamedata.TILE_SIZE = gdcfg.get_value("screen", "TILE_SIZE")
+#	gamedata.LEVEL_WIDTH = gdcfg.get_value("screen", "LEVEL_WIDTH")
+#	gamedata.LEVEL_HEIGHT = gdcfg.get_value("screen", "LEVEL_HEIGHT")
 	
 	# Read values from the config file
-	gamedata.move_speed = gdcfg.get_value("player", "move_speed", 100)
-	gamedata.jump_force = gdcfg.get_value("player", "jump_force", 300)
-	gamedata.gravity = gdcfg.get_value("player", "gravity", 800)
-	gamedata.off_xp = gdcfg.get_value("player", "off_xp", 200)
+#	gamedata.move_speed = gdcfg.get_value("player", "move_speed", 100)
+#	gamedata.jump_force = gdcfg.get_value("player", "jump_force", 300)
+#	gamedata.gravity = gdcfg.get_value("player", "gravity", 800)
+#	gamedata.off_xp = gdcfg.get_value("player", "off_xp", 200)
 
 func grid_to_local(tile_x: int, tile_y: int, tile_size: int, x_off: float, y_off: float) -> Vector2:    
 	var half_tile = tile_size / 2.0

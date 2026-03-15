@@ -1,9 +1,9 @@
 extends CharacterBody2D
 
-@onready var speed = GameConfig.gamedata.move_speed
-@onready var jump_force = GameConfig.gamedata.jump_force
-@onready var gravity = GameConfig.gamedata.gravity
-@onready var off_xp = GameConfig.gamedata.off_xp
+@onready var speed = GameConfig.gamedata.player.move_speed
+@onready var jump_force = GameConfig.gamedata.player.jump_force
+@onready var gravity = GameConfig.gamedata.player.gravity
+@onready var off_xp = GameConfig.gamedata.player.off_xp
 @onready var sprite = $Sprite2D
 var crouch_texture = preload("res://sprites/player/player-crouch-frames.png")
 var idle_texture = preload("res://sprites/player/player-idle-frames.png")
@@ -115,7 +115,7 @@ func _input(event):
 
 func spawn_at(tile_x: int, tile_y: int, x_off: float, y_off: float):
 	# Get tile size from config (single source of truth)
-	tile_size = GameConfig.gamedata.TILE_SIZE
+	tile_size = GameConfig.gamedata.screen.TILE_SIZE
 	# Convert grid coordinates into pixel position
 	
 #	print("spawn_at: " + str(x_off))

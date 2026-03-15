@@ -37,7 +37,9 @@ Defines properties of each block type: earth (default), stone, door, key, etc. S
 
 # Block System
 
-Blocks are instantiated at runtime from Block.tscn scene.
+[Solomon's Key Item Reference](https://strategywiki.org/wiki/Solomon%27s_Key/Items)
+
+Blocks and Items are instantiated at runtime from Block.tscn scene.
 
 res://config/blocks.cfg
 Defines properties of each block type: earth (default), stone, door, key, etc.

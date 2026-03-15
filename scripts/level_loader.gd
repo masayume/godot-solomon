@@ -16,7 +16,7 @@ var monsters := {} 	## monsters dictionary to check/update; Vector2i  →  Block
 
 func _ready():
 	center_level()
-	load_level(6)
+	load_level(1)
 
 func center_level():
 	# print("THIS NODE:", get_path())
@@ -27,9 +27,9 @@ func center_level():
 		print("ERROR: level_root not found")
 		return
 
-	tile_size = GameConfig.gamedata.TILE_SIZE
-	var width = GameConfig.gamedata.LEVEL_WIDTH
-	var height = GameConfig.gamedata.LEVEL_HEIGHT
+	tile_size = GameConfig.gamedata.screen.TILE_SIZE
+	var width = GameConfig.gamedata.screen.LEVEL_WIDTH
+	var height = GameConfig.gamedata.screen.LEVEL_HEIGHT
 
 	var level_pixels = Vector2(width * tile_size, height * tile_size)
 
