@@ -1,54 +1,50 @@
 {
-  "id": 5,
-  "name": "Level 1-5",
+  "id": 6,
+  "name": "Level 1-10",
   "time_limit": 999,
 
   "tile_size": 64,
   "block_width": 15,
   "block_height": 12,
 
-  "player_start": [14, 6],
-
-  "monsters": [
-	{"pos": [4,1],"family":"goblin"},	
-	{"pos": [10,1],"family":"goblin"},	
-	{"pos": [7,6],"family":"ghost"},	
-	{"pos": [7,8],"family":"ghost"},	
-	{"pos": [7,4],"family":"gargoyle"},	
-  ],
+  "player_start": [5, 1],
 
   "blocks": [
 
-		{"pos": [4,10],"family": "shield"	},
-		{"pos": [12,10],"family": "shield"	},
+		{"pos": [6,12],"family": "shield"	},
+		{"pos": [2,12],"family":"gold-bell"},	
 
-		{"pos": [7,7],"family":"green-orb"},	
-		{"pos": [9,7],"family":"green-orb"},	
+		{"pos": [13,8],"family":"key"},	
+		{"pos": [2,8],"family":"door-closed"},	
 
-		{"pos": [8,7],"family":"key"},	
-		{"pos": [2,6],"family":"door-closed"},	
+		{"pos": [10,1],"family":"green-orb"},	
+		{"pos": [12,1],"family":"green-orb"},	
+		{"pos": [14,1],"family":"green-orb"},	
 
-		{"pos": [7,2],"family":"gold-bell"},	
-		{"pos": [9,2],"family":"blue-lantern"},	
+		{ "pos": [2,10], "family": "stone"	},		{ "pos": [4,10], "family": "stone"	},
+		{ "pos": [6,10], "family": "stone"	},		{ "pos": [9,10], "family": "stone"	},
+		{ "pos": [7,10], "family": "earth"	},		{ "pos": [8,10], "family": "earth"	},
+
+		{ "pos": [12,8], "family": "stone"	},		{ "pos": [14,8], "family": "stone"	},
+		{ "pos": [10,8], "family": "stone"	},		{ "pos": [5,8], "family": "stone"	},
+		{ "pos": [6,8], "family": "earth"	},		{ "pos": [7,8], "family": "earth"	},
+		{ "pos": [8,8], "family": "earth"	},		{ "pos": [9,8], "family": "earth"	},
+		{ "pos": [11,8], "family": "earth"	},
+
+		{ "pos": [2,6], "family": "stone"	},		{ "pos": [4,6], "family": "stone"	},
+		{ "pos": [7,6], "family": "stone"	},
+		{ "pos": [5,6], "family": "earth"	},		{ "pos": [6,6], "family": "earth"	},
+
+		{ "pos": [3,4], "family": "stone"	},		{ "pos": [8,4], "family": "stone"	},
+		{ "pos": [14,4], "family": "stone"	},		{ "pos": [12,4], "family": "stone"	},
+		{ "pos": [10,4], "family": "stone"	},				
+		{ "pos": [4,4], "family": "earth"	},		{ "pos": [5,4], "family": "earth"	},
+		{ "pos": [6,4], "family": "earth"	},		{ "pos": [7,4], "family": "earth"	},
+		{ "pos": [11,4], "family": "earth"	},		{ "pos": [13,4], "family": "earth"	},
+
+		{ "pos": [2,2], "family": "stone"	},		{ "pos": [4,2], "family": "stone"	},
+		{ "pos": [3,2], "family": "earth"	},
 	
-		{ "pos": [2,5], "family": "stone"	},
-		{ "pos": [3,5], "family": "stone"	},
-		{ "pos": [4,5], "family": "stone"	},
-		{ "pos": [1,5], "family": "stone"	},
-		{ "pos": [8,5], "family": "stone"	},
-		{ "pos": [12,5], "family": "stone"	},
-		{ "pos": [13,5], "family": "stone"	},
-		{ "pos": [14,5], "family": "stone"	},
-		{ "pos": [15,5], "family": "stone"	},
-		{ "pos": [10,7], "family": "stone"	},
-		{ "pos": [6,7], "family": "stone"	},
-		{ "pos": [8,9], "family": "stone"	},
-		{ "pos": [1,9], "family": "stone"	},
-		{ "pos": [2,9], "family": "stone"	},
-		{ "pos": [15,9], "family": "stone"	},
-		{ "pos": [14,9], "family": "stone"	},
-		{ "pos": [5,3], "family": "earth"	},
-		{ "pos": [11,3], "family": "earth"	},
 		
 		{"pos": [0,0],"family":"stone"},	{"pos": [16,0],"family":"stone"},
 		{"pos": [0,1],"family":"stone"},	{"pos": [16,1],"family":"stone"},

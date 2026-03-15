@@ -9,18 +9,18 @@
 
   "player_start": [7, 1],
 
+  "monsters": [
+	{"pos": [3,9],"family":"gargoyle"},	
+  ],
+
   "blocks": [
 
 		{"pos": [3,11],"family": "shield"	},
 		{"pos": [13,11],"family": "shield"	},
 
-		{"pos": [7,7],"family":"green-orb"},	
-		{"pos": [9,7],"family":"green-orb"},	
-
 		{"pos": [15,9], "family":"key"},	
 		{"pos": [1,2], "family":"door-closed"},	
 
-		{"pos": [8,11],"family":"gold-bell"},	
 		{"pos": [14,1],"family":"blue-lantern"},	
 	
 		{ "pos": [4,2], "family": "stone"	},		{ "pos": [5,2], "family": "stone"	},
