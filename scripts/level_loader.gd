@@ -16,7 +16,7 @@ var monsters := {} 	## monsters dictionary to check/update; Vector2i  →  Block
 
 func _ready():
 	center_level()
-	load_level(99)
+	load_level(1)
 
 func center_level():
 	# print("THIS NODE:", get_path())
@@ -129,10 +129,10 @@ func load_level(id: int):
 	)
 	# print("player_start: [" + str(player_start[0]) + ","  + str(player_start[1]) + "] x_off:"  + str(x_off) + " y_off:"  + str(y_off))
 
-	for m in data["monsters"]:
-		# Create a new monster instance from scene		
-		add_monster(m["pos"][0], m["pos"][1], m["family"])
-
+	if data.has("monsters"):
+		for m in data["monsters"]:
+			# Create a new monster instance from scene		
+			add_monster(m["pos"][0], m["pos"][1], m["family"])
 
 	# Spawn blocks
 	for b in data["blocks"]:
