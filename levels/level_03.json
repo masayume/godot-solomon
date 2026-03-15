@@ -9,6 +9,13 @@
 
   "player_start": [4, 9],
 
+  "monsters": [
+	{"pos": [2,10],"family":"panel"},	
+	{"pos": [8,2],"family":"spark"},	
+	{"pos": [12,11],"family":"spark"},	
+	{"pos": [12,9],"family":"spark"},	
+  ],
+
   "blocks": [
 	{"pos": [6,11],"family": "shield"	},
 
