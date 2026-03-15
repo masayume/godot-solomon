@@ -12,8 +12,8 @@
   "monsters": [
 	{"pos": [2,5],"family":"ghost"},	
 	{"pos": [2,7],"family":"ghost"},	
-	{"pos": [14,5],"family":"ghost"},	
-	{"pos": [14,7],"family":"ghost"},	
+	{"pos": [14,5],"family":"ghost","direction":"left"},	
+	{"pos": [14,7],"family":"ghost","direction":"left"},	
 	{"pos": [8,2],"family":"nuel"},	
 	{"pos": [8,11],"family":"nuel"},	
   ],

@@ -11,9 +11,9 @@
 
   "monsters": [
 	{"pos": [4,1],"family":"goblin"},	
-	{"pos": [12,1],"family":"goblin"},	
-	{"pos": [7,6],"family":"ghost"},	
-	{"pos": [7,8],"family":"ghost"},	
+	{"pos": [12,1],"family":"goblin","direction":"left"},	
+	{"pos": [7,6],"family":"ghost","direction":"left"},	
+	{"pos": [7,8],"family":"ghost","direction":"left"},	
 	{"pos": [7,4],"family":"gargoyle"},	
   ],
 

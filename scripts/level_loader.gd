@@ -16,7 +16,7 @@ var monsters := {} 	## monsters dictionary to check/update; Vector2i  →  Block
 
 func _ready():
 	center_level()
-	load_level(11)
+	load_level(6)
 
 func center_level():
 	# print("THIS NODE:", get_path())
@@ -132,7 +132,7 @@ func load_level(id: int):
 	if data.has("monsters"):
 		for m in data["monsters"]:
 			# Create a new monster instance from scene		
-			add_monster(m["pos"][0], m["pos"][1], m["family"])
+			add_monster(m["pos"][0], m["pos"][1], m["family"], m.get("direction", null))
 
 	# Spawn blocks
 	for b in data["blocks"]:
@@ -166,7 +166,7 @@ func add_block(bx, by, type):
 		y_off           # vertical centering offset
 	)	
 
-func add_monster(mx, my, type):
+func add_monster(mx, my, type, dir):
 	var monster = monster_scene.instantiate()
 
 	var monster_x = mx
@@ -177,8 +177,14 @@ func add_monster(mx, my, type):
 	monster.add_to_group("debug_collision")
 
 	add_child(monster)
-	var cell = Vector2i(mx, my)
-# 	blocks[cell] = block
+
+	if dir == "up":
+		monster.rotation_degrees = -90
+	elif dir == "down":
+		monster.rotation_degrees = 90
+	elif dir == "left":
+#		monster.rotation_degrees = 180		
+		monster.scale.x = -1
 
 	monster.position = GameConfig.grid_to_local(
 		monster_x,        # grid column
