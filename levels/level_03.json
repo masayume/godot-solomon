@@ -14,6 +14,10 @@
 	{"pos": [8,2],"family":"spark"},	
 	{"pos": [12,11],"family":"spark"},	
 	{"pos": [12,9],"family":"spark"},	
+	{"pos": [2,4],"family":"gargoyle"},	
+	{"pos": [6,5],"family":"dragon"},	
+	{"pos": [9,5],"family":"dragon"},	
+	{"pos": [11,4],"family":"serpent"},	
   ],
 
   "blocks": [
