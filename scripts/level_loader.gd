@@ -16,7 +16,7 @@ var monsters := {} 	## monsters dictionary to check/update; Vector2i  →  Block
 
 func _ready():
 	center_level()
-	load_level(1)
+	load_level(3)
 
 func center_level():
 	# print("THIS NODE:", get_path())
@@ -38,7 +38,7 @@ func center_level():
 
 ###DEBUG
 #func _process(delta):
-#	print("LEVEL POS:", position)
+#	print("LEVEL POS:", position)g
 
 		
 func spawn_monster(tile_x, tile_y):

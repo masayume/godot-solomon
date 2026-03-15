@@ -9,9 +9,12 @@
 
   "player_start": [5, 3],
 
-  "blocks": [
+  "monsters": [
+	{"pos": [5,10],"family":"ghost"},	
+	{"pos": [8,4],"family":"goblin"},	
+  ],
 
-	{"pos": [1,1],"family":"ice"},
+  "blocks": [
 
 	{"pos": [4,5],"family":"blue-flame"},	{"pos": [12,5],"family":"blue-flame"},
 	{"pos": [11,3],"family":"key"},	

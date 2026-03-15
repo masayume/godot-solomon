@@ -25,9 +25,8 @@ func set_random_variant():
 
 func set_collidable():
 	
-	
 	if !GameConfig.blockdata.has(family):
-		print("ERROR: unknown block family:", family)
+		print("ERROR: unknown block family: ", family)
 		return
 		
 #	print("FAMILY:", family, " BLOCKDATA:", GameConfig.blockdata)
