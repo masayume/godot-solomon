@@ -22,7 +22,7 @@ func load_config():
 		blockdata[section] = data
 
 	var mcfg = ConfigFile.new()
-	err = cfg.load("res://config/monsters.cfg")
+	err = mcfg.load("res://config/monsters.cfg")
 	if err != OK:
 		print("Failed to load monsters.cfg")
 		return

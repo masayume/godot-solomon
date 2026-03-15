@@ -12,6 +12,7 @@ var tile_size
 var x_off: float
 var y_off: float
 var blocks := {} 	## blocks dictionary to check/update; Vector2i  →  Block node
+var monsters := {} 	## monsters dictionary to check/update; Vector2i  →  Block node
 
 func _ready():
 	center_level()
@@ -128,25 +129,16 @@ func load_level(id: int):
 	)
 	# print("player_start: [" + str(player_start[0]) + ","  + str(player_start[1]) + "] x_off:"  + str(x_off) + " y_off:"  + str(y_off))
 
+	for m in data["monsters"]:
+		# Create a new monster instance from scene		
+		add_monster(m["pos"][0], m["pos"][1], m["family"])
+
 
 	# Spawn blocks
 	for b in data["blocks"]:
 		# Create a new block instance from scene
-
 		add_block(b["pos"][0], b["pos"][1], b["family"])
-#		var block = block_scene.instantiate()
 
-#		var collidable = GameConfig.get_value("blocks", block.family + "_collidable", true)
-#		block.set_collidable(collidable)
-				
-		# await get_tree().process_frame
-		
-# func create_block(cell, block_type):
-#	var block = block_scene.instantiate()
-#	block.position = grid_to_world(cell)
-#	add_child(block)
-#	var collidable = config.get_value("blocks", block_type + "_collidable", true)
-#	block.set_collidable(collidable)
 
 func add_block(bx, by, type):
 	var block = block_scene.instantiate()
@@ -169,6 +161,28 @@ func add_block(bx, by, type):
 	block.position = GameConfig.grid_to_local(
 		block_x,        # grid column
 		block_y,        # grid row
+		tile_size,      # size of one tile in pixels
+		x_off,          # horizontal centering offset
+		y_off           # vertical centering offset
+	)	
+
+func add_monster(mx, my, type):
+	var monster = monster_scene.instantiate()
+
+	var monster_x = mx
+	var monster_y = my
+
+	monster.family = type
+	
+	monster.add_to_group("debug_collision")
+
+	add_child(monster)
+	var cell = Vector2i(mx, my)
+# 	blocks[cell] = block
+
+	monster.position = GameConfig.grid_to_local(
+		monster_x,        # grid column
+		monster_y,        # grid row
 		tile_size,      # size of one tile in pixels
 		x_off,          # horizontal centering offset
 		y_off           # vertical centering offset

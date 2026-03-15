@@ -9,6 +9,12 @@
 
   "player_start": [2, 4],
 
+  "monsters": [
+
+	{"pos": [14,11],"family":"ghost"},	
+
+  ],
+
   "blocks": [
 
 	{"pos": [14,10],"family":"key"},	

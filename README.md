@@ -66,10 +66,10 @@ blockdata = {
 
 [Solomon's Key Monster Reference](https://strategywiki.org/wiki/Solomon%27s_Key/Enemies)
 
-Monsters are instantiated at runtime from Monster.tscn scene.
+Monsters are instantiated at runtime from Monster.tscn scene via monster.gd script.
+Monster sprites are in res://sprites/monsters/
 
-res://config/monsters.cfg
-Defines properties of each monster type: earth (default), stone, door, key, etc.
+The resource file res://config/monsters.cfg defines properties for each monster type: ghost (default), goblin, chimera, spark, etc.
 
 Example monsters.cfg:
 
