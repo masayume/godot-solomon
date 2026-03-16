@@ -4,6 +4,7 @@ var gamedata = {}
 var blockdata = {}
 var gridutils = {}
 var monsterdata = {}
+var itemdata = {}
 
 func _ready():
 	load_config()
@@ -48,16 +49,21 @@ func load_config():
 		for key in gdcfg.get_section_keys(section):
 			data[key] = gdcfg.get_value(section, key)
 		gamedata[section] = data
-		
-#	gamedata.TILE_SIZE = gdcfg.get_value("screen", "TILE_SIZE")
-#	gamedata.LEVEL_WIDTH = gdcfg.get_value("screen", "LEVEL_WIDTH")
-#	gamedata.LEVEL_HEIGHT = gdcfg.get_value("screen", "LEVEL_HEIGHT")
-	
-	# Read values from the config file
-#	gamedata.move_speed = gdcfg.get_value("player", "move_speed", 100)
-#	gamedata.jump_force = gdcfg.get_value("player", "jump_force", 300)
-#	gamedata.gravity = gdcfg.get_value("player", "gravity", 800)
-#	gamedata.off_xp = gdcfg.get_value("player", "off_xp", 200)
+
+	# LOAD ITEM CONFIGURATION DATA	
+	var icfg = ConfigFile.new()
+	err = icfg.load("res://config/items.cfg")
+	if err != OK:
+		print("ERROR: Failed to load items.cfg")
+		return
+
+	for section in icfg.get_sections():
+		var data := {}
+		for key in icfg.get_section_keys(section):
+			data[key] = icfg.get_value(section, key)
+		itemdata[section] = data		
+
+
 
 func grid_to_local(tile_x: int, tile_y: int, tile_size: int, x_off: float, y_off: float) -> Vector2:    
 	var half_tile = tile_size / 2.0

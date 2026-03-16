@@ -1,6 +1,6 @@
 {
-  "id": 5,
-  "name": "Level 1-5",
+  "id": 4,
+  "name": "Key Stage 1-4",
   "time_limit": 999,
 
   "tile_size": 64,
@@ -9,12 +9,20 @@
 
   "player_start": [14, 6],
 
+  "items": [
+	{"pos": [8,6],"family":"changejewel1"},	
+	{"pos": [8,8],"family":"jewel500"},	
+  ],
+
   "monsters": [
-	{"pos": [4,1],"family":"goblin"},	
-	{"pos": [10,1],"family":"goblin"},	
-	{"pos": [7,6],"family":"ghost"},	
-	{"pos": [7,8],"family":"ghost"},	
-	{"pos": [7,4],"family":"gargoyle"},	
+	{"pos": [6,4],"family":"spark"},	
+	{"pos": [12,4],"family":"spark"},	
+	{"pos": [9,6],"family":"spark"},	
+	{"pos": [9,10],"family":"spark"},	
+	{"pos": [7,8],"family":"spark"},	
+	{"pos": [11,8],"family":"spark"},	
+	{"pos": [2,10],"family":"dragon"},	
+	{"pos": [14,10],"family":"dragon"},	
   ],
 
   "blocks": [

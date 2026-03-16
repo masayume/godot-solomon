@@ -3,11 +3,11 @@ extends Node2D
 @export var block_scene: PackedScene
 @export var player_scene: PackedScene
 @export var monster_scene: PackedScene
+@export var item_scene: PackedScene
 
 @onready var level_label: Label = $"../../UI/LevelInfo"
 const Grid = preload("res://scripts/grid.gd")
 
-#var monster_scene = preload("res://Monster.tscn")
 var tile_size
 var x_off: float
 var y_off: float
@@ -16,7 +16,7 @@ var monsters := {} 	## monsters dictionary to check/update; Vector2i  →  Block
 
 func _ready():
 	center_level()
-	load_level(1)
+	load_level(5)
 
 func center_level():
 	# print("THIS NODE:", get_path())
@@ -46,6 +46,14 @@ func spawn_monster(tile_x, tile_y):
 	monster.position = Vector2(tile_x * tile_size, tile_y * tile_size)
 #	level.add_child(monster)
 	call_deferred("add_child", monster)
+
+
+func spawn_item(tile_x, tile_y):
+	var item = item_scene.instantiate()
+	item.position = Vector2(tile_x * tile_size, tile_y * tile_size)
+#	level.add_child(monster)
+	call_deferred("add_child", item)
+
 
 func _on_player_fire(pos, dir, crouching):
 	create_or_destroy_block(pos, dir, crouching)
@@ -129,6 +137,7 @@ func load_level(id: int):
 	)
 	# print("player_start: [" + str(player_start[0]) + ","  + str(player_start[1]) + "] x_off:"  + str(x_off) + " y_off:"  + str(y_off))
 
+	# Spawn monsters
 	if data.has("monsters"):
 		for m in data["monsters"]:
 			# Create a new monster instance from scene		
@@ -138,6 +147,12 @@ func load_level(id: int):
 	for b in data["blocks"]:
 		# Create a new block instance from scene
 		add_block(b["pos"][0], b["pos"][1], b["family"])
+
+	# Spawn items
+	if data.has("items"):
+		for i in data["items"]:
+			# Create a new block instance from scene
+			add_item(i["pos"][0], i["pos"][1], i["family"])
 
 
 func add_block(bx, by, type):
@@ -154,7 +169,6 @@ func add_block(bx, by, type):
 	var cell = Vector2i(bx, by)
 	blocks[cell] = block
 
-	
 ###DEBUG
 #	print(str(type) + " block added at [" + str(bx) + "," + str(by) + "]")
 		
@@ -193,6 +207,28 @@ func add_monster(mx, my, type, dir):
 		x_off,          # horizontal centering offset
 		y_off           # vertical centering offset
 	)	
+
+
+func add_item(ix, iy, type):
+	var item = item_scene.instantiate()
+
+	var item_x = ix
+	var item_y = iy
+
+	item.family = type
+	
+	item.add_to_group("debug_collision")
+
+	add_child(item)
+
+	item.position = GameConfig.grid_to_local(
+		item_x,        # grid column
+		item_y,        # grid row
+		tile_size,      # size of one tile in pixels
+		x_off,          # horizontal centering offset
+		y_off           # vertical centering offset
+	)	
+
 
 
 # DEBUGGING 
