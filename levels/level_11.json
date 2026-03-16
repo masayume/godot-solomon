@@ -9,6 +9,11 @@
 
   "player_start": [6, 2],
 
+  "items": [
+	{"pos": [5,10],"family":"jewel20k"},	
+	{"pos": [2,2],"family":"timepotion2"},	
+  ],
+
   "monsters": [
 	{"pos": [2,12],"family":"panel","direction":"down"},	
 	{"pos": [3,1],"family":"panel","direction":"up"},	
@@ -26,8 +31,6 @@
 
 		{"pos": [7,5],"family":"key"},	
 		{"pos": [14,2],"family":"door-closed"},	
-
-		{"pos": [2,2],"family":"green-orb"},	
 
 		{ "pos": [3,8], "family": "stone"	},		{ "pos": [4,8], "family": "stone"	},
 		{ "pos": [5,8], "family": "stone"	},		{ "pos": [6,8], "family": "stone"	},

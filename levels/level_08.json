@@ -9,6 +9,19 @@
 
   "player_start": [8, 1],
 
+  "items": [
+	{"pos": [3,6],"family":"jewel100"},	
+	{"pos": [3,8],"family":"jewel100"},	
+	{"pos": [4,9],"family":"jewel100"},	
+	{"pos": [6,9],"family":"jewel100"},	
+	{"pos": [7,8],"family":"jewel100"},	
+	{"pos": [9,8],"family":"jewel100"},	
+	{"pos": [10,9],"family":"jewel100"},	
+	{"pos": [12,9],"family":"jewel100"},	
+	{"pos": [13,8],"family":"changejewel1"},	
+	{"pos": [13,6],"family":"changejewel1"},	
+  ],
+
   "monsters": [
 	{"pos": [6,11],"family":"gargoyle"},	
 	{"pos": [7,11],"family":"spark"},	

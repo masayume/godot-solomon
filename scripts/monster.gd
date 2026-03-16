@@ -8,7 +8,7 @@ extends CharacterBody2D
 @onready var collider = $CollisionShape2D
 
 func _ready():
-	z_index = 0
+	z_index = 10
 	set_texture()
 	set_random_variant()
 	set_collidable()

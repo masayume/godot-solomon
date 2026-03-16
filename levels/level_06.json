@@ -9,6 +9,13 @@
 
   "player_start": [2, 7],
 
+  "items": [
+	{"pos": [3,7],"family":"changejewel1"},	
+	{"pos": [7,4],"family":"jewel200"},	
+	{"pos": [9,4],"family":"jewel200"},	
+
+  ],
+
   "monsters": [
 	{"pos": [4,1],"family":"goblin"},	
 	{"pos": [12,1],"family":"goblin","direction":"left"},	

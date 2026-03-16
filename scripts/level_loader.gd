@@ -16,7 +16,7 @@ var monsters := {} 	## monsters dictionary to check/update; Vector2i  →  Block
 
 func _ready():
 	center_level()
-	load_level(5)
+	load_level(11)
 
 func center_level():
 	# print("THIS NODE:", get_path())

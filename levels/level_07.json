@@ -9,6 +9,11 @@
 
   "player_start": [7, 1],
 
+  "items": [
+	{"pos": [12,6],"family":"jewel5k"},	
+	{"pos": [13,6],"family":"jewel5k"},	
+  ],
+
   "monsters": [
 	{"pos": [3,9],"family":"gargoyle"},	
   ],
