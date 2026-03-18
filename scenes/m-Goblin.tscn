@@ -1,0 +1,10 @@
+[gd_scene format=3 uid="uid://s5kwa4010ncs"]
+
+[ext_resource type="Script" uid="uid://djxyuy2fhgw50" path="res://scripts/m-goblin.gd" id="1_4c4ub"]
+
+[node name="Goblin" type="CharacterBody2D" unique_id=343220961]
+script = ExtResource("1_4c4ub")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1300255550]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1644348262]

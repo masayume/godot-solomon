@@ -1,4 +1,5 @@
 extends CharacterBody2D
+class_name Monster
 
 @export var tile_size: int = 64
 @export var variants: int = 6
@@ -12,6 +13,10 @@ func _ready():
 	set_texture()
 	set_random_variant()
 	set_collidable()
+
+func _physics_process(delta: float):
+	# Let children define behavior
+	pass	
 	
 func set_texture():
 	var path = "res://sprites/monsters/%s.png" % family

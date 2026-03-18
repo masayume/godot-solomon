@@ -5,6 +5,11 @@ extends Node2D
 @export var monster_scene: PackedScene
 @export var item_scene: PackedScene
 
+var scenes = {
+	"ghost": preload("res://scenes/m-Ghost.tscn"),
+	"goblin": preload("res://scenes/m-Goblin.tscn")	
+}
+
 @onready var level_label: Label = $"../../UI/LevelInfo"
 const Grid = preload("res://scripts/grid.gd")
 
@@ -16,7 +21,7 @@ var monsters := {} 	## monsters dictionary to check/update; Vector2i  →  Block
 
 func _ready():
 	center_level()
-	load_level(11)
+	load_level(1)
 
 func center_level():
 	# print("THIS NODE:", get_path())
@@ -141,7 +146,16 @@ func load_level(id: int):
 	if data.has("monsters"):
 		for m in data["monsters"]:
 			# Create a new monster instance from scene		
-			add_monster(m["pos"][0], m["pos"][1], m["family"], m.get("direction", null))
+#			add_monster(m["pos"][0], m["pos"][1], m["family"], m.get("direction", null))
+			var instance = scenes[m["family"]].instantiate()
+			instance.position = GameConfig.grid_to_local(
+				m["pos"][0],
+				m["pos"][1],
+				tile_size,
+				x_off,
+				y_off
+			)
+			add_child(instance)
 
 	# Spawn blocks
 	for b in data["blocks"]:
