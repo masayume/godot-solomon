@@ -1,5 +1,5 @@
-# Project godot-solomon
-[Solomon's Key](https://en.wikipedia.org/wiki/Solomon%27s_Key) (ソロモンの鍵) inspired platform puzzle game in Godot (GDScript). *WIP*
+# Project godot-solomon **WIP**
+[Solomon's Key](https://en.wikipedia.org/wiki/Solomon%27s_Key) (ソロモンの鍵) inspired platform puzzle game in Godot (GDScript).
 
 A tile-based puzzle platformer where the player can conjure and destroy blocks in front of them, similar to the 1986 TECMO arcade Solomon's Key.
 
@@ -12,12 +12,12 @@ LevelRoot (Node2D)
    └ Player (CharacterBody2D)
 ```
 
-# Grid System
+# Viewport Coordinates and Logic Grid System
 
-The world is a 15 x 12 blocks tile grid. Tile size comes from configuration files (res://config/game.cfg).
+The world is a 15 x 12 blocks large tile grid. Tile size and other attributes comes from __configuration files__ (res://config/game.cfg).
 Grid origin is bottom-left (positive Y goes upward in grid space instead of the Godot world space default (downward)).
 
-There are two space coordinates core _conversion functions_ exist:
+There are two space coordinates _core conversion functions_ exist:
 
 ```
 grid_to_local(tile_x, tile_y, tile_size, x_off, y_off)
@@ -26,20 +26,33 @@ world_to_grid(world_pos, x_off, y_off, tile_size)
 
 # Configuration System
 
-There are two configuration files.
+There are some configuration files that manage game entities behavior.
 
+```
 res://config/game.cfg
-General *game settings* like tile size, player attributes and screen values.
+```
+General __game settings__ like tile size, player attributes and screen values.
 
+```
 res://config/blocks.cfg
+```
 Defines properties of each block type: earth (default), stone, door, key, etc. See below.
 
+```
+res://config/items.cfg
+```
+Defines item attributes
+
+```
+res://config/monsters.cfg
+```
+Defines monster attributes
 
 # Block System
 
 [Solomon's Key Item Reference](https://strategywiki.org/wiki/Solomon%27s_Key/Items)
 
-Blocks and Items are instantiated at runtime from Block.tscn scene.
+Blocks are instantiated at runtime from Block.tscn scene.
 
 res://config/blocks.cfg
 Defines properties of each block type: earth (default), stone, door, key, etc.
@@ -72,6 +85,8 @@ Monsters are instantiated at runtime from Monster.tscn scene via monster.gd scri
 Monster sprites are in res://sprites/monsters/
 
 The resource file res://config/monsters.cfg defines properties for each monster type: ghost (default), goblin, chimera, spark, etc.
+
+Each monster has a specific class (i.e. ghost, goblin etc.) that inherits from Monster class and manages look, physics, behavior, interactions etc.
 
 Example monsters.cfg:
 
