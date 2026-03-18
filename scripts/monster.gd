@@ -3,17 +3,40 @@ class_name Monster
 
 @export var tile_size: int = 64
 @export var variants: int = 6
-@export var family: String = "ghost"
+# @export var family: String = "ghost"
+@export var family: String
 
 @onready var sprite: Sprite2D = $Sprite2D
 @onready var collider = $CollisionShape2D
 
+var stats = {}
+
 func _ready():
-	z_index = 10
+	z_index = 20
 	set_texture()
 	set_random_variant()
 	set_collidable()
 
+	if not GameConfig.monsterdata.has(family):
+		print("Unknown monster family:", family)
+		return
+
+	stats = GameConfig.monsterdata[family]
+
+	apply_stats()
+
+func apply_stats():
+
+	# Sprite
+	if stats.has("sprite"):
+		$Sprite2D.texture = load(stats["sprite"])
+		print(stats["sprite"])
+		
+	# Speed
+#	if stats.has("speed"):
+#		speed = stats["speed"]	
+
+		
 func _physics_process(delta: float):
 	# Let children define behavior
 	pass	

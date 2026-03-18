@@ -148,6 +148,8 @@ func load_level(id: int):
 			# Create a new monster instance from scene		
 #			add_monster(m["pos"][0], m["pos"][1], m["family"], m.get("direction", null))
 			var instance = scenes[m["family"]].instantiate()
+			instance.family = m["family"]
+			print(m["family"], " instanced")
 			instance.position = GameConfig.grid_to_local(
 				m["pos"][0],
 				m["pos"][1],

@@ -2,9 +2,13 @@
 
 [ext_resource type="Script" uid="uid://cto4gf8tycmp1" path="res://scripts/m-ghost.gd" id="1_618pn"]
 
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_618pn"]
+
 [node name="Ghost" type="CharacterBody2D" unique_id=1516638309]
+collision_layer = 2
 script = ExtResource("1_618pn")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1111532687]
+shape = SubResource("CapsuleShape2D_618pn")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=941009010]

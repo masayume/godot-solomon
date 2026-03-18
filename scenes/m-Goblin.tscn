@@ -2,9 +2,13 @@
 
 [ext_resource type="Script" uid="uid://djxyuy2fhgw50" path="res://scripts/m-goblin.gd" id="1_4c4ub"]
 
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_4c4ub"]
+
 [node name="Goblin" type="CharacterBody2D" unique_id=343220961]
+collision_layer = 2
 script = ExtResource("1_4c4ub")
 
-[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1300255550]
-
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1644348262]
+shape = SubResource("CapsuleShape2D_4c4ub")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1300255550]
