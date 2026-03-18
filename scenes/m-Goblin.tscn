@@ -9,6 +9,7 @@ collision_layer = 2
 script = ExtResource("1_4c4ub")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1644348262]
+scale = Vector2(1.6, 1.6)
 shape = SubResource("CapsuleShape2D_4c4ub")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1300255550]
