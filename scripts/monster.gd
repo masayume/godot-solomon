@@ -27,14 +27,15 @@ func _ready():
 
 func apply_stats():
 
-	# Sprite
+	# --- common Sprite setup ---
 	if stats.has("sprite"):
 		$Sprite2D.texture = load(stats["sprite"])
-		print(stats["sprite"])
-		
-	# Speed
-#	if stats.has("speed"):
-#		speed = stats["speed"]	
+		print(stats)
+
+	sprite.hframes = GameConfig.monsterdata[family].hframes
+	sprite.vframes = 1
+
+	set_texture()
 
 		
 func _physics_process(delta: float):
@@ -44,7 +45,10 @@ func _physics_process(delta: float):
 func set_texture():
 	var path = "res://sprites/monsters/%s.png" % family
 	sprite.texture = load(path)
-
+	# 🔥 FORCE RESET EVERYTHING RELATED TO REGION/SLICING
+	sprite.region_enabled = false
+	sprite.region_rect = Rect2(0, 0, 0, 0)
+	
 func set_random_variant():
 	var tile_index = randi() % variants
 	var x = tile_index * tile_size

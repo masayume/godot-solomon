@@ -1,7 +1,6 @@
 [gd_scene format=3 uid="uid://bfxv6fpjburpy"]
 
 [ext_resource type="Script" uid="uid://mvgtdeiblgc6" path="res://scripts/monster.gd" id="1_ybq8a"]
-[ext_resource type="Texture2D" uid="uid://dnj3qd3yxdmmj" path="res://sprites/player/player-idle-frames.png" id="2_ulq6r"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_v6fml"]
 
@@ -12,6 +11,5 @@ script = ExtResource("1_ybq8a")
 shape = SubResource("CapsuleShape2D_v6fml")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1724168563]
-texture = ExtResource("2_ulq6r")
 
 [node name="Marker2D" type="Marker2D" parent="." unique_id=1128873762]
