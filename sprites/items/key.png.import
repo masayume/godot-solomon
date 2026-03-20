@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ke6dk8m7xxju"
-path="res://.godot/imported/blue-lantern.png-6f1ec72ff414dd1768a15b1e44bc800b.ctex"
+uid="uid://d3ewjbcg3qsfc"
+path="res://.godot/imported/key.png-df6c43435cfaac9d8b94ce74310b3775.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://sprites/blocks/blue-lantern.png"
-dest_files=["res://.godot/imported/blue-lantern.png-6f1ec72ff414dd1768a15b1e44bc800b.ctex"]
+source_file="res://sprites/items/key.png"
+dest_files=["res://.godot/imported/key.png-df6c43435cfaac9d8b94ce74310b3775.ctex"]
 
 [params]
 

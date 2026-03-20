@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cr48qq8cpsdhw"
-path="res://.godot/imported/green-orb.png-ec27ae897a4f70eb4b38f1ef1f268046.ctex"
+uid="uid://bd67fyj4wnoab"
+path="res://.godot/imported/blue-lantern.png-137de8dfea7a6bbe82a2b75df9cb6a59.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://sprites/blocks/green-orb.png"
-dest_files=["res://.godot/imported/green-orb.png-ec27ae897a4f70eb4b38f1ef1f268046.ctex"]
+source_file="res://sprites/items/blue-lantern.png"
+dest_files=["res://.godot/imported/blue-lantern.png-137de8dfea7a6bbe82a2b75df9cb6a59.ctex"]
 
 [params]
 

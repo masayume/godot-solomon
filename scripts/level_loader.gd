@@ -56,7 +56,6 @@ func spawn_monster(tile_x, tile_y):
 func spawn_item(tile_x, tile_y):
 	var item = item_scene.instantiate()
 	item.position = Vector2(tile_x * tile_size, tile_y * tile_size)
-#	level.add_child(monster)
 	call_deferred("add_child", item)
 
 
@@ -228,6 +227,7 @@ func add_monster(mx, my, type, dir):
 
 func add_item(ix, iy, type):
 	var item = item_scene.instantiate()
+	# itemdata
 
 	var item_x = ix
 	var item_y = iy
@@ -236,6 +236,15 @@ func add_item(ix, iy, type):
 	
 	item.add_to_group("debug_collision")
 
+	if GameConfig.itemdata.get("is_interactable", false):
+		# Create the Receiver node dynamically
+		var receiver = Receiver.new() 
+		receiver.name = "Receiver"
+		item.add_child(receiver)
+		
+		# Optionally pass data to the receiver so it knows what to do
+		receiver.action_type = GameConfig.itemdata.get("action_type", "default")
+		
 	add_child(item)
 
 	item.position = GameConfig.grid_to_local(
