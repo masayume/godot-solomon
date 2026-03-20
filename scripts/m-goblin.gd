@@ -18,7 +18,7 @@ func _process(delta):
 	animate(delta)
 	behave(delta)
 
-func behave(delta):
+func behave(_delta):
 	velocity.x = direction * GameConfig.monsterdata[family].speed
 
 	sprite.flip_h = velocity.x < 0
@@ -48,7 +48,7 @@ func setup_animation():
 	frame_index = 0
 	sprite.frame = frames[0]
 	
-func _physics_process(delta):
+func _physics_process(_delta):
 
 	# No gravity → flying enemy
 	velocity.y = 0

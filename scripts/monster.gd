@@ -38,7 +38,7 @@ func apply_stats():
 	set_texture()
 
 		
-func _physics_process(delta: float):
+func _physics_process(_delta: float):
 	# Let children define behavior
 	pass	
 	
