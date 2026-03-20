@@ -8,6 +8,15 @@ extends CharacterBody2D
 var crouch_texture = preload("res://sprites/player/player-crouch-frames.png")
 var idle_texture = preload("res://sprites/player/player-idle-frames.png")
 
+var flags = []
+
+func set_flag(flag_name: String):
+	if not flags.has(flag_name):
+		flags.append(flag_name)
+
+func has_flag(flag_name: String) -> bool:
+	return flags.has(flag_name)
+	
 @export var block_scene: PackedScene
 var tile_size = 64
 var facing := 1   # 1 = right, -1 = left
@@ -77,7 +86,7 @@ func _physics_process(delta):
 		)
 
 #		print("PLAYER WORLD:", global_position)
-		print("PLAYER GRID:", _grid)
+#		print("PLAYER GRID:", _grid)
 
 	if crouching: velocity.x = 0
 	
@@ -127,6 +136,14 @@ func spawn_at(tile_x: int, tile_y: int, x_off: float, y_off: float):
 			x_off, 
 			y_off
 		)
-	
+
+#	if GameConfig.itemdata.get("is_interactable", false):
+	# Create the Receiver node dynamically
+#	var receiver = Receiver.new() 
+#	receiver.name = "Receiver"
+#	add_child(receiver)
+		
+	# Optionally pass data to the receiver so it knows what to do
+#	receiver.action_type = GameConfig.itemdata.get("action_type", "default")	
 
 	

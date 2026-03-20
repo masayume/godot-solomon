@@ -21,7 +21,7 @@ var monsters := {} 	## monsters dictionary to check/update; Vector2i  →  Block
 
 func _ready():
 	center_level()
-	load_level(1)
+	load_level(99)
 
 func center_level():
 	# print("THIS NODE:", get_path())
@@ -178,15 +178,13 @@ func add_block(bx, by, type):
 	var block_y = by
 
 	block.family = type
-	
+	block.name = "BL_" + str(block.family)
+		
 	block.add_to_group("debug_collision")
 
 	add_child(block)
 	var cell = Vector2i(bx, by)
 	blocks[cell] = block
-
-###DEBUG
-#	print(str(type) + " block added at [" + str(bx) + "," + str(by) + "]")
 		
 	block.position = GameConfig.grid_to_local(
 		block_x,        # grid column
@@ -203,7 +201,8 @@ func add_monster(mx, my, type, dir):
 	var monster_y = my
 
 	monster.family = type
-	
+	monster.name = "MO_" + str(monster.family)
+
 	monster.add_to_group("debug_collision")
 
 	add_child(monster)
@@ -233,17 +232,21 @@ func add_item(ix, iy, type):
 	var item_y = iy
 
 	item.family = type
+	item.name = "IT_" + str(item.family)
 	
 	item.add_to_group("debug_collision")
 
-	if GameConfig.itemdata.get("is_interactable", false):
-		# Create the Receiver node dynamically
-		var receiver = Receiver.new() 
-		receiver.name = "Receiver"
-		item.add_child(receiver)
-		
-		# Optionally pass data to the receiver so it knows what to do
-		receiver.action_type = GameConfig.itemdata.get("action_type", "default")
+	# 2. Add the Receiver component
+	var receiver = Receiver.new()
+	receiver.name = "Receiver"
+
+#	print(GameConfig.itemdata[type])
+	receiver.data = GameConfig.itemdata[type]
+	item.add_child(receiver)
+
+	# Tell the item to refresh its debug info
+	if item.has_method("_update_debug_text"):
+		item._update_debug_text()
 		
 	add_child(item)
 

@@ -16,7 +16,20 @@ func _ready():
 
 func _process(delta):
 	animate(delta)
-	behave(delta)
+
+func _physics_process(_delta):
+
+	# No gravity → flying enemy
+	velocity.y = 0
+
+	velocity.x = direction * GameConfig.monsterdata.ghost.speed
+
+	behave(_delta)
+	move_and_slide()
+
+	if is_on_wall():
+		direction *= -1
+
 
 func behave(_delta):
 	velocity.x = direction * GameConfig.monsterdata[family].speed
@@ -48,14 +61,3 @@ func setup_animation():
 	frame_index = 0
 	sprite.frame = frames[0]
 	
-func _physics_process(_delta):
-
-	# No gravity → flying enemy
-	velocity.y = 0
-
-	velocity.x = direction * GameConfig.monsterdata.ghost.speed
-
-	move_and_slide()
-
-	if is_on_wall():
-		direction *= -1

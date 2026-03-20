@@ -1,64 +1,52 @@
 {
-  "id": 99,
-  "name": "TEST Level",
+  "id": 1,
+  "name": "test level",
   "time_limit": 999,
 
   "tile_size": 64,
-  "block_width": 15,
+  "block_width": 16,
   "block_height": 12,
 
-  "player_start": [2, 4],
+  "player_start": [5, 3],
 
-  "monsters": [
-
-	{"pos": [14,11],"family":"ghost"},	
+  "items": [
+	{"pos": [5,4],"family":"key"},	
+	{"pos": [8,8],"family":"gold-bell"},	
+	{"pos": [7,8],"family":"blue-lantern"},	
+	{"pos": [9,8],"family":"blue-lantern"},	
+	{"pos": [3,7],"family":"green-orb"},	
+	{"pos": [13,7],"family":"green-orb"},	
 
   ],
 
+  "monsters": [
+	{"pos": [5,10],"family":"ghost"},	
+	{"pos": [8,4],"family":"goblin"},	
+  ],
+
   "blocks": [
+	{"pos": [11,4],"family":"earth"},	
+	{"pos": [4,5],"family":"blue-flame"},	{"pos": [12,5],"family":"blue-flame"},
+	{"pos": [8,11],"family":"door-closed"},	
 
-	{"pos": [14,10],"family":"key"},	
-	{"pos": [14,4],"family":"door-closed"},	
+	{"pos": [6,9],"family":"stone"},	{"pos": [10,9],"family":"stone"},
+	{"pos": [6,7],"family":"stone"},	{"pos": [10,7],"family":"stone"},
+	{"pos": [6,8],"family":"earth"},	{"pos": [10,8],"family":"earth"},
 
-	{"pos": [3,4],"family": "shield"	},
+	{"pos": [7,9],"family":"earth"},	{"pos": [8,9],"family":"earth"},	{"pos": [9,9],"family":"earth"},
+	{"pos": [7,7],"family":"earth"},	{"pos": [8,7],"family":"earth"},	{"pos": [9,7],"family":"earth"},
+	{"pos": [7,6],"family":"earth"},	{"pos": [8,6],"family":"earth"},	{"pos": [9,6],"family":"earth"},
 
-	{"pos": [2,11],"family": "shield"	},
-	{"pos": [4,11],"family": "shield"	},
+	{"pos": [10,4],"family":"stone"},	{"pos": [12,4],"family":"stone"},
+	{"pos": [4,4],"family":"stone"},	{"pos": [6,4],"family":"stone"},
+	{"pos": [10,2],"family":"stone"},	{"pos": [12,2],"family":"stone"},
+	{"pos": [4,2],"family":"stone"},	
 
-	{"pos": [8,10],"family":"gold-bell"},	
+	{"pos": [4,3],"family":"earth"},	{"pos": [6,3],"family":"earth"},	{"pos": [7,3],"family":"earth"},
+	{"pos": [8,3],"family":"earth"},	{"pos": [9,3],"family":"earth"},	{"pos": [10,3],"family":"earth"},
+	{"pos": [12,3],"family":"earth"},	
+	{"pos": [5,2],"family":"earth"},	{"pos": [6,2],"family":"earth"},	{"pos": [11,2],"family":"earth"},
 
-	{ "pos": [3,3], "family": "earth"},
-	{ "pos": [2,3], "family": "earth"},
-	{ "pos": [4,4], "family": "stone"},
-	{ "pos": [5,4], "family": "earth"},
-	{ "pos": [6,4], "family": "earth"},
-	{ "pos": [7,4], "family": "earth"},
-	{ "pos": [8,4], "family": "earth"},
-	{ "pos": [9,4], "family": "earth"},
-	{ "pos": [10,4], "family": "earth"},
-	{ "pos": [6,5], "family": "earth"},
-	{ "pos": [7,5], "family": "earth"},
-	{ "pos": [8,5], "family": "earth"},
-	{ "pos": [9,7], "family": "earth"},
-	{ "pos": [10,7], "family": "earth"},
-	{ "pos": [11,8], "family": "earth"},
-	{ "pos": [12,8], "family": "earth"},
-	{ "pos": [13,9], "family": "earth"},
-	{ "pos": [14,9], "family": "earth"},
-
-	{ "pos": [2,9], "family": "stone"},
-	{ "pos": [3,9], "family": "stone"},
-	{ "pos": [4,8], "family": "stone"},
-	{ "pos": [5,8], "family": "stone"},
-	{ "pos": [6,7], "family": "stone"},
-	{ "pos": [7,7], "family": "stone"},
-	{ "pos": [9,5], "family": "stone"},
-	{ "pos": [10,5], "family": "stone"},
-	{ "pos": [11,4], "family": "stone"},
-	{ "pos": [12,4], "family": "stone"},
-	{ "pos": [13,3], "family": "stone"},
-	{ "pos": [14,3], "family": "stone"},
-	
 	{"pos": [0,0],"family":"stone"},	{"pos": [16,0],"family":"stone"},
 	{"pos": [0,1],"family":"stone"},	{"pos": [16,1],"family":"stone"},
 	{"pos": [0,2],"family":"stone"},	{"pos": [16,2],"family":"stone"},
@@ -89,7 +77,10 @@
 	{"pos": [12,0],"family":"stone"},	{"pos": [12,13],"family":"stone"},
 	{"pos": [13,0],"family":"stone"},	{"pos": [13,13],"family":"stone"},
 	{"pos": [14,0],"family":"stone"},	{"pos": [14,13],"family":"stone"},
-	{"pos": [15,0],"family":"stone"},	{"pos": [15,13],"family":"stone"},	
+	{"pos": [15,0],"family":"stone"},	{"pos": [15,13],"family":"stone"},
+
 	
-  ]
+
+]
+
 }
