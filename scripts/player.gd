@@ -121,6 +121,12 @@ func _input(event):
 	if event.is_action_pressed("fire"):
 		print("is_action_pressed(fire)")
 
+func _on_collection_zone_area_entered(area):
+	# 'area' is the Area2D inside the Item
+	var item_node = area.get_parent() 
+	
+	if item_node.has_node("Receiver"):
+		$Interactor.interact(item_node)
 
 func spawn_at(tile_x: int, tile_y: int, x_off: float, y_off: float):
 	# Get tile size from config (single source of truth)

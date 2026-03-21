@@ -16,3 +16,5 @@ shape = SubResource("CapsuleShape2D_v6fml")
 texture = ExtResource("1_p0vlq")
 region_enabled = true
 region_rect = Rect2(0, 0, 62, 64)
+
+[node name="CollectionZone" type="Area2D" parent="." unique_id=1738113694]

@@ -15,6 +15,15 @@ func _ready():
 	set_texture()
 	set_random_variant()
 	set_collidable()
+
+# If the cfg says collidable=false, disable the main physics body
+# so the player can walk through it.
+	$CollisionShape2D.disabled = !GameConfig.itemdata.get("collidable", false)
+	
+	# Ensure the Area2D is ALWAYS enabled for interactions
+	$Area2D.monitoring = true
+
+
 ###DEBUG
 #	if OS.is_debug_build():
 #z		_setup_debug_label()
