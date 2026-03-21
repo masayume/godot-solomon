@@ -23,7 +23,7 @@ func receive(action, source):
 func _handle_collection(player):
 	var flag = GameConfig.itemdata.get("on_collect_flag")
 	player.set_flag(flag, true) # Player now "owns" the key state
-	print("Picked up: ", GameConfig.itemdata.get("name"))
+	print("collected: ", GameConfig.itemdata.get("name"))
 	get_parent().queue_free()
 
 func _handle_door(player):

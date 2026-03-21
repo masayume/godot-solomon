@@ -226,7 +226,6 @@ func add_monster(mx, my, type, dir):
 
 func add_item(ix, iy, type):
 	var item = item_scene.instantiate()
-	# itemdata
 
 	var item_x = ix
 	var item_y = iy
@@ -236,7 +235,35 @@ func add_item(ix, iy, type):
 	
 	item.add_to_group("debug_collision")
 
-	# 2. Add the Receiver component
+
+	# 1. Physical Blocking Logic
+	if GameConfig.itemdata.get("collidable", false):
+		item.set_collision_layer_value(3, true)  # It is an Interactable
+		item.set_collision_mask_value(2, true)   # It blocks the Player
+	else:
+		item.set_collision_layer_value(3, false) # Player walks through it
+		item.set_collision_mask_value(2, false)
+
+
+	# 2. Interaction Logic (The Sensor)
+	var area = item.get_node("Area2D")
+	
+	# Reset everything first to be safe
+	area.collision_layer = 0
+	area.collision_mask = 0
+	
+	# Who am I? (Layer 3: Interactables)
+	area.set_collision_layer_value(3, true)      # Sensor is on Interactable layer
+
+	# Who am I looking for? (Layer 2: Player)
+	area.set_collision_mask_value(2, true)       # Sensor looks for the Player
+
+	###DEBUG item area layer check
+	print("DEBUG: ", item.name, " Area Layer: ", area.collision_layer)
+	print("DEBUG: ", item.name, " Area Mask: ", area.collision_mask)
+
+
+	# 3. Add the Receiver component
 	var receiver = Receiver.new()
 	receiver.name = "Receiver"
 

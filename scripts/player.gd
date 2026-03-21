@@ -29,13 +29,9 @@ signal fire_pressed(position, direction, crouching)
 func _ready():
 	z_index = 10
 #	print("Player ready:", self)
-#	print("PLAYER world:", global_position)
-#	print("SPRITE local:", $Sprite2D.position)
 	level_loader = get_parent().get_parent()
 	level = get_parent()
-	
-	# var ts = GameConfig.gamedata.TILE_SIZE
-	# print("ts: " + str(ts))
+	$CollectionZone.area_entered.connect(_on_interaction_detector_area_entered)
 	
 func _physics_process(delta):
 
@@ -121,6 +117,20 @@ func _input(event):
 	if event.is_action_pressed("fire"):
 		print("is_action_pressed(fire)")
 
+# Connect the Area2D "area_entered" signal to this function
+func _on_interaction_detector_area_entered(area: Area2D):
+	# The 'area' is the child of the Item. We want the Item itself.
+	###DEBUG player area interaction
+	print("DEBUG: Player Area hit SOMETHING: ", area.name, " (Parent: ", area.get_parent().name, ")")
+
+	var target = area.get_parent() 
+	
+	if target.has_node("Receiver"):
+		print("DEBUG: Receiver FOUND on ", target.name)		
+		$CollectionZone.interact(target)
+	else:
+		print("DEBUG: No Receiver found on ", target.name)
+			
 func _on_collection_zone_area_entered(area):
 	# 'area' is the Area2D inside the Item
 	var item_node = area.get_parent() 
