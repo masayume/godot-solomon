@@ -11,6 +11,7 @@ var scenes = {
 }
 
 @onready var level_label: Label = $"../../UI/LevelInfo"
+
 const Grid = preload("res://scripts/grid.gd")
 
 var tile_size

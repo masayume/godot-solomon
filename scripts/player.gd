@@ -5,6 +5,8 @@ extends CharacterBody2D
 @onready var gravity = GameConfig.gamedata.player.gravity
 @onready var off_xp = GameConfig.gamedata.player.off_xp
 @onready var sprite = $Sprite2D
+@onready var score_label: RichTextLabel = $"../../../UI/Score"
+
 var crouch_texture = preload("res://sprites/player/player-crouch-frames.png")
 var idle_texture = preload("res://sprites/player/player-idle-frames.png")
 
@@ -117,7 +119,7 @@ func _input(event):
 	if event.is_action_pressed("fire"):
 		print("is_action_pressed(fire)")
 
-# Connect the Area2D "area_entered" signal to this function
+###MAIN_INTERACTION player interacts with items
 func _on_interaction_detector_area_entered(area: Area2D):
 	# The 'area' is the child of the Item. We want the Item itself.
 	###DEBUG player area interaction
@@ -125,19 +127,20 @@ func _on_interaction_detector_area_entered(area: Area2D):
 
 	var target = area.get_parent() 
 
-	print(GameConfig.itemdata[area.get_parent().family].on_collect_flag)
 	# 1. Set Player Flags (e.g., "has_key")
 	if GameConfig.itemdata[area.get_parent().family].has("on_collect_flag"):
+		print(GameConfig.itemdata[area.get_parent().family].on_collect_flag)
 		self.set_flag(GameConfig.itemdata[area.get_parent().family].on_collect_flag)
 		print("player ", flags)
 
+###TODO: align score lavel in UI and update score
 	# 2. Increase Score (Assuming a global score variable)
 	if GameConfig.itemdata[area.get_parent().family].has("score"):
 		GameConfig.score += GameConfig.itemdata[area.get_parent().family].score
 		print("score: ", GameConfig.score)
-
+		score_label.text = "[right][color=green]1p[/color] [color=white]" + str(GameConfig.score) + "[/color][/right]"
 	# 3. Trigger "Poof" and Remove
-#	trigger_poof_effect(get_parent().global_position)
+	trigger_item_poof_effect(get_parent().global_position)
 	target.queue_free() # The key disappears!
 	
 	###DEBUG main player interaction with item code
@@ -146,13 +149,14 @@ func _on_interaction_detector_area_entered(area: Area2D):
 #		$CollectionZone.interact(target)
 #	else:
 #		print("DEBUG: No Receiver found on ", target.name)
-			
-#func _on_collection_zone_area_entered(area):
-#	# 'area' is the Area2D inside the Item
-#	var item_node = area.get_parent() 
-	
-#	if item_node.has_node("Receiver"):
-#		$Interactor.interact(item_node)
+
+###TODO: poof fx item collected scene
+func trigger_item_poof_effect(pos: Vector2):
+	# If you have a Poof Scene:
+	# var poof = poof_scene.instantiate()
+	# get_parent().add_child(poof)
+	# poof.global_position = pos
+	print("Poof animation triggered at: ", pos)			
 
 func spawn_at(tile_x: int, tile_y: int, x_off: float, y_off: float):
 	# Get tile size from config (single source of truth)

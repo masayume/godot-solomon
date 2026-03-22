@@ -5,6 +5,7 @@ var blockdata = {}
 var gridutils = {}
 var monsterdata = {}
 var itemdata = {}
+var fxdata = {}
 var score = 0
 
 func _ready():
@@ -62,9 +63,21 @@ func load_config():
 		var data := {}
 		for key in icfg.get_section_keys(section):
 			data[key] = icfg.get_value(section, key)
-		itemdata[section] = data		
+		itemdata[section] = data
 
 
+	# LOAD ITEM CONFIGURATION DATA	
+	var fxcfg = ConfigFile.new()
+	err = fxcfg.load("res://config/fx.cfg")
+	if err != OK:
+		print("ERROR: Failed to load fx.cfg")
+		return
+
+	for section in fxcfg.get_sections():
+		var data := {}
+		for key in fxcfg.get_section_keys(section):
+			data[key] = fxcfg.get_value(section, key)
+		fxdata[section] = data
 
 func grid_to_local(tile_x: int, tile_y: int, tile_size: int, x_off: float, y_off: float) -> Vector2:    
 	var half_tile = tile_size / 2.0
