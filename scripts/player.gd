@@ -124,19 +124,33 @@ func _on_interaction_detector_area_entered(area: Area2D):
 	print("DEBUG: Player Area hit SOMETHING: ", area.name, " (Parent: ", area.get_parent().name, ")")
 
 	var target = area.get_parent() 
+
+	# 1. Set Player Flags (e.g., "has_key")
+	if GameConfig.itemdata.has("flag_to_set"):
+		self.set_flag(GameConfig.itemdata["on_collect_flag"])
+		print("player ", flags)
+
+	# 2. Increase Score (Assuming a global score variable)
+	if GameConfig.itemdata.has("score"):
+		GameConfig.score += GameConfig.itemdata["score"]
+
+	# 3. Trigger "Poof" and Remove
+#	trigger_poof_effect(get_parent().global_position)
+	target.queue_free() # The key disappears!
 	
-	if target.has_node("Receiver"):
-		print("DEBUG: Receiver FOUND on ", target.name)		
-		$CollectionZone.interact(target)
-	else:
-		print("DEBUG: No Receiver found on ", target.name)
+	###DEBUG main player interaction with item code
+#	if target.has_node("Receiver"):
+#		print("DEBUG: Receiver FOUND on ", target.name)		
+#		$CollectionZone.interact(target)
+#	else:
+#		print("DEBUG: No Receiver found on ", target.name)
 			
-func _on_collection_zone_area_entered(area):
-	# 'area' is the Area2D inside the Item
-	var item_node = area.get_parent() 
+#func _on_collection_zone_area_entered(area):
+#	# 'area' is the Area2D inside the Item
+#	var item_node = area.get_parent() 
 	
-	if item_node.has_node("Receiver"):
-		$Interactor.interact(item_node)
+#	if item_node.has_node("Receiver"):
+#		$Interactor.interact(item_node)
 
 func spawn_at(tile_x: int, tile_y: int, x_off: float, y_off: float):
 	# Get tile size from config (single source of truth)

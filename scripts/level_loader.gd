@@ -258,9 +258,9 @@ func add_item(ix, iy, type):
 	# Who am I looking for? (Layer 2: Player)
 	area.set_collision_mask_value(2, true)       # Sensor looks for the Player
 
-	###DEBUG item area layer check
-	print("DEBUG: ", item.name, " Area Layer: ", area.collision_layer)
-	print("DEBUG: ", item.name, " Area Mask: ", area.collision_mask)
+	###DEBUG item area layer check (interaction)
+#	print("DEBUG: ", item.name, " Area Layer: ", area.collision_layer)
+#	print("DEBUG: ", item.name, " Area Mask: ", area.collision_mask)
 
 
 	# 3. Add the Receiver component

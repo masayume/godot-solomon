@@ -26,7 +26,7 @@ func _ready():
 
 ###DEBUG
 #	if OS.is_debug_build():
-#z		_setup_debug_label()
+#		_setup_debug_label()
 
 func _setup_debug_label():
 	debug_label = Label.new()

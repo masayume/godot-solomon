@@ -6,14 +6,13 @@ var data: Dictionary = {}
 func _ready():
 ###DEBUG_5l 	
 	# This will print: "Receiver added to: Key_Gold_01 with logic: collectible"
-	print("DEBUG: Receiver added to: ", get_parent().name, " with action_type: ", data.get("action_type", "NONE"))
-	
+	print("DEBUG: Receiver added to: ", get_parent().name, " with action_type: ", data.get("action_type", "NONE"))	
 	# Optional: Draw a small icon or change the parent's color to prove it's active
-	if OS.is_debug_build():
-		get_parent().modulate = Color.GREEN # Turns the item green if it has a receiver
+#	if OS.is_debug_build():
+#		get_parent().modulate = Color.GREEN # Turns the item green if it has a receiver
 		
 func receive(action, source):
-	print("Received action from: ", source.name)	
+	print(get_parent().name, " received ", action, " from: ", source.name)	
 	match GameConfig.itemdata.get("action_type"):
 		"collect":
 			_handle_collection(source)
