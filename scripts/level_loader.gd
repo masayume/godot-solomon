@@ -235,9 +235,9 @@ func add_item(ix, iy, type):
 	
 	item.add_to_group("debug_collision")
 
-
+###TODO: fix duplicate collision_layer_mask/value
 	# 1. Physical Blocking Logic
-	if GameConfig.itemdata.get("collidable", false):
+	if GameConfig.itemdata.get("is_interactable", true):
 		item.set_collision_layer_value(3, true)  # It is an Interactable
 		item.set_collision_mask_value(2, true)   # It blocks the Player
 	else:

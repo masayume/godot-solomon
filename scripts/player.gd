@@ -121,18 +121,20 @@ func _input(event):
 func _on_interaction_detector_area_entered(area: Area2D):
 	# The 'area' is the child of the Item. We want the Item itself.
 	###DEBUG player area interaction
-	print("DEBUG: Player Area hit SOMETHING: ", area.name, " (Parent: ", area.get_parent().name, ")")
+	print("DEBUG: Player Area hit SOMETHING: ", area.name, " (Parent: ", area.get_parent().family, ")")
 
 	var target = area.get_parent() 
 
+	print(GameConfig.itemdata[area.get_parent().family].on_collect_flag)
 	# 1. Set Player Flags (e.g., "has_key")
-	if GameConfig.itemdata.has("flag_to_set"):
-		self.set_flag(GameConfig.itemdata["on_collect_flag"])
+	if GameConfig.itemdata[area.get_parent().family].has("on_collect_flag"):
+		self.set_flag(GameConfig.itemdata[area.get_parent().family].on_collect_flag)
 		print("player ", flags)
 
 	# 2. Increase Score (Assuming a global score variable)
-	if GameConfig.itemdata.has("score"):
-		GameConfig.score += GameConfig.itemdata["score"]
+	if GameConfig.itemdata[area.get_parent().family].has("score"):
+		GameConfig.score += GameConfig.itemdata[area.get_parent().family].score
+		print("score: ", GameConfig.score)
 
 	# 3. Trigger "Poof" and Remove
 #	trigger_poof_effect(get_parent().global_position)

@@ -5,6 +5,7 @@ var blockdata = {}
 var gridutils = {}
 var monsterdata = {}
 var itemdata = {}
+var score = 0
 
 func _ready():
 	load_config()
