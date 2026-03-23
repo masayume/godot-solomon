@@ -155,7 +155,8 @@ The Collision Matrix Check
 
 Check exact Inspector settings for both nodes: "**LAYER**" is "**who I am**", "**Mask**" is "**who I am looking for**".    
 
-||      Node      ||       Script        ||       Layer      ||    Mask          ||
+|      Node       |       Script         |       Layer       |       Mask        |
+| --------------- | -------------------- | ----------------- | ----------------- |
 | Player (Area2D) | interaction_detector | 2 (Player)        | 3 (Interactables) |
 | Key (Area2D)    | Child of Item        | 3 (Interactables) | 2 (Player)        |
 
