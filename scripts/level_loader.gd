@@ -4,6 +4,7 @@ extends Node2D
 @export var player_scene: PackedScene
 @export var monster_scene: PackedScene
 @export var item_scene: PackedScene
+@export var fx_scene: PackedScene      # Assign Fx.tscn to Level in the Inspector
 
 var scenes = {
 	"ghost": preload("res://scenes/m-Ghost.tscn"),
@@ -65,36 +66,71 @@ func _on_player_fire(pos, dir, crouching):
 
 func create_or_destroy_block(pos, dir, crouching):
 
-	var cell = Grid.world_to_grid(pos, x_off, y_off, tile_size)
-
+###DEBUG
 #	print("create/destroy block at: " + str(pos) + " " + str(dir))
-# var destructible = config.get_value("block_" + block.block_type, "destructible", false)
+# 	var destructible = config.get_value("block_" + block.block_type, "destructible", false)
 
-#	var dir = Vector2i(1,0)   # right
-#	var dir = Vector2i(-1,0)  # left
-
+	var cell = Grid.world_to_grid(pos, x_off, y_off, tile_size)
 	if crouching:
 		cell.y -= 1
 
 	var target = Vector2i(cell.x + dir, cell.y)
 			
+	### DESTROY BLOCK playing fx "poof"
 	if blocks.has(target):
 		var block = blocks[target]
 		
-#		if block.family == "earth":
 		if GameConfig.blockdata[block.family]["destructible"]:
+			# Play Poof (Destruction)
+			spawn_fx("poof", block.global_position, target, false)
 			block.queue_free()
 			blocks.erase(target)
 
+	### CREATE BLOCK after playing fx "foop"
 	else:
-#		add_block(cell[0], cell[1], 'earth')
-		add_block(target.x, target.y, 'earth')
+
+		# PLAY FOOP FX
+		# Calculate world position for the new block
+
+###TODO poof fx position is OK; foop position is at block_x-1...
+		var spawn_pos = GameConfig.grid_to_local(target.x+1, target.y, tile_size, x_off, y_off)
+#		var spawn_pos = GameConfig.grid_to_local(target.x, target.y, tile_size, x_off, y_off)
+		
+		# Play Foop and wait for it to finish before adding the block
+		spawn_fx("foop", spawn_pos, target, true)
+#		spawn_fx_old("foop", spawn_pos, target)
+
+###TODO "tween" to these effects so they also scale or fade out while the frames are playing
 
 
-###DEBUGz	
-#	print(blocks)zzz
+func spawn_fx(fx_type: String, world_pos: Vector2, grid_pos: Vector2i, should_spawn_block: bool):
+	var fx = fx_scene.instantiate()
+	add_child(fx)
+	fx.global_position = world_pos
+	
+	if should_spawn_block:
+		# Connect the signal so we know when to call add_block
+		fx.animation_finished.connect(_on_foop_finished)
+	
+	fx.setup_fx(fx_type, grid_pos)
 
 
+func spawn_fx_old(fx_type: String, world_pos: Vector2, grid_pos: Vector2i):
+	var fx = fx_scene.instantiate()
+	add_child(fx)
+	fx.global_position = world_pos
+	
+	# Only connect the 'spawn block' logic if it's the creation effect (foop)
+	if fx_type == "foop":
+		fx.animation_finished.connect(_on_foop_finished)
+		
+	fx.setup_fx(fx_type, grid_pos, "earth")
+
+func _on_foop_finished(grid_pos, type):
+	# NOW create the actual block 
+	add_block(grid_pos.x, grid_pos.y, type)
+
+	
 func spawn_player(px, py, xoff, yoff):
 
 	var player = player_scene.instantiate()

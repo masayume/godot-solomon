@@ -7,6 +7,7 @@
 [ext_resource type="FontFile" uid="uid://bhbeh5aarkk70" path="res://resources/fonts/solomons-key.ttf" id="4_rarhs"]
 [ext_resource type="Script" uid="uid://y8obvetxc8um" path="res://scripts/collision_debug.gd" id="4_vcsgt"]
 [ext_resource type="PackedScene" uid="uid://c4cd850sdiq7s" path="res://scenes/Item.tscn" id="5_nxtc6"]
+[ext_resource type="PackedScene" uid="uid://de2xcgvqhu2nk" path="res://scenes/Fx.tscn" id="6_jlsqs"]
 
 [node name="Main" type="Node2D" unique_id=802376119]
 
@@ -18,6 +19,7 @@ block_scene = ExtResource("2_0bbpv")
 player_scene = ExtResource("3_rarhs")
 monster_scene = ExtResource("4_c01mt")
 item_scene = ExtResource("5_nxtc6")
+fx_scene = ExtResource("6_jlsqs")
 
 [node name="DebugCollider" type="Node2D" parent="LevelRoot" unique_id=96074542]
 script = ExtResource("4_vcsgt")

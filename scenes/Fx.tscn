@@ -1,5 +1,10 @@
 [gd_scene format=3 uid="uid://de2xcgvqhu2nk"]
 
+[ext_resource type="Script" uid="uid://bf4wx14l573en" path="res://scripts/fx.gd" id="1_8xdpu"]
+
 [node name="Fx" type="Node2D" unique_id=677729624]
+script = ExtResource("1_8xdpu")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1537327816]
+
+[node name="Timer" type="Timer" parent="." unique_id=515042029]

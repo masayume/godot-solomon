@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b14bbbh62vxap"
-path="res://.godot/imported/fxfoop.png-468c1b4944d508be8eb1002db0be5718.ctex"
+uid="uid://dflr76a4yqlmj"
+path="res://.godot/imported/poof.png-152dfb1b0aaf77544fe6937b0fcac7d3.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://sprites/fx/fxfoop.png"
-dest_files=["res://.godot/imported/fxfoop.png-468c1b4944d508be8eb1002db0be5718.ctex"]
+source_file="res://sprites/fx/poof.png"
+dest_files=["res://.godot/imported/poof.png-152dfb1b0aaf77544fe6937b0fcac7d3.ctex"]
 
 [params]
 

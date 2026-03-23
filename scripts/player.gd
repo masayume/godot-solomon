@@ -133,7 +133,7 @@ func _on_interaction_detector_area_entered(area: Area2D):
 		self.set_flag(GameConfig.itemdata[area.get_parent().family].on_collect_flag)
 		print("player ", flags)
 
-###TODO: align score lavel in UI and update score
+###TODO: align score/level in UI 
 	# 2. Increase Score (Assuming a global score variable)
 	if GameConfig.itemdata[area.get_parent().family].has("score"):
 		GameConfig.score += GameConfig.itemdata[area.get_parent().family].score
