@@ -112,6 +112,10 @@ monsterdata = {
 
 Function _level_loader(n)_ is the level manager for each stage.
 
+# FX System
+
+Function 
+
 # Player
 
 Player is a _CharacterBody2D_, instantiated from Player.tscn scene.
@@ -128,7 +132,45 @@ Player tracks facing direction.
 
 Player sends its world _position_ and _direction_ as _signal_ to level_loader when pressing the fire key.
 
+# Interaction System
 
+The interaction system is designed to be data-driven and consistent. This means that it's possible to scale it up to handle new items, monsters, projectiles more easily.
+
+Instead of: collect items, open gate, monster kills player there are interaction types that are reused anywhere is possible:
+
+- COLLECT
+- DAMAGE
+- TRIGGER
+
+This is implemented via an "active role" for Player (Interactor) and a "passive role" for Items etc.
+
+The Player (The Active Agent)
+
+```
+  player.gd: Stores the flags array (e.g., ["has_key", "speed_up"]).
+  interactor.gd: The bridge. It has one job: find a node named "Receiver" on the target and call its function.
+```
+
+The Item (The Passive Agent)
+
+```
+  item.gd: The physical body. It handles the Sprite and Collision. It doesn't know "what" it is.
+  receiver.gd: The brain. It holds the data injected during spawning. It contains the match statement that executes the actual game logic.
+```
+
+The Loader (The Creator)
+
+```
+  level_loader.gd: The factory. It instantiates the item.tscn, asks ItemDatabase for the config, and sticks a new Receiver onto the item.
+```
+
+Example. The "Key to Door" Logic Loop
+
+- Spawn: level_loader creates a Key with on_collect_flag: "gold_key".
+- Overlap: Player touches Key. player.gd calls interactor.interact(key).
+- Collect: Key’s receiver.gd sees it is a collectible. It calls player.add_flag("gold_key") and then queue_free().
+- Open: Player touches Door. interactor.interact(door).
+- Win: Door’s receiver.gd sees it is a door. It checks player.has_flag("gold_key"). If true, it triggers win_level().
 
 
 
