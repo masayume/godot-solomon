@@ -26,7 +26,7 @@ world_to_grid(world_pos, x_off, y_off, tile_size)
 
 # Configuration System
 
-There are some configuration files that manage game entities behavior.
+There are some configuration files that manage __game entities behavior__.
 
 ```
 res://config/game.cfg
@@ -47,6 +47,12 @@ Defines item attributes
 res://config/monsters.cfg
 ```
 Defines monster attributes
+
+```
+res://config/fx.cfg
+```
+General fx like "block poof/foop", "swirls", "lights" etc.
+
 
 # Block System
 
