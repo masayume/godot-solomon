@@ -139,8 +139,7 @@ func _on_interaction_detector_area_entered(area: Area2D):
 		GameConfig.score += GameConfig.itemdata[area.get_parent().family].score
 		print("score: ", GameConfig.score)
 		score_label.text = "[right][color=green]1p[/color] [color=white]" + str(GameConfig.score) + "[/color][/right]"
-	# 3. Trigger "Poof" and Remove
-	trigger_item_poof_effect(get_parent().global_position)
+
 	target.queue_free() # The key disappears!
 	
 	###DEBUG main player interaction with item code
@@ -150,13 +149,6 @@ func _on_interaction_detector_area_entered(area: Area2D):
 #	else:
 #		print("DEBUG: No Receiver found on ", target.name)
 
-###TODO: poof fx item collected scene
-func trigger_item_poof_effect(pos: Vector2):
-	# If you have a Poof Scene:
-	# var poof = poof_scene.instantiate()
-	# get_parent().add_child(poof)
-	# poof.global_position = pos
-	print("Poof animation triggered at: ", pos)			
 
 func spawn_at(tile_x: int, tile_y: int, x_off: float, y_off: float):
 	# Get tile size from config (single source of truth)
