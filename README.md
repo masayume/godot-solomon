@@ -120,7 +120,8 @@ Function _level_loader(n)_ is the level manager for each stage.
 
 # FX System
 
-Function 
+Function _setup_fx(...)_ defines the fx attributes: sprite, hframes, frames[], velocity
+Function _on_timer_timeout()_ may wait for the fx to finish to play what happens after the fx.
 
 # Player
 
@@ -154,15 +155,25 @@ The Player (The Active Agent)
 
 ```
   player.gd: Stores the flags array (e.g., ["has_key", "speed_up"]).
+
   interactor.gd: The bridge. It has one job: find a node named "Receiver" on the target and call its function.
+
+  function _on_interaction_detector_area_entered(..) will trigger when the player overlaps it. You can check for a flag here to determine the result of this interaction.
 ```
 
 The Item (The Passive Agent)
 
 ```
   item.gd: The physical body. It handles the Sprite and Collision. It doesn't know "what" it is.
+
   receiver.gd: The brain. It holds the data injected during spawning. It contains the match statement that executes the actual game logic.
 ```
+
+It's possible to distinguish between "_collectible_" items (like keys) and "_trigger_" items (like doors).
+
+- Keys: Call item_node.queue_free() and spawn_fx("poof", ...) immediately upon collection.
+- Doors: Do not call queue_free() on the door; instead, let the load_next_level() function handle clearing the whole scene.
+
 
 The Loader (The Creator)
 
