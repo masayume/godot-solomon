@@ -151,6 +151,22 @@ Instead of: collect items, open gate, monster kills player there are interaction
 
 This is implemented via an "active role" for Player (Interactor) and a "passive role" for Items etc.
 
+The Collision Matrix Check
+
+Check exact Inspector settings for both nodes: "**LAYER**" is "**who I am**", "**Mask**" is "**who I am looking for**".    
+
+||      Node      ||       Script        ||       Layer      ||    Mask          ||
+| Player (Area2D) | interaction_detector | 2 (Player)        | 3 (Interactables) |
+| Key (Area2D)    | Child of Item        | 3 (Interactables) | 2 (Player)        |
+
+
+```
+  2^(1−1)=1 (Layer 1)
+  2^(2−1)=2 (Layer 2)
+```
+
+
+
 The Player (The Active Agent)
 
 ```
@@ -164,6 +180,13 @@ The Player (The Active Agent)
 The Item (The Passive Agent)
 
 ```
+CharacterBody2D (item.gd) — Root node
+ ├── CollisionShape2D - The "Physical" shape (used for blocking)
+ ├── Receiver (Added via script) 
+ ├── Sprite2D 
+ └── Area2D - The "Sensor" shape (used for overlapping) 
+       └── CollisionShape2D
+
   item.gd: The physical body. It handles the Sprite and Collision. It doesn't know "what" it is.
 
   receiver.gd: The brain. It holds the data injected during spawning. It contains the match statement that executes the actual game logic.
