@@ -8,6 +8,8 @@
 [ext_resource type="Script" uid="uid://y8obvetxc8um" path="res://scripts/collision_debug.gd" id="4_vcsgt"]
 [ext_resource type="PackedScene" uid="uid://c4cd850sdiq7s" path="res://scenes/Item.tscn" id="5_nxtc6"]
 [ext_resource type="PackedScene" uid="uid://de2xcgvqhu2nk" path="res://scenes/Fx.tscn" id="6_jlsqs"]
+[ext_resource type="Texture2D" uid="uid://dhqmw3vc0ehv3" path="res://sprites/backgrounds/back_001.png" id="9_q8u5g"]
+[ext_resource type="Script" uid="uid://bscq63mdk8dmw" path="res://scripts/background.gd" id="10_lhr70"]
 
 [node name="Main" type="Node2D" unique_id=802376119]
 
@@ -47,3 +49,9 @@ vertical_alignment = 2
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=324845360]
 zoom = Vector2(0.75, 0.75)
+
+[node name="Background" type="Sprite2D" parent="." unique_id=246905057]
+z_index = -10
+position = Vector2(226, 0)
+texture = ExtResource("9_q8u5g")
+script = ExtResource("10_lhr70")
