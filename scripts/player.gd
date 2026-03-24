@@ -126,12 +126,15 @@ func _on_interaction_detector_area_entered(area: Area2D):
 	print("DEBUG: Player Area hit SOMETHING: ", area.name, " (Parent: ", area.get_parent().family, ")")
 
 	var target = area.get_parent() 
+	var item_type = target.family
 
 	# 1. Set Player Flags (e.g., "has_key")
 	if GameConfig.itemdata[area.get_parent().family].has("on_collect_flag"):
 		print(GameConfig.itemdata[area.get_parent().family].on_collect_flag)
 		self.set_flag(GameConfig.itemdata[area.get_parent().family].on_collect_flag)
 		print("player ", flags)
+		target.queue_free() # The key disappears!
+
 
 ###TODO: align score/level in UI 
 	# 2. Increase Score (Assuming a global score variable)
@@ -139,9 +142,17 @@ func _on_interaction_detector_area_entered(area: Area2D):
 		GameConfig.score += GameConfig.itemdata[area.get_parent().family].score
 		print("score: ", GameConfig.score)
 		score_label.text = "[right][color=green]1p[/color] [color=white]" + str(GameConfig.score) + "[/color][/right]"
-
-	target.queue_free() # The key disappears!
 	
+	# If the item is a door
+	if item_type == "door":
+		if self.has_flag("has_key"):
+			print("Access Granted!")
+			# Trigger level load on the loader 
+			level_loader.load_next_level()
+		else:
+			print("The door is locked. You need the key flag!")
+			# Optional: Play a "locked" sound or animation	
+
 	###DEBUG main player interaction with item code
 #	if target.has_node("Receiver"):
 #		print("DEBUG: Receiver FOUND on ", target.name)		

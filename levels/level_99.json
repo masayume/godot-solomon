@@ -7,11 +7,11 @@
   "block_width": 16,
   "block_height": 12,
 
-  "player_start": [5, 3],
+  "player_start": [5, 9],
 
   "items": [
 	{"pos": [8,11],"family":"door"},	
-	{"pos": [5,4],"family":"key"},	
+	{"pos": [4,10],"family":"key"},	
 	{"pos": [8,8],"family":"gold-bell"},	
 	{"pos": [7,8],"family":"blue-lantern"},	
 	{"pos": [9,8],"family":"blue-lantern"},	
@@ -26,6 +26,7 @@
   ],
 
   "blocks": [
+	{"pos": [4,8],"family":"earth"},		{"pos": [5,8],"family":"earth"},	
 	{"pos": [11,4],"family":"earth"},	
 	{"pos": [4,5],"family":"blue-flame"},	{"pos": [12,5],"family":"blue-flame"},
 

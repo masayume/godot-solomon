@@ -175,7 +175,8 @@ The Player (The Active Agent)
 
   interactor.gd: The bridge. It has one job: find a node named "Receiver" on the target and call its function.
 
-  function _on_interaction_detector_area_entered(..) will trigger when the player overlaps it. You can check for a flag here to determine the result of this interaction.
+  function _on_interaction_detector_area_entered(..) will trigger when the player overlaps it. Check for a flag here to determine the result of this interaction.
+  
 ```
 
 The Item (The Passive Agent)
