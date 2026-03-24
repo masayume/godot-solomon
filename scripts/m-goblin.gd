@@ -23,8 +23,7 @@ func _physics_process(_delta):
 
 	velocity.x = direction * GameConfig.monsterdata.goblin.speed
 
-	behave(_delta)
-	move_and_slide()
+	behave(_delta) # includes move_and_slide()
 
 	if is_on_wall():
 		direction *= -1

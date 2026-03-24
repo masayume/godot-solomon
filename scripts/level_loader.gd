@@ -182,11 +182,17 @@ func load_level(id: int):
 	if data.has("monsters"):
 		for m in data["monsters"]:
 			# Create a new monster instance from scene		
-#			add_monster(m["pos"][0], m["pos"][1], m["family"], m.get("direction", null))
 			var instance = scenes[m["family"]].instantiate()
 			instance.family = m["family"]
-#			print(m["family"], " instanced")
 
+			#SIGNAL-ghost-3 Connect the signal from Ghost			
+			#LAMBDA for wall impact to pass 'false' for the 'crouching' parameter
+			# Only connect if the specific monster has the signal defined
+			if instance.has_signal("wall_impact"):
+				instance.wall_impact.connect(
+					func(pos, dir): create_or_destroy_block(pos, dir, false)
+				)
+			
 			instance.position = GameConfig.grid_to_local(
 				m["pos"][0],
 				m["pos"][1],
