@@ -34,6 +34,14 @@ func _physics_process(_delta):
 		wall_impact.emit(global_position, direction)
 		print("Ghost hit wall at: [x,y]")
 
+#		var impact_pos = global_position
+#		var level_loader = get_parent()
+		
+#		if level_loader and level_loader.has_method("create_or_destroy_block"):
+			# 3. Call the logic. 
+			# We pass: position, current direction, and false (ghosts don't crouch)
+#			level_loader.create_or_destroy_block(impact_pos, direction, false)
+
 		direction *= -1
 		
 #		for i in get_slide_collision_count():
