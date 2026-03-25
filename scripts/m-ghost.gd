@@ -32,7 +32,7 @@ func _physics_process(_delta):
 	if is_on_wall():
 		#SIGNAL-ghost-2 Emit the signal instead of calling a parent method directly
 		wall_impact.emit(global_position, direction)
-		print("Ghost hit wall at: [x,y]")
+#		print("Ghost hit wall at: [x,y]")
 
 #		var impact_pos = global_position
 #		var level_loader = get_parent()

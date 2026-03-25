@@ -127,14 +127,17 @@ func _on_interaction_detector_area_entered(area: Area2D):
 
 	var target = area.get_parent() 
 	var item_type = target.family
+	var item_info = GameConfig.itemdata[item_type]
+
+	if item_info.has("action_type"):
+		if item_info["action_type"] == "collect":
+			area.get_parent().queue_free() # Remove the item node
 
 	# 1. Set Player Flags (e.g., "has_key")
 	if GameConfig.itemdata[area.get_parent().family].has("on_collect_flag"):
 		print(GameConfig.itemdata[area.get_parent().family].on_collect_flag)
 		self.set_flag(GameConfig.itemdata[area.get_parent().family].on_collect_flag)
 		print("player ", flags)
-		target.queue_free() # The key disappears!
-
 
 ###TODO: align score/level in UI 
 	# 2. Increase Score (Assuming a global score variable)
