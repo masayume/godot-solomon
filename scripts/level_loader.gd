@@ -62,25 +62,26 @@ func spawn_item(tile_x, tile_y):
 
 
 func _on_player_fire(pos, dir, crouching):
-	create_or_destroy_block(pos, dir, crouching)
+	create_or_destroy_block(pos, dir, crouching, true)
 
-func create_or_destroy_block(pos, dir, crouching, collider = null):
+func create_or_destroy_block(pos, dir, crouching, is_player=false):
 
 ###DEBUG
 #	print("create/destroy block at: " + str(pos) + " " + str(dir))
 # 	var destructible = config.get_value("block_" + block.block_type, "destructible", false)
-
+	
 	var cell = Grid.world_to_grid(pos, x_off, y_off, tile_size)
 	if crouching:
 		cell.y -= 1
 	var target = Vector2i(cell.x + dir, cell.y)
-			
+	
 	### DESTROY BLOCK playing fx "poof"
-
+	
+	# 1. If there is already a block at the target position
 	if blocks.has(target):
 		var block = blocks[target]
 		
-		# Check destructibility
+		# Only destroy if the config says it is destructible
 		if GameConfig.blockdata[block.family]["destructible"]:
 			# Play Poof (Destruction)
 			spawn_fx("poof", block.global_position, target, false)
@@ -89,11 +90,12 @@ func create_or_destroy_block(pos, dir, crouching, collider = null):
 		else:
 			# It's a stone block (not destructible)
 			# Do nothing here so it doesn't fall into the 'else' below
-			print("Hit indestructible block: ", block.family)			
-
+			print("Hit indestructible block: ", block.family)
+			return
+			
 	# CREATE BLOCK after playing fx "foop"
-	# ONLY create a block if the space is actually empty
-	elif not blocks.has(target):
+	# 2. ONLY create a block if the target space is confirmed EMPTY
+	elif not blocks.has(target) and is_player:
 		# PLAY FOOP FX
 		# Calculate world position for the new block
 ###TODO poof fx position is OK; foop position is at block_x-1...
