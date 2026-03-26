@@ -20,7 +20,8 @@ func _ready():
 	super._ready()
 	
 	# ghost opacity 80%
-	sprite.modulate = Color(1, 1, 1, 0.8)
+	#sprite.modulate = Color(1, 1, 1, 0.8)
+	sprite.modulate.a = 0.7 + (sin(bob_time * 5.0) * 0.1)
 	
 	setup_animation()
 
