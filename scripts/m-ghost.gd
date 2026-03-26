@@ -6,7 +6,11 @@ var direction := -1
 var frames = []
 var anim_speed = 0.1
 var frame_index = 0
+var bob_time := 0.0
 var time_accumulator = 0.0
+var trail: Line2D
+var max_points: int = 77
+@export var eye_offset: Vector2 = Vector2(25, -22)
 
 #SIGNAL-ghost-1 Define the signal with parameters able to destroy a block when hit
 signal wall_impact(pos: Vector2, dir: int)
@@ -15,18 +19,40 @@ func _ready():
 	family = "ghost"
 	super._ready()
 	
+	# ghost opacity 80%
+	sprite.modulate = Color(1, 1, 1, 0.8)
+	
 	setup_animation()
+
+# 	setup_trail_shader()
+	setup_trail()
 
 func _process(delta):
 	animate(delta)
+	var current_pos = global_position 
 
+	var current_offset = eye_offset
+	if $Sprite2D.flip_h:
+		current_offset.x *= -1
+	var eye_global_pos = global_position + current_offset
+	
+	trail.add_point(eye_global_pos)
+	
+	if trail.get_point_count() > max_points:
+		trail.remove_point(0)
+				
 func _physics_process(_delta):
 
-	# No gravity → flying enemy
-	velocity.y = 0
+	bob_time += _delta
+#	velocity.x = direction * GameConfig.monsterdata.ghost.speed
 
-	velocity.x = direction * GameConfig.monsterdata.ghost.speed
-
+	# 4. Dynamically update the trail based on movement
+	if sprite.material is ShaderMaterial:
+		# Length increases with speed; flip direction based on 'direction' variable 
+		var movement_factor = abs(velocity.x) / 1000.0 
+		var trail_offset = movement_factor * -direction # Trail stays behind movement
+		sprite.material.set_shader_parameter("trail_length", trail_offset)
+		
 	behave(_delta) # includes move_and_slide()
 
 	if is_on_wall():
@@ -52,19 +78,20 @@ func _physics_process(_delta):
 #			if collider.is_in_group("debug_collision"): # Your loader adds blocks to this group [cite: 8]
 #				notify_level_loader_of_impact(collider)
 
-
-
-
 func behave(_delta):
 	velocity.x = direction * GameConfig.monsterdata[family].speed
 
 	sprite.flip_h = velocity.x < 0
+	
+	# Horizontal movement
+	
+	# Vertical Bobbing
+	# Adjust 2.0 for speed and 10.0 for height/intensity
 
-	# simple back-and-forth
-#	if is_on_wall():
-#		direction *= -1
+	velocity.y = sin(bob_time * 2.0) * 10.0
 
 	move_and_slide()
+
 
 func animate(delta):
 	time_accumulator += delta
@@ -85,3 +112,45 @@ func setup_animation():
 	frame_index = 0
 	sprite.frame = frames[0]
 	
+
+func setup_trail():
+	trail = Line2D.new()
+	trail.z_index = 100
+	trail.top_level = true
+	trail.global_position = Vector2.ZERO # Force the "origin" of the line to the world center
+#	trail.self_modulate.a = 0.2  # 40% opacity
+	# 1. Visual Configuration
+	trail.width = 22.0
+	trail.width_curve = Curve.new()
+	trail.width_curve.add_point(Vector2(0, 0)) # Start thick
+	trail.width_curve.add_point(Vector2(1, 1)) # End at zero
+	trail.default_color = Color(5.0, 0.2, 0.2, 1.0) # High RAW Red for Glow
+	trail.begin_cap_mode = Line2D.LINE_CAP_ROUND
+	trail.joint_mode = Line2D.LINE_JOINT_ROUND
+	
+	trail.texture_mode = Line2D.LINE_TEXTURE_TILE # Or LINE_TEXTURE_STRETCH
+	trail.antialiased = true
+
+	# 2. Add the Shader
+	var mat = ShaderMaterial.new()
+	mat.shader = load("res://resources/shaders/m-trail.gdshader") # Point to your shader file
+	trail.material = mat
+	
+	# 3. Positioning Logic
+	# top_level = true makes the Line2D ignore the Ghost's movement 
+	# so it stays behind in "World Space"
+	trail.top_level = true 
+	add_child(trail)
+
+func setup_trail_shader():
+	# 1. Create the material and load the shader file
+	var shader_res = load("res://resources/shaders/m-trail.gdshader")
+	var mat = ShaderMaterial.new()
+	mat.shader = shader_res
+	
+	# 2. Assign the material to the sprite
+	sprite.material = mat
+	
+	# 3. Set initial data-driven parameters
+	mat.set_shader_parameter("ghost_intensity", 0.6)
+	mat.set_shader_parameter("trail_color", Color(0.4, 0.7, 1.0, 0.8))
