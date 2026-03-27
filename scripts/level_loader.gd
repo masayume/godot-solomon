@@ -322,6 +322,85 @@ func add_item(ix, iy, type):
 		y_off           # vertical centering offset
 	)	
 
+func start_level_transition():
+	
+# 1. Get current level info from the CFG
+	var current_id = GameConfig.current_level_id 
+	var section = "level_" + str(current_id)
+	
+	# 2. Find the next ID
+	var next_id = GameConfig.gamedata.get_value(section, "next_level", -1)
+	
+	if next_id == -1:
+		print("Victory! No more levels.")
+		show_ending_credits()
+		return
+
+	# 3. Get metadata for the UI
+	var next_name = GameConfig.gamedata.get_value("level_" + str(next_id), "name", "Unknown")
+	
+	# 4. Show the "Level Card" for N seconds
+	level_label.text = "NEXT: " + next_name 
+	await get_tree().create_timer(3.0).timeout	
+	
+	# 1. Calculate Bonus Score
+	var bonus = calculate_bonus()
+	GameConfig.score += bonus # Global score tracking
+	
+	# 2. Get next level data from game.cfg
+	var current_level_id = GameConfig.gamedata.current_level
+	var next_level_id = GameConfig.gamedata.levels[current_level_id].next_level
+	var next_level_name = GameConfig.gamedata.levels[next_level_id].name
+	
+	# 3. Show UI and Wait
+	show_level_card(next_level_id, next_level_name)
+	
+	# 4. Use a Timer or await to pause for 'n' seconds
+	await get_tree().create_timer(3.0).timeout 
+	
+	# 5. Clear and Load
+	clear_current_level()
+	load_level(next_level_id)
+
+func load_new_level(id: int):
+	# Clear current dictionaries [cite: 3, 4, 5]
+	blocks.clear() 
+	monsters.clear()
+	
+	# Delete all physical nodes
+	for child in get_children():
+		child.queue_free()
+		
+	# Update global state
+	GameConfig.current_level_id = id
+	
+	# Call your existing JSON loader [cite: 3]
+	load_level(id)
+
+	
+func calculate_bonus():
+	# calculate bonus score
+	print("calculate_bonus")
+
+
+func show_level_card(level_id, level_name):
+	print("show_level_card")
+	
+
+func show_ending_credits():
+	print("show_ending_credits")
+
+func clear_current_level():
+	# Clear the dictionaries [cite: 5, 6]
+	for block in blocks.values():
+		block.queue_free()
+	blocks.clear()
+	
+	for monster in get_tree().get_nodes_in_group("monsters"):
+		monster.queue_free()
+	
+	# Reset offsets 
+	blocks = {}
 
 
 # DEBUGGING 
