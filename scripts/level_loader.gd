@@ -321,15 +321,16 @@ func add_item(ix, iy, type):
 		x_off,          # horizontal centering offset
 		y_off           # vertical centering offset
 	)	
+	
 
 func start_level_transition():
 	
 # 1. Get current level info from the CFG
-	var current_id = GameConfig.current_level_id 
+	var current_id = GameConfig.gamedata.sequence.initial_level 
 	var section = "level_" + str(current_id)
-	
+	print(section)
 	# 2. Find the next ID
-	var next_id = GameConfig.gamedata.get_value(section, "next_level", -1)
+	var next_id = GameConfig.gamedata[section].next_level
 	
 	if next_id == -1:
 		print("Victory! No more levels.")
@@ -337,7 +338,7 @@ func start_level_transition():
 		return
 
 	# 3. Get metadata for the UI
-	var next_name = GameConfig.gamedata.get_value("level_" + str(next_id), "name", "Unknown")
+	var next_name = "level_" + str(next_id)
 	
 	# 4. Show the "Level Card" for N seconds
 	level_label.text = "NEXT: " + next_name 
@@ -348,19 +349,19 @@ func start_level_transition():
 	GameConfig.score += bonus # Global score tracking
 	
 	# 2. Get next level data from game.cfg
-	var current_level_id = GameConfig.gamedata.current_level
-	var next_level_id = GameConfig.gamedata.levels[current_level_id].next_level
-	var next_level_name = GameConfig.gamedata.levels[next_level_id].name
+#	var current_level_id = GameConfig.gamedata.current_level
+#	var next_level_id = GameConfig.gamedata.levels[current_level_id].next_level
+#	var next_level_name = GameConfig.gamedata.levels[next_level_id].name
 	
 	# 3. Show UI and Wait
-	show_level_card(next_level_id, next_level_name)
+	show_level_card(next_id, next_name)
 	
 	# 4. Use a Timer or await to pause for 'n' seconds
 	await get_tree().create_timer(3.0).timeout 
 	
 	# 5. Clear and Load
 	clear_current_level()
-	load_level(next_level_id)
+	load_level(next_id)
 
 func load_new_level(id: int):
 	# Clear current dictionaries [cite: 3, 4, 5]
@@ -381,7 +382,7 @@ func load_new_level(id: int):
 func calculate_bonus():
 	# calculate bonus score
 	print("calculate_bonus")
-
+	return 100
 
 func show_level_card(level_id, level_name):
 	print("show_level_card")

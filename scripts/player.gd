@@ -151,7 +151,7 @@ func _on_interaction_detector_area_entered(area: Area2D):
 		if self.has_flag("has_key"):
 			print("Access Granted!")
 			# Trigger level load on the loader 
-			var loader = get_tree().current_scene.find_child("LevelLoader", true, false)
+			var loader = get_tree().current_scene.find_child("Level", true, false)
 			loader.start_level_transition()
 		else:
 			print("The door is locked. You need the key flag!")
