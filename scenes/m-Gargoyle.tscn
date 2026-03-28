@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://uuy7iarlnv1"]
+
+[ext_resource type="Script" uid="uid://cdf4tl8cydk4w" path="res://scripts/m-gargoyle.gd" id="1_5sjxv"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_iiuvy"]
+
+[node name="Gargoyle" type="CharacterBody2D" unique_id=45146137]
+script = ExtResource("1_5sjxv")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=411585139]
+shape = SubResource("RectangleShape2D_iiuvy")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1812998505]

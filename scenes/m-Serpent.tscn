@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://bv72l3kt0u1fn"]
+
+[ext_resource type="Script" uid="uid://smlyr7ikep33" path="res://scripts/m-serpent.gd" id="1_e3pns"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_r1u4m"]
+
+[node name="Serpent" type="CharacterBody2D" unique_id=2045372306]
+script = ExtResource("1_e3pns")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=2017930821]
+shape = SubResource("RectangleShape2D_r1u4m")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=487129389]

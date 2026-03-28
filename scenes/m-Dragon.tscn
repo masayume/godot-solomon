@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://nfjfyru0bmiq"]
+
+[ext_resource type="Script" uid="uid://cva1ed8062pi8" path="res://scripts/m-dragon.gd" id="1_pjlxh"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_xrpnb"]
+
+[node name="Dragon" type="CharacterBody2D" unique_id=1208613987]
+script = ExtResource("1_pjlxh")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1493609481]
+shape = SubResource("RectangleShape2D_xrpnb")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=983904976]

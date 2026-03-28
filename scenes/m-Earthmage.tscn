@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://5f2ltr70jff5"]
+
+[ext_resource type="Script" uid="uid://dx2me7q6kw67a" path="res://scripts/m-earthmage.gd" id="1_sliis"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_xu73x"]
+
+[node name="Earthmage" type="CharacterBody2D" unique_id=1641962141]
+script = ExtResource("1_sliis")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1479987582]
+shape = SubResource("RectangleShape2D_xu73x")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1207086235]

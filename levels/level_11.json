@@ -18,8 +18,8 @@
   ],
 
   "monsters": [
-	{"pos": [2,12],"family":"panel","direction":"down"},	
-	{"pos": [3,1],"family":"panel","direction":"up"},	
+	{"pos": [2,12],"family":"pannel","direction":"down"},	
+	{"pos": [3,1],"family":"pannel","direction":"up"},	
 	{"pos": [4,3],"family":"spark"},	
 	{"pos": [6,6],"family":"spark"},	
 	{"pos": [8,5],"family":"spark"},	

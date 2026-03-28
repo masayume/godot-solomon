@@ -7,6 +7,7 @@ var monsterdata = {}
 var itemdata = {}
 var fxdata = {}
 var score = 0
+var current_level_id
 
 func _ready():
 	load_config()

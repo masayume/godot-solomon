@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://i2p3yokpnmhv"]
+
+[ext_resource type="Script" uid="uid://cbfboyd4msnoi" path="res://scripts/m-chimera.gd" id="1_f4rpt"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ub4nf"]
+
+[node name="Chimera" type="CharacterBody2D" unique_id=1640507851]
+script = ExtResource("1_f4rpt")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1035332729]
+shape = SubResource("RectangleShape2D_ub4nf")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1943310328]

@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dj1md7ws58xcp"
-path="res://.godot/imported/panel.png-59e5fcaea94402870902672a79fb6052.ctex"
+path="res://.godot/imported/pannel.png-401bc75001b548895496f1e05cf54dca.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://sprites/monsters/panel.png"
-dest_files=["res://.godot/imported/panel.png-59e5fcaea94402870902672a79fb6052.ctex"]
+source_file="res://sprites/monsters/pannel.png"
+dest_files=["res://.godot/imported/pannel.png-401bc75001b548895496f1e05cf54dca.ctex"]
 
 [params]
 

@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://cmf60w2kghprv"]
+
+[ext_resource type="Script" uid="uid://dx4rivdqkgpbp" path="res://scripts/m-demonhead.gd" id="1_36tnp"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ukkmr"]
+
+[node name="Demonhead" type="CharacterBody2D" unique_id=2093658613]
+script = ExtResource("1_36tnp")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=972574732]
+shape = SubResource("RectangleShape2D_ukkmr")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=721953943]

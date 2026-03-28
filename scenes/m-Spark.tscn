@@ -1,0 +1,10 @@
+[gd_scene format=3 uid="uid://d0ltlq6co3x4i"]
+
+[ext_resource type="Script" uid="uid://ct14d6lr7wpai" path="res://scripts/m-spark.gd" id="1_wd1a0"]
+
+[node name="Spark" type="CharacterBody2D" unique_id=974803596]
+script = ExtResource("1_wd1a0")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=630680502]
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=114700362]

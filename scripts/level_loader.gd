@@ -7,8 +7,17 @@ extends Node2D
 @export var fx_scene: PackedScene      # Assign Fx.tscn to Level in the Inspector
 
 var scenes = {
+	"chimera": preload("res://scenes/m-Chimera.tscn"),
+	"demonhead": preload("res://scenes/m-Demonhead.tscn"),
+	"dragon": preload("res://scenes/m-Dragon.tscn"),
+	"earthmage": preload("res://scenes/m-Earthmage.tscn"),
+	"gargoyle": preload("res://scenes/m-Gargoyle.tscn"),
 	"ghost": preload("res://scenes/m-Ghost.tscn"),
-	"goblin": preload("res://scenes/m-Goblin.tscn")	
+	"goblin": preload("res://scenes/m-Goblin.tscn"),
+	"nuel": preload("res://scenes/m-Nuel.tscn"),
+	"pannel": preload("res://scenes/m-Pannel.tscn"),
+	"serpent": preload("res://scenes/m-Serpent.tscn"),
+	"spark": preload("res://scenes/m-Spark.tscn"),
 }
 
 @onready var level_label: Label = $"../../UI/LevelInfo"
@@ -20,10 +29,12 @@ var x_off: float
 var y_off: float
 var blocks := {} 	## blocks dictionary to check/update; Vector2i  →  Block node
 var monsters := {} 	## monsters dictionary to check/update; Vector2i  →  Block node
+var current_level
 
 func _ready():
 	center_level()
-	load_level(99)
+	current_level = GameConfig.gamedata.sequence.initial_level
+	load_level(current_level)
 
 func center_level():
 	# print("THIS NODE:", get_path())
@@ -128,6 +139,7 @@ func _on_foop_finished(grid_pos, type):
 func spawn_player(px, py, xoff, yoff):
 
 	var player = player_scene.instantiate()
+	player.add_to_group("playergroup")
 
 	# add to the SAME node that holds the blocks
 	add_child(player)
@@ -135,7 +147,7 @@ func spawn_player(px, py, xoff, yoff):
 	# now the transform chain is correct
 	player.spawn_at(px, py, xoff, yoff)
 	player.fire_pressed.connect(_on_player_fire)
-
+	
 
 func load_level(id: int):
 	var path = "res://levels/level_%02d.json" % id
@@ -241,6 +253,7 @@ func add_monster(mx, my, type, dir):
 	monster.name = "MO_" + str(monster.family)
 
 	monster.add_to_group("debug_collision")
+	monster.add_to_group("monstergroup")
 
 	add_child(monster)
 
@@ -271,6 +284,7 @@ func add_item(ix, iy, type):
 	item.name = "IT_" + str(item.family)
 	
 	item.add_to_group("debug_collision")
+	item.add_to_group("itemgroup")
 
 ###TODO: fix duplicate collision_layer_mask/value
 	# 1. Physical Blocking Logic
@@ -326,11 +340,13 @@ func add_item(ix, iy, type):
 func start_level_transition():
 	
 # 1. Get current level info from the CFG
-	var current_id = GameConfig.gamedata.sequence.initial_level 
-	var section = "level_" + str(current_id)
+	var section = "level_" + str(current_level)
+	current_level += 1
 	print("section: ", section)
 	# 2. Find the next ID
 	var next_id = GameConfig.gamedata[section].next_level
+	
+	print("next_id:", next_id)
 	
 	if next_id == -1:
 		print("Victory! No more levels.")
@@ -343,7 +359,7 @@ func start_level_transition():
 	
 	# 4. Show the "Level Card" for N seconds
 	level_label.text = "NEXT: " + next_name 
-	await get_tree().create_timer(13.0).timeout	
+	await get_tree().create_timer(3.0).timeout	
 	
 	# 1. Calculate Bonus Score
 	var bonus = calculate_bonus()
@@ -359,6 +375,8 @@ func start_level_transition():
 	
 	# 4. Use a Timer or await to pause for 'n' seconds
 	await get_tree().create_timer(3.0).timeout 
+	
+	#GameConfig.gamedata.sequence.initial_level
 	
 	# 5. Clear and Load
 	clear_current_level()
@@ -397,12 +415,12 @@ func clear_current_level():
 	for block in blocks.values():
 		block.queue_free()
 	blocks.clear()
-	
-	for monster in get_tree().get_nodes_in_group("monsters"):
-		monster.queue_free()
-	
 	# Reset offsets 
 	blocks = {}
+	
+	for child in get_children(): 
+		child.queue_free()
+
 
 
 # DEBUGGING 
