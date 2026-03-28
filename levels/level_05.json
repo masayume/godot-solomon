@@ -10,6 +10,11 @@
   "player_start": [14, 6],
 
   "items": [
+	{"pos": [8,7],"family":"key"},	
+	{"pos": [2,6],"family":"door"},	
+
+	{"pos": [7,2],"family":"gold-bell"},	
+
 	{"pos": [8,6],"family":"changejewel1"},	
 	{"pos": [8,8],"family":"jewel500"},	
   ],
@@ -33,10 +38,6 @@
 		{"pos": [7,7],"family":"green-orb"},	
 		{"pos": [9,7],"family":"green-orb"},	
 
-		{"pos": [8,7],"family":"key"},	
-		{"pos": [2,6],"family":"door-closed"},	
-
-		{"pos": [7,2],"family":"gold-bell"},	
 		{"pos": [9,2],"family":"blue-lantern"},	
 	
 		{ "pos": [2,5], "family": "stone"	},

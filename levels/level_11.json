@@ -10,6 +10,9 @@
   "player_start": [6, 2],
 
   "items": [
+	{"pos": [7,5],"family":"key"},	
+	{"pos": [14,2],"family":"door"},	
+
 	{"pos": [5,10],"family":"jewel20k"},	
 	{"pos": [2,2],"family":"timepotion2"},	
   ],
@@ -28,9 +31,6 @@
   "blocks": [
 
 		{"pos": [3,4],"family": "shield"	},
-
-		{"pos": [7,5],"family":"key"},	
-		{"pos": [14,2],"family":"door-closed"},	
 
 		{ "pos": [3,8], "family": "stone"	},		{ "pos": [4,8], "family": "stone"	},
 		{ "pos": [5,8], "family": "stone"	},		{ "pos": [6,8], "family": "stone"	},

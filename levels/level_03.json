@@ -9,6 +9,13 @@
 
   "player_start": [4, 9],
 
+  "items": [
+	{"pos": [10,6],"family":"door"},	
+	{"pos": [11,4],"family":"key"},	
+	{"pos": [12,12],"family":"gold-bell"},	
+
+  ],
+
   "monsters": [
 	{"pos": [2,10],"family":"panel"},	
 	{"pos": [8,2],"family":"spark"},	
@@ -22,12 +29,6 @@
 
   "blocks": [
 	{"pos": [6,11],"family": "shield"	},
-
-	{"pos": [11,4],"family":"key"},	
-	{"pos": [10,6],"family":"door-closed"},	
-
-	{"pos": [12,12],"family":"gold-bell"},	
-
 
 	{"pos": [1,1],"family": "stone"	},
 	{"pos": [2,1],"family": "stone"	},

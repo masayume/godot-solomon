@@ -9,15 +9,17 @@
 
   "player_start": [2, 4],
 
-  "blocks": [
-
+  "items": [
+	{"pos": [14,4],"family":"door"},	
 	{"pos": [14,10],"family":"key"},	
-	{"pos": [14,4],"family":"door-closed"},	
+	{"pos": [8,10],"family":"gold-bell"},	
+
+  ],
+
+  "blocks": [
 
 	{"pos": [2,11],"family": "shield"	},
 	{"pos": [4,11],"family": "shield"	},
-
-	{"pos": [8,10],"family":"gold-bell"},	
 
 	{ "pos": [3,3], "family": "earth"},
 	{ "pos": [2,3], "family": "earth"},

@@ -10,6 +10,9 @@
   "player_start": [7, 1],
 
   "items": [
+	{"pos": [15,9], "family":"key"},	
+	{"pos": [1,2], "family":"door"},	
+
 	{"pos": [12,6],"family":"jewel5k"},	
 	{"pos": [13,6],"family":"jewel5k"},	
   ],
@@ -22,9 +25,6 @@
 
 		{"pos": [3,11],"family": "shield"	},
 		{"pos": [13,11],"family": "shield"	},
-
-		{"pos": [15,9], "family":"key"},	
-		{"pos": [1,2], "family":"door-closed"},	
 
 		{"pos": [14,1],"family":"blue-lantern"},	
 	

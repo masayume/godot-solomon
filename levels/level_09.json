@@ -10,6 +10,10 @@
   "player_start": [2, 1],
 
   "items": [
+	{"pos": [8,6],"family":"key"},	
+	{"pos": [14,1],"family":"door"},	
+	{"pos": [8,8],"family":"gold-bell"},	
+	
 	{"pos": [7,5],"family":"jewel2k"},	
 	{"pos": [7,7],"family":"jewel2k"},	
 	{"pos": [9,5],"family":"jewel2k"},	
@@ -30,11 +34,7 @@
 		{"pos": [7,11],"family": "shield"	},
 		{"pos": [9,11],"family": "shield"	},
 
-		{"pos": [8,6],"family":"key"},	
-		{"pos": [14,1],"family":"door-closed"},	
 		{"pos": [8,4],"family":"blue-lantern"},	
-
-		{"pos": [8,8],"family":"gold-bell"},	
 
 		{ "pos": [8,1], "family": "stone"	},
 	

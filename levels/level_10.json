@@ -9,14 +9,19 @@
 
   "player_start": [5, 1],
 
-  "blocks": [
+"items":[
+	{"pos":[13,8],"family":"key"},
+	{"pos":[2,8],"family":"door"},
+	{"pos":[2,12],"family":"gold-bell"},
+	{"pos":[7,5],"family":"jewel2k"},
+	{"pos":[7,7],"family":"jewel2k"},
+	{"pos":[9,5],"family":"jewel2k"},
+	{"pos":[9,7],"family":"jewel2k"}
+],
 
-		{"pos": [6,12],"family": "shield"	},
-		{"pos": [2,12],"family":"gold-bell"},	
+"blocks": [
 
-		{"pos": [13,8],"family":"key"},	
-		{"pos": [2,8],"family":"door-closed"},	
-
+		{"pos": [6,12],"family":"shield"},
 		{"pos": [10,1],"family":"green-orb"},	
 		{"pos": [12,1],"family":"green-orb"},	
 		{"pos": [14,1],"family":"green-orb"},	

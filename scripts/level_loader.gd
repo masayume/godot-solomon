@@ -328,7 +328,7 @@ func start_level_transition():
 # 1. Get current level info from the CFG
 	var current_id = GameConfig.gamedata.sequence.initial_level 
 	var section = "level_" + str(current_id)
-	print(section)
+	print("section: ", section)
 	# 2. Find the next ID
 	var next_id = GameConfig.gamedata[section].next_level
 	
@@ -339,10 +339,11 @@ func start_level_transition():
 
 	# 3. Get metadata for the UI
 	var next_name = "level_" + str(next_id)
+	print("next_name: ", next_name )
 	
 	# 4. Show the "Level Card" for N seconds
 	level_label.text = "NEXT: " + next_name 
-	await get_tree().create_timer(3.0).timeout	
+	await get_tree().create_timer(13.0).timeout	
 	
 	# 1. Calculate Bonus Score
 	var bonus = calculate_bonus()
