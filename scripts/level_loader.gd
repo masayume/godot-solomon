@@ -152,6 +152,7 @@ func spawn_player(px, py, xoff, yoff):
 func load_level(id: int):
 	var path = "res://levels/level_%02d.json" % id
 	var file = FileAccess.open(path, FileAccess.READ)
+	print("path: ", path)
 	var data = JSON.parse_string(file.get_as_text())
 
 	tile_size = data["tile_size"]
@@ -424,6 +425,16 @@ func clear_current_level():
 
 
 # DEBUGGING 
+
+# Inside level_loader.gd
+
+func _input(event):
+	# Trigger transition when 'N' is pressed
+	if event is InputEventKey and event.pressed:
+		if event.keycode == KEY_N:
+			print("DEBUG: Manual level skip triggered.")
+			start_level_transition()
+
 func debug_block(block):
 	var shape = block.get_node("CollisionShape2D")
 	print("---- BLOCK TREE ----")
