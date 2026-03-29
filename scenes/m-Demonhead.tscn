@@ -5,6 +5,7 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ukkmr"]
 
 [node name="Demonhead" type="CharacterBody2D" unique_id=2093658613]
+collision_layer = 2
 script = ExtResource("1_36tnp")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=972574732]

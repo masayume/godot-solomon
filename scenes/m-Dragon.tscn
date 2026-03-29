@@ -5,6 +5,7 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_xrpnb"]
 
 [node name="Dragon" type="CharacterBody2D" unique_id=1208613987]
+collision_layer = 2
 script = ExtResource("1_pjlxh")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1493609481]

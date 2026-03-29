@@ -5,6 +5,7 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_jafc3"]
 
 [node name="Pannel" type="CharacterBody2D" unique_id=2120521109]
+collision_layer = 2
 script = ExtResource("1_h4vo1")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1805975093]

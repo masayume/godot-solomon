@@ -12,43 +12,57 @@ var current_surface: String = "bottom"
 
 var gravity = GameConfig.monsterdata.spark.gravity
 
+# We'll use this to handle rotation based on surface
+var surface_normals = {
+	"bottom": Vector2.UP,
+	"top": Vector2.DOWN,
+	"left": Vector2.RIGHT,
+	"right": Vector2.LEFT
+}
+
 func _ready():
 	family = "spark"
 	super._ready()
-	
+
+	# Initial rotation based on the starting surface
+	rotation = surface_normals[current_surface].angle() + PI/2
+		
 	setup_animation()
 
 func _process(delta):
 	animate(delta)
 
 func _physics_process(_delta):
-
-	velocity.x = direction * GameConfig.monsterdata.spark.speed
-
 	behave(_delta) # includes move_and_slide()
-
-	if is_on_wall():
-		direction *= -1
 
 
 func behave(_delta):
-	velocity.x = direction * GameConfig.monsterdata[family].speed
-
-	sprite.flip_h = velocity.x < 0
-
-	# Move along the current surface normal (wall-crawler)
+	# 1. Calculate direction based on current rotation
+	# Vector2.RIGHT.rotated(rotation) gives us the 'Forward' vector
 	var move_dir = Vector2.RIGHT.rotated(rotation) 
-	velocity = move_dir * GameConfig.monsterdata.spark.speed
+	velocity = move_dir * direction * GameConfig.monsterdata[family].speed
+
+	# 2. Update 'up_direction' so Godot knows what is 'floor' vs 'wall' 
+	# for this specific surface
+	up_direction = surface_normals[current_surface]
 
 	move_and_slide()
 
+	# 3. Handle Corner Turning
 	if is_on_wall():
-		# Rotate 90 degrees to climb the wall
+		# We hit a front wall -> Climb it
 		rotation -= PI/2 
+		_update_current_surface()
 	elif not is_on_floor():
-		# Rotate 90 degrees to wrap around the corner
+		# We ran out of floor -> Wrap around the corner
 		rotation += PI/2
+		_update_current_surface()
 
+func _update_current_surface():
+	# Determine the new surface string based on current rotation
+	var angle = snapped(rotation, PI/2)
+	# Logic to map angle back to "bottom", "top", etc.
+	# Or simpler: use a RayCast2D to detect which side the block is on.		
 
 func animate(delta):
 	time_accumulator += delta

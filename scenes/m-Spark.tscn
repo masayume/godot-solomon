@@ -2,9 +2,14 @@
 
 [ext_resource type="Script" uid="uid://ct14d6lr7wpai" path="res://scripts/m-spark.gd" id="1_wd1a0"]
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wd1a0"]
+size = Vector2(32, 32)
+
 [node name="Spark" type="CharacterBody2D" unique_id=974803596]
+collision_layer = 2
 script = ExtResource("1_wd1a0")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=630680502]
+shape = SubResource("RectangleShape2D_wd1a0")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=114700362]

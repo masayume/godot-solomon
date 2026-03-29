@@ -193,12 +193,15 @@ func load_level(id: int):
 			instance.family = m["family"]
 
 			if instance.family == "spark":
-				var start_surface = GameConfig.monsterdata.spark.get("attached", "bottom")
+#				var start_surface = GameConfig.monsterdata.spark.get("attached", "bottom")
+				var start_surface = m["attached"]
 				instance.current_surface = start_surface 
 				# Adjust position to be flush with the block edge
 				match start_surface:
-					"bottom": instance.position.y += (tile_size / 2)
-					"top":    instance.position.y -= (tile_size / 2)
+					"bottom": instance.position.y += (tile_size / 2) # Push down to floor
+					"top":    instance.position.y -= (tile_size / 2) # Push up to ceiling
+					"left":   instance.position.x -= (tile_size / 2) # Push left to wall
+					"right":  instance.position.x += (tile_size / 2) # Push right to wall
 
 			#SIGNAL-ghost-3 Connect the signal from Ghost			
 			#LAMBDA for wall impact to pass 'false' for the 'crouching' parameter

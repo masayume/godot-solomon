@@ -5,6 +5,7 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ub4nf"]
 
 [node name="Chimera" type="CharacterBody2D" unique_id=1640507851]
+collision_layer = 2
 script = ExtResource("1_f4rpt")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1035332729]

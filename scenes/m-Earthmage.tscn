@@ -5,6 +5,7 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_xu73x"]
 
 [node name="Earthmage" type="CharacterBody2D" unique_id=1641962141]
+collision_layer = 2
 script = ExtResource("1_sliis")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1479987582]

@@ -5,6 +5,7 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_iiuvy"]
 
 [node name="Gargoyle" type="CharacterBody2D" unique_id=45146137]
+collision_layer = 2
 script = ExtResource("1_5sjxv")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=411585139]
