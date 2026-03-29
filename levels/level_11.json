@@ -20,12 +20,12 @@
   "monsters": [
 	{"pos": [2,12],"family":"pannel","direction":"down"},	
 	{"pos": [3,1],"family":"pannel","direction":"up"},	
-	{"pos": [4,3],"family":"spark"},	
-	{"pos": [6,6],"family":"spark"},	
-	{"pos": [8,5],"family":"spark"},	
-	{"pos": [9,5],"family":"spark"},	
-	{"pos": [10,4],"family":"spark"},	
-	{"pos": [5,12],"family":"spark"},	
+	{"pos": [4,3],"family":"spark","attached":"bottom"},
+	{"pos": [6,6],"family":"spark","attached":"bottom"},
+	{"pos": [8,5],"family":"spark","attached":"bottom"},
+	{"pos": [9,5],"family":"spark","attached":"bottom"},
+	{"pos": [10,4],"family":"spark","attached":"bottom"},
+	{"pos": [5,12],"family":"spark","attached":"bottom"},
   ],
 
   "blocks": [

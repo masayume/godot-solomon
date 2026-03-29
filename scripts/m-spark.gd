@@ -8,6 +8,8 @@ var anim_speed = 0.1
 var frame_index = 0
 var time_accumulator = 0.0
 
+var current_surface: String = "bottom"
+
 var gravity = GameConfig.monsterdata.spark.gravity
 
 func _ready():
@@ -34,17 +36,19 @@ func behave(_delta):
 
 	sprite.flip_h = velocity.x < 0
 
-	# Apply gravity
-	if not is_on_floor():
-		velocity.y += gravity * _delta
-	else:
-		velocity.y = 0
-		
-	# simple back-and-forth
-#	if is_on_wall():
-#		direction *= -1
+	# Move along the current surface normal (wall-crawler)
+	var move_dir = Vector2.RIGHT.rotated(rotation) 
+	velocity = move_dir * GameConfig.monsterdata.spark.speed
 
 	move_and_slide()
+
+	if is_on_wall():
+		# Rotate 90 degrees to climb the wall
+		rotation -= PI/2 
+	elif not is_on_floor():
+		# Rotate 90 degrees to wrap around the corner
+		rotation += PI/2
+
 
 func animate(delta):
 	time_accumulator += delta

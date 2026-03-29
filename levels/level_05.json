@@ -25,14 +25,14 @@
   ],
 
   "monsters": [
-	{"pos": [6,4],"family":"spark"},	
-	{"pos": [12,4],"family":"spark"},	
-	{"pos": [9,6],"family":"spark"},	
-	{"pos": [9,10],"family":"spark"},	
-	{"pos": [7,8],"family":"spark"},	
-	{"pos": [11,8],"family":"spark"},	
-	{"pos": [2,10],"family":"dragon"},	
-	{"pos": [14,10],"family":"dragon"},	
+	{"pos": [6,4],"family":"spark","attached":"bottom"},	
+	{"pos": [12,4],"family":"spark","attached":"bottom"},	
+	{"pos": [9,6],"family":"spark","attached":"bottom"},
+	{"pos": [9,10],"family":"spark","attached":"bottom"},
+	{"pos": [7,8],"family":"spark","attached":"bottom"},
+	{"pos": [11,8],"family":"spark","attached":"bottom"},
+	{"pos": [2,10],"family":"dragon","attached":"bottom"},
+	{"pos": [14,10],"family":"dragon","attached":"bottom"},
 
   ],
 

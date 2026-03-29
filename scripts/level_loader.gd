@@ -192,6 +192,14 @@ func load_level(id: int):
 			var instance = scenes[m["family"]].instantiate()
 			instance.family = m["family"]
 
+			if instance.family == "spark":
+				var start_surface = GameConfig.monsterdata.spark.get("attached", "bottom")
+				instance.current_surface = start_surface 
+				# Adjust position to be flush with the block edge
+				match start_surface:
+					"bottom": instance.position.y += (tile_size / 2)
+					"top":    instance.position.y -= (tile_size / 2)
+
 			#SIGNAL-ghost-3 Connect the signal from Ghost			
 			#LAMBDA for wall impact to pass 'false' for the 'crouching' parameter
 			# Only connect if the specific monster has the signal defined

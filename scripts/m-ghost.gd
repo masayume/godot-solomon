@@ -25,7 +25,6 @@ func _ready():
 	
 	setup_animation()
 
-# 	setup_trail_shader()
 	setup_trail()
 
 func _process(delta):
@@ -142,16 +141,3 @@ func setup_trail():
 	# so it stays behind in "World Space"
 	trail.top_level = true 
 	add_child(trail)
-
-func setup_trail_shader():
-	# 1. Create the material and load the shader file
-	var shader_res = load("res://resources/shaders/m-trail.gdshader")
-	var mat = ShaderMaterial.new()
-	mat.shader = shader_res
-	
-	# 2. Assign the material to the sprite
-	sprite.material = mat
-	
-	# 3. Set initial data-driven parameters
-	mat.set_shader_parameter("ghost_intensity", 0.6)
-	mat.set_shader_parameter("trail_color", Color(0.4, 0.7, 1.0, 0.8))
