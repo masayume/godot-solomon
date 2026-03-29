@@ -17,6 +17,11 @@
 
 	{"pos": [8,6],"family":"changejewel1"},	
 	{"pos": [8,8],"family":"jewel500"},	
+
+	{"pos": [7,7],"family":"green-orb"},	
+	{"pos": [9,7],"family":"green-orb"},	
+	{"pos": [9,2],"family":"blue-lantern"},	
+
   ],
 
   "monsters": [
@@ -28,17 +33,13 @@
 	{"pos": [11,8],"family":"spark"},	
 	{"pos": [2,10],"family":"dragon"},	
 	{"pos": [14,10],"family":"dragon"},	
+
   ],
 
   "blocks": [
 
 		{"pos": [4,10],"family": "shield"	},
 		{"pos": [12,10],"family": "shield"	},
-
-		{"pos": [7,7],"family":"green-orb"},	
-		{"pos": [9,7],"family":"green-orb"},	
-
-		{"pos": [9,2],"family":"blue-lantern"},	
 	
 		{ "pos": [2,5], "family": "stone"	},
 		{ "pos": [3,5], "family": "stone"	},

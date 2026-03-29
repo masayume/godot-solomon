@@ -19,6 +19,9 @@
 	{"pos": [7,4],"family":"jewel200"},	
 	{"pos": [9,4],"family":"jewel200"},	
 
+	{"pos": [7,7],"family":"green-orb"},	
+	{"pos": [9,7],"family":"green-orb"},	
+
   ],
 
   "monsters": [
@@ -33,9 +36,6 @@
 
 		{"pos": [4,11],"family": "shield"	},
 		{"pos": [12,11],"family": "shield"	},
-
-		{"pos": [7,7],"family":"green-orb"},	
-		{"pos": [9,7],"family":"green-orb"},	
 
 		{ "pos": [2,6], "family": "stone"	},
 		{ "pos": [2,8], "family": "stone"	},

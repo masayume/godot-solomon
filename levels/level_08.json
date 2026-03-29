@@ -23,8 +23,11 @@
 	{"pos": [9,8],"family":"jewel100"},	
 	{"pos": [10,9],"family":"jewel100"},	
 	{"pos": [12,9],"family":"jewel100"},	
-	{"pos": [13,8],"family":"changejewel1"},	
-	{"pos": [13,6],"family":"changejewel1"},	
+	{"pos": [13,8],"family":"changejewel1"},
+	{"pos": [13,6],"family":"changejewel1"},
+
+	{"pos": [7,6],"family":"green-orb"},	
+	{"pos": [9,6],"family":"green-orb"},	
   ],
 
   "monsters": [
@@ -47,9 +50,6 @@
 
 		{"pos": [5,12],"family": "shield"	},
 		{"pos": [12,12],"family": "shield"	},
-
-		{"pos": [7,6],"family":"green-orb"},	
-		{"pos": [9,6],"family":"green-orb"},	
 	
 		{ "pos": [2,4], "family": "stone"	},		{ "pos": [8,4], "family": "stone"	},
 		{ "pos": [14,4], "family": "stone"	},		

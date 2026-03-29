@@ -18,6 +18,8 @@
 	{"pos": [7,7],"family":"jewel2k"},	
 	{"pos": [9,5],"family":"jewel2k"},	
 	{"pos": [9,7],"family":"jewel2k"},	
+	
+	{"pos": [8,4],"family":"blue-lantern"},	
   ],
 
   "monsters": [
@@ -33,8 +35,6 @@
 
 		{"pos": [7,11],"family": "shield"	},
 		{"pos": [9,11],"family": "shield"	},
-
-		{"pos": [8,4],"family":"blue-lantern"},	
 
 		{ "pos": [8,1], "family": "stone"	},
 	
