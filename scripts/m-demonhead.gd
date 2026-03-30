@@ -1,7 +1,7 @@
 extends Monster
 class_name Demonhead
 
-var direction := -1
+var direction := 1
 
 var frames = []
 var anim_speed = 0.1
@@ -21,8 +21,6 @@ func _process(delta):
 
 func _physics_process(_delta):
 
-	velocity.x = direction * GameConfig.monsterdata.demonhead.speed
-
 	behave(_delta) # includes move_and_slide()
 
 	if is_on_wall():
@@ -30,7 +28,7 @@ func _physics_process(_delta):
 
 
 func behave(_delta):
-	velocity.x = direction * GameConfig.monsterdata[family].speed
+	velocity.x = 2 * direction * GameConfig.monsterdata[family].speed
 
 	sprite.flip_h = velocity.x < 0
 

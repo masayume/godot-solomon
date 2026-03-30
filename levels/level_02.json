@@ -22,6 +22,11 @@
 
   ],
 
+  "monsters": [
+	{"pos": [2,11],"family":"demonhead","direction":"right"},	
+	{"pos": [4,11],"family":"demonhead","direction":"right"},	
+  ],
+
   "blocks": [
 
 	{"pos": [2,11],"family": "shield"	},
