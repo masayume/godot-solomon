@@ -195,13 +195,18 @@ func load_level(id: int):
 			if instance.family == "spark":
 #				var start_surface = GameConfig.monsterdata.spark.get("attached", "bottom")
 				var start_surface = m["attached"]
+				print("spark attached to ", start_surface) 
 				instance.current_surface = start_surface 
 				# Adjust position to be flush with the block edge
+				var spawn_pos = GameConfig.grid_to_local(m["pos"][0], m["pos"][1], tile_size, x_off, y_off)
+
 				match start_surface:
-					"bottom": instance.position.y += (tile_size / 2) # Push down to floor
-					"top":    instance.position.y -= (tile_size / 2) # Push up to ceiling
-					"left":   instance.position.x -= (tile_size / 2) # Push left to wall
-					"right":  instance.position.x += (tile_size / 2) # Push right to wall
+					"bottom": spawn_pos.y += (tile_size / 2) - 1 
+					"top":    spawn_pos.y -= (tile_size / 2) - 1
+					"left":   spawn_pos.x -= (tile_size / 2) - 1
+					"right":  spawn_pos.x += (tile_size / 2) - 1
+
+				instance.position = spawn_pos
 
 			#SIGNAL-ghost-3 Connect the signal from Ghost			
 			#LAMBDA for wall impact to pass 'false' for the 'crouching' parameter
@@ -210,6 +215,7 @@ func load_level(id: int):
 				instance.wall_impact.connect(
 					func(pos, dir): create_or_destroy_block(pos, dir, false)
 				)
+				
 			if m.has("direction"):
 				var dir = m["direction"]
 				if dir == "up":
@@ -228,19 +234,19 @@ func load_level(id: int):
 			instance.add_to_group("debug_collision")
 			instance.add_to_group("monstergroup")
 
-			add_child(instance)
-
 			if instance.family == "spark" or instance.family == "dragon":
 				debug_monster(instance)
-			
-			instance.position = GameConfig.grid_to_local(
-				m["pos"][0],
-				m["pos"][1],
-				tile_size,
-				x_off,
-				y_off
-			)
+
 			add_child(instance)
+			
+			if instance.family != "spark":
+				instance.position = GameConfig.grid_to_local(
+					m["pos"][0],
+					m["pos"][1],
+					tile_size,
+					x_off,
+					y_off
+				)
 
 			if GameConfig.gamedata.game.collider_debug:
 				var shape = instance.get_node_or_null("CollisionShape2D")

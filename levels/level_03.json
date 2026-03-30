@@ -24,7 +24,7 @@
 	{"pos": [2,10],"family":"pannel"},	
 	{"pos": [8,2],"family":"spark","attached":"bottom"},
 	{"pos": [12,11],"family":"spark","attached":"bottom"},
-	{"pos": [12,9],"family":"spark","attached":"bottom"},
+	{"pos": [12,9],"family":"spark","attached":"top"},
 	{"pos": [2,4],"family":"gargoyle"},	
 	{"pos": [6,5],"family":"dragon"},	
 	{"pos": [9,5],"family":"dragon"},	

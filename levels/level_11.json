@@ -25,7 +25,7 @@
 	{"pos": [8,5],"family":"spark","attached":"bottom"},
 	{"pos": [9,5],"family":"spark","attached":"bottom"},
 	{"pos": [10,4],"family":"spark","attached":"bottom"},
-	{"pos": [5,12],"family":"spark","attached":"bottom"},
+	{"pos": [5,12],"family":"spark","attached":"top"},
   ],
 
   "blocks": [

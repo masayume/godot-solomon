@@ -42,6 +42,7 @@ func _physics_process(_delta):
 
 
 func behave(_delta):
+		
 	# 1. Calculate direction based on current rotation
 	# Vector2.RIGHT.rotated(rotation) gives us the 'Forward' vector
 	var move_dir = Vector2.RIGHT.rotated(rotation) 
@@ -58,11 +59,11 @@ func behave(_delta):
 	if is_on_wall():
 		# We hit a front wall -> Climb it
 		rotation -= PI/2 
-		_update_current_surface()
+#		_update_current_surface()
 	elif not is_on_floor():
 		# We ran out of floor -> Wrap around the corner
 		rotation += PI/2
-		_update_current_surface()
+#		_update_current_surface()
 
 func _update_current_surface():
 	# Determine the new surface string based on current rotation
