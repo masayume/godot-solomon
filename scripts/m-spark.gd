@@ -23,11 +23,16 @@ var surface_normals = {
 func _ready():
 	family = "spark"
 	super._ready()
-
+	z_index = 30
 	# Initial rotation based on the starting surface
 	rotation = surface_normals[current_surface].angle() + PI/2
 		
 	setup_animation()
+
+	# Force visibility of collision for this specific instance
+	# if you want to be 100% sure during debug
+	if get_node_or_null("CollisionShape2D"):
+		get_node("CollisionShape2D").visible = true
 
 func _process(delta):
 	animate(delta)
@@ -44,8 +49,9 @@ func behave(_delta):
 
 	# 2. Update 'up_direction' so Godot knows what is 'floor' vs 'wall' 
 	# for this specific surface
-	up_direction = surface_normals[current_surface]
-
+#	up_direction = surface_normals[current_surface]
+	up_direction = surface_normals.get(current_surface, Vector2.UP)
+	
 	move_and_slide()
 
 	# 3. Handle Corner Turning

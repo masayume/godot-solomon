@@ -22,6 +22,14 @@
 	{"pos": [7,7],"family":"green-orb"},	
 	{"pos": [9,7],"family":"green-orb"},	
 
+	{"pos": [4,8],"family":"jewel500","type":"hidden"},	
+	{"pos": [6,8],"family":"jewel1k","type":"hidden"},	
+	{"pos": [8,8],"family":"jewel2k","type":"hidden"},	
+	{"pos": [10,8],"family":"jewel5k","type":"hidden"},	
+	{"pos": [12,8],"family":"jewel10k","type":"hidden"},	
+	{"pos": [15,7],"family":"time-potion2","type":"hidden"},	
+	{"pos": [8,2],"family":"gold-bell","type":"hidden"},	
+
   ],
 
   "monsters": [

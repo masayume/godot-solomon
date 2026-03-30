@@ -28,6 +28,11 @@
 
 	{"pos": [7,6],"family":"green-orb"},	
 	{"pos": [9,6],"family":"green-orb"},	
+
+	{"pos": [8,2],"family":"blue-hourglass","type":"hidden"},	
+	{"pos": [3,7],"family":"jewel10k","type":"hidden"},
+	{"pos": [13,7],"family":"time-potion2","type":"hidden"},	
+
   ],
 
   "monsters": [

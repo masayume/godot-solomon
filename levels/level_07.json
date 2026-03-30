@@ -16,7 +16,14 @@
 	{"pos": [12,6],"family":"jewel5k"},	
 	{"pos": [13,6],"family":"jewel5k"},	
 
-	{"pos": [14,1],"family":"blue-lantern"},	
+	{"pos": [14,1],"family":"blue-lantern"},
+	
+	{"pos": [2,10],"family":"gold-bell","type":"hidden"},
+	{"pos": [3,10],"family":"gold-crane","type":"hidden"},
+	{"pos": [2,1],"family":"gold-bell","type":"hidden"},	
+	{"pos": [5,3],"family":"jewel10k","type":"hidden"},
+	{"pos": [13,1],"family":"green-orb","type":"hidden"},	
+
   ],
 
   "monsters": [

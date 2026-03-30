@@ -14,6 +14,10 @@
 	{"pos": [11,4],"family":"key"},	
 	{"pos": [12,12],"family":"gold-bell"},	
 
+	{"pos": [4,12],"family":"gold-bell","type":"hidden"},	
+	{"pos": [12,6],"family":"jewel5k","type":"hidden"},	
+	{"pos": [2,3],"family":"fire-potion","type":"hidden"},	
+
   ],
 
   "monsters": [

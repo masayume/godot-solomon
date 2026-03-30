@@ -13,7 +13,7 @@ var frame_index = 0
 var time_accumulator = 0.0
 
 func _ready():
-	z_index = 0
+	z_index = 10
 	set_texture()
 	set_random_variant()
 	set_collidable()

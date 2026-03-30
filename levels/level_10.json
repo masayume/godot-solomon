@@ -13,15 +13,14 @@
 	{"pos":[13,8],"family":"key"},
 	{"pos":[2,8],"family":"door"},
 	{"pos":[2,12],"family":"gold-bell"},
-	{"pos":[7,5],"family":"jewel2k"},
-	{"pos":[7,7],"family":"jewel2k"},
-	{"pos":[9,5],"family":"jewel2k"},
-	{"pos":[9,7],"family":"jewel2k"}
-
 	{"pos": [10,1],"family":"green-orb"},	
 	{"pos": [12,1],"family":"green-orb"},	
 	{"pos": [14,1],"family":"green-orb"},	
 
+	{"pos": [15,8],"family":"jewel5k","type":"hidden"},
+	{"pos": [11,8],"family":"changejewel2","type":"hidden"},
+	{"pos": [4,12],"family":"jewel10k","type":"hidden"},
+	{"pos": [1,10],"family":"blue-hourglass","type":"hidden"},
 ],
 
 "blocks": [

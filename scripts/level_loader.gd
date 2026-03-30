@@ -59,7 +59,7 @@ func center_level():
 #	print("LEVEL POS:", position)g
 
 		
-func spawn_monster(tile_x, tile_y):
+func spawn_monster2DEL(tile_x, tile_y):
 	var monster = monster_scene.instantiate()
 	monster.position = Vector2(tile_x * tile_size, tile_y * tile_size)
 #	level.add_child(monster)
@@ -210,6 +210,18 @@ func load_level(id: int):
 				instance.wall_impact.connect(
 					func(pos, dir): create_or_destroy_block(pos, dir, false)
 				)
+			if m.has("direction"):
+				var dir = m["direction"]
+				if dir == "up":
+					instance.rotation_degrees = -90
+					print(instance.family, " UP")
+				elif dir == "down":
+					instance.rotation_degrees = 90
+					print(instance.family, " DOWN")
+				elif dir == "left":
+			#		monster.rotation_degrees = 180		
+					instance.scale.x = -1
+					print(instance.family, " LEFT")
 			
 			instance.position = GameConfig.grid_to_local(
 				m["pos"][0],
@@ -219,6 +231,15 @@ func load_level(id: int):
 				y_off
 			)
 			add_child(instance)
+
+			if GameConfig.gamedata.game.collider_debug:
+				var shape = instance.get_node_or_null("CollisionShape2D")
+				if shape:
+					# This forces the collider to be drawn with a specific color at runtime
+					shape.z_index = 100          # Ensure it draws over blocks
+					shape.visible = true 
+					shape.modulate = Color(1, 0, 0, 0.8) # Bright Red
+					print("Forcing collider visibility for: ", instance.family)
 
 	# Spawn blocks
 	for b in data["blocks"]:
@@ -255,7 +276,7 @@ func add_block(bx, by, type):
 		y_off           # vertical centering offset
 	)	
 
-func add_monster(mx, my, type, dir):
+func add_monster2DEL(mx, my, type, dir):
 	var monster = monster_scene.instantiate()
 
 	var monster_x = mx
@@ -269,13 +290,19 @@ func add_monster(mx, my, type, dir):
 
 	add_child(monster)
 
+	if monster.family == "spark" or monster.family == "dragon":
+		debug_monster(monster)
+
 	if dir == "up":
 		monster.rotation_degrees = -90
+		print(monster.family, " UP")
 	elif dir == "down":
 		monster.rotation_degrees = 90
+		print(monster.family, " DOWN")
 	elif dir == "left":
 #		monster.rotation_degrees = 180		
 		monster.scale.x = -1
+		print(monster.family, " LEFT")
 
 	monster.position = GameConfig.grid_to_local(
 		monster_x,        # grid column
@@ -286,6 +313,16 @@ func add_monster(mx, my, type, dir):
 	)	
 
 
+func debug_monster(monster):
+	print("--- DEBUG SPARK ---")
+	print("Position: ", monster.position)
+	print("Scale: ", monster.scale)
+	print("Visible: ", monster.visible)
+	var shape = monster.get_node_or_null("CollisionShape2D")
+	if shape:
+		print("Shape Found: ", shape.shape)
+		shape.debug_color = Color(1, 0, 0, 0.5) # Force it to Red
+		
 func add_item(ix, iy, type):
 	var item = item_scene.instantiate()
 

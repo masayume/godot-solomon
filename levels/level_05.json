@@ -22,6 +22,10 @@
 	{"pos": [9,7],"family":"green-orb"},	
 	{"pos": [9,2],"family":"blue-lantern"},	
 
+	{"pos": [5,3],"family":"jewel200","type":"hidden"},	
+	{"pos": [11,3],"family":"jewel200","type":"hidden"},	
+	{"pos": [8,11],"family":"gold-bell","type":"hidden"},	
+
   ],
 
   "monsters": [

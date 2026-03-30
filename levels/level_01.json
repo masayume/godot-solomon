@@ -18,6 +18,11 @@
 	{"pos": [3,7],"family":"green-orb"},	
 	{"pos": [13,7],"family":"green-orb"},	
 
+	{"pos": [7,7],"family":"jewel200","type":"hidden"},	
+	{"pos": [8,7],"family":"jewel500","type":"hidden"},	
+	{"pos": [9,7],"family":"jewel200","type":"hidden"},	
+	{"pos": [8,12],"family":"blue-hourglass","type":"hidden"},	
+
   ],
 
   "monsters": [

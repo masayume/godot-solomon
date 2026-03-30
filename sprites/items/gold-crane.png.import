@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://buvptrcboxqab"
-path="res://.godot/imported/timepotion2.png-3da7e51fa9c2e02f916a202febfcb078.ctex"
+uid="uid://d2yl2mn2ea3u3"
+path="res://.godot/imported/gold-crane.png-f041d4c736385dc26806d385c90f383f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://sprites/items/timepotion2.png"
-dest_files=["res://.godot/imported/timepotion2.png-3da7e51fa9c2e02f916a202febfcb078.ctex"]
+source_file="res://sprites/items/gold-crane.png"
+dest_files=["res://.godot/imported/gold-crane.png-f041d4c736385dc26806d385c90f383f.ctex"]
 
 [params]
 
