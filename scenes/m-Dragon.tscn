@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://cva1ed8062pi8" path="res://scripts/m-dragon.gd" id="1_pjlxh"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_xrpnb"]
+size = Vector2(44, 44)
 
 [node name="Dragon" type="CharacterBody2D" unique_id=1208613987]
 collision_layer = 2

@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://cdf4tl8cydk4w" path="res://scripts/m-gargoyle.gd" id="1_5sjxv"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_iiuvy"]
+size = Vector2(44, 44)
 
 [node name="Gargoyle" type="CharacterBody2D" unique_id=45146137]
 collision_layer = 2

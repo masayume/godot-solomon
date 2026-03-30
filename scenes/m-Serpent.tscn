@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://smlyr7ikep33" path="res://scripts/m-serpent.gd" id="1_e3pns"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_r1u4m"]
+size = Vector2(44, 44)
 
 [node name="Serpent" type="CharacterBody2D" unique_id=2045372306]
 collision_layer = 2

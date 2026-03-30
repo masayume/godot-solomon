@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://dx4rivdqkgpbp" path="res://scripts/m-demonhead.gd" id="1_36tnp"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ukkmr"]
+size = Vector2(44, 44)
 
 [node name="Demonhead" type="CharacterBody2D" unique_id=2093658613]
 collision_layer = 2

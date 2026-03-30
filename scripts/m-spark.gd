@@ -42,16 +42,15 @@ func _physics_process(_delta):
 
 
 func behave(_delta):
-		
+	
+	# 2. Update 'up_direction' so Godot knows what is 'floor' vs 'wall' 
+	# for this specific surface
+	up_direction = surface_normals.get(current_surface, Vector2.UP)
+
 	# 1. Calculate direction based on current rotation
 	# Vector2.RIGHT.rotated(rotation) gives us the 'Forward' vector
 	var move_dir = Vector2.RIGHT.rotated(rotation) 
 	velocity = move_dir * direction * GameConfig.monsterdata[family].speed
-
-	# 2. Update 'up_direction' so Godot knows what is 'floor' vs 'wall' 
-	# for this specific surface
-#	up_direction = surface_normals[current_surface]
-	up_direction = surface_normals.get(current_surface, Vector2.UP)
 	
 	move_and_slide()
 
@@ -59,17 +58,26 @@ func behave(_delta):
 	if is_on_wall():
 		# We hit a front wall -> Climb it
 		rotation -= PI/2 
-#		_update_current_surface()
+		_update_current_surface()
 	elif not is_on_floor():
 		# We ran out of floor -> Wrap around the corner
 		rotation += PI/2
-#		_update_current_surface()
+		_update_current_surface()
 
+		# CRITICAL: After rotating outward, move the spark 1-2 pixels
+		# forward so it doesn't immediately think it's 'on a wall' in the next frame
+		global_position += velocity * _delta
+		
 func _update_current_surface():
-	# Determine the new surface string based on current rotation
-	var angle = snapped(rotation, PI/2)
-	# Logic to map angle back to "bottom", "top", etc.
-	# Or simpler: use a RayCast2D to detect which side the block is on.		
+	# Use the current rotation (snapped to 90 deg) to find the new surface
+	var angle = int(round(rad_to_deg(rotation))) % 360
+	if angle < 0: angle += 360
+
+	match angle:
+		0, 360: current_surface = "bottom"
+		90:      current_surface = "left"
+		180:     current_surface = "top"
+		270:     current_surface = "right"
 
 func animate(delta):
 	time_accumulator += delta
