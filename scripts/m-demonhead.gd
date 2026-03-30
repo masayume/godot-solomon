@@ -10,6 +10,9 @@ var time_accumulator = 0.0
 
 var gravity = GameConfig.monsterdata.demonhead.gravity
 
+#SIGNAL-demonhead-1 Define the signal with parameters able to destroy a block when hit
+signal wall_impact(pos: Vector2, dir: int)
+
 func _ready():
 	family = "demonhead"
 	super._ready()
@@ -24,6 +27,9 @@ func _physics_process(_delta):
 	behave(_delta) # includes move_and_slide()
 
 	if is_on_wall():
+		#SIGNAL-demonhead-2 Emit the signal instead of calling a parent method directly
+		wall_impact.emit(global_position, direction)		
+		
 		direction *= -1
 
 
