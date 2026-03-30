@@ -222,6 +222,16 @@ func load_level(id: int):
 			#		monster.rotation_degrees = 180		
 					instance.scale.x = -1
 					print(instance.family, " LEFT")
+
+			instance.name = "MO_" + str(instance.family)
+
+			instance.add_to_group("debug_collision")
+			instance.add_to_group("monstergroup")
+
+			add_child(instance)
+
+			if instance.family == "spark" or instance.family == "dragon":
+				debug_monster(instance)
 			
 			instance.position = GameConfig.grid_to_local(
 				m["pos"][0],
