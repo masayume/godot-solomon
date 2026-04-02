@@ -20,7 +20,7 @@ func _ready():
 	setup_animation()
 	
 func set_texture():
-	var path = "res://sprites/blocks/%s.png" % family
+	var path = GameConfig.blockdata[family].get("sprite")
 	sprite.texture = load(path)
 
 func set_random_variant():
@@ -29,18 +29,20 @@ func set_random_variant():
 	if frames.size() > 1:
 		sprite.region_enabled = false
 		return
-
+	else:
 	# 2. Otherwise, treat as a standard static block with variants 
-	var tile_index = randi() % variants
-	var x = tile_index * tile_size
-	sprite.region_enabled = true
-	sprite.region_rect = Rect2(x, 0, tile_size, tile_size)
+		var tile_index
+		if GameConfig.blockdata[family].get("variants") == 0:
+			tile_index = variants
+		else:
+			tile_index = randi() % variants
 		
-func set_random_variant_old():
-	var tile_index = randi() % variants
-	var x = tile_index * tile_size
-	sprite.region_enabled = true
-	sprite.region_rect = Rect2(x, 0, tile_size, tile_size)
+		if family == "demonshield":
+			print("demonshield tile_index: ", tile_index, " ", GameConfig.blockdata[family].get("variants"))
+		var x = tile_index * tile_size
+		sprite.region_enabled = true
+		sprite.region_rect = Rect2(x, 0, tile_size, tile_size)
+		
 
 func set_collidable():
 	

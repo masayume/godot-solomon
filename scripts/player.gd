@@ -117,8 +117,9 @@ func stand_up():
 	
 func _input(event):
 	if event.is_action_pressed("fire"):
-		print("is_action_pressed(fire)")
-
+#		print("is_action_pressed(fire)")
+		return
+		
 ###MAIN_INTERACTION player interacts with items
 func _on_interaction_detector_area_entered(area: Area2D):
 	# The 'area' is the child of the Item. We want the Item itself.

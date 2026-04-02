@@ -29,8 +29,8 @@
 
   "blocks": [
 
-	{"pos": [2,11],"family": "shield"	},
-	{"pos": [4,11],"family": "shield"	},
+	{"pos": [2,11],"family": "demonshield"	},
+	{"pos": [4,11],"family": "demonshield"	},
 
 	{ "pos": [3,3], "family": "earth"},
 	{ "pos": [2,3], "family": "earth"},

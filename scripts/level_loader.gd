@@ -58,13 +58,6 @@ func center_level():
 #func _process(delta):
 #	print("LEVEL POS:", position)g
 
-		
-func spawn_monster2DEL(tile_x, tile_y):
-	var monster = monster_scene.instantiate()
-	monster.position = Vector2(tile_x * tile_size, tile_y * tile_size)
-#	level.add_child(monster)
-	call_deferred("add_child", monster)
-
 
 func spawn_item(tile_x, tile_y):
 	var item = item_scene.instantiate()
@@ -135,19 +128,7 @@ func _on_foop_finished(grid_pos, type):
 	# NOW create the actual block 
 	add_block(grid_pos.x, grid_pos.y, type)
 
-	
-func spawn_player(px, py, xoff, yoff):
 
-	var player = player_scene.instantiate()
-	player.add_to_group("playergroup")
-
-	# add to the SAME node that holds the blocks
-	add_child(player)
-
-	# now the transform chain is correct
-	player.spawn_at(px, py, xoff, yoff)
-	player.fire_pressed.connect(_on_player_fire)
-	
 
 func load_level(id: int):
 	var path = "res://levels/level_%02d.json" % id
@@ -174,102 +155,20 @@ func load_level(id: int):
 	# show level info: level_loader reads it → exposes it → UI displays it.
 	level_label.text = "LEVEL %d - %s" % [data["id"], data["name"]]
 
+	# Hide UI or show Level Card
+	level_label.text = "ROOM %d - %s" % [data["id"], data["name"]]
+	level_label.visible = true 
+
+	# 1. Background stays visible, but we delay gameplay
+	# Wrap your spawning in an intro sequence
+	_run_level_intro(data)
+
 	x_off = (-screen_size[0] / 2) + ((width / 2) * tile_size) / 2
 	y_off = -((height / 2) * tile_size) 
 
-	spawn_player(
-		player_start[0],   # grid X
-		player_start[1],   # grid Y
-		x_off,       	   # same centering offset used for blocks
-		y_off
-	)
-	# print("player_start: [" + str(player_start[0]) + ","  + str(player_start[1]) + "] x_off:"  + str(x_off) + " y_off:"  + str(y_off))
-
-	# Spawn monsters
-	if data.has("monsters"):
-		for m in data["monsters"]:
-			# Create a new monster instance from scene		
-			var instance = scenes[m["family"]].instantiate()
-			instance.family = m["family"]
-
-			if instance.family == "spark":
-#				var start_surface = GameConfig.monsterdata.spark.get("attached", "bottom")
-				var start_surface = m["attached"]
-				print("spark attached to ", start_surface) 
-				instance.current_surface = start_surface 
-				# Adjust position to be flush with the block edge
-				var spawn_pos = GameConfig.grid_to_local(m["pos"][0], m["pos"][1], tile_size, x_off, y_off)
-
-				match start_surface:
-					"bottom": spawn_pos.y += (tile_size / 2) - 1 
-					"top":    spawn_pos.y -= (tile_size / 2) - 1
-					"left":   spawn_pos.x -= (tile_size / 2) - 1
-					"right":  spawn_pos.x += (tile_size / 2) - 1
-
-				instance.position = spawn_pos
-
-			#SIGNAL-ghost-3 Connect the signal from Ghost			
-			#LAMBDA for wall impact to pass 'false' for the 'crouching' parameter
-			# Only connect if the specific monster has the signal defined
-			if instance.has_signal("wall_impact"):
-				instance.wall_impact.connect(
-					func(pos, dir): create_or_destroy_block(pos, dir, false)
-				)
-				
-			if m.has("direction"):
-				var dir = m["direction"]
-				if dir == "up":
-					instance.rotation_degrees = -90
-					print(instance.family, " UP")
-				elif dir == "down":
-					instance.rotation_degrees = 90
-					print(instance.family, " DOWN")
-				elif dir == "left":
-			#		monster.rotation_degrees = 180		
-					instance.scale.x = -1
-					print(instance.family, " LEFT")
-
-			instance.name = "MO_" + str(instance.family)
-
-			instance.add_to_group("debug_collision")
-			instance.add_to_group("monstergroup")
-
-			if instance.family == "spark" or instance.family == "dragon":
-				debug_monster(instance)
-
-			add_child(instance)
-			
-			if instance.family != "spark":
-				instance.position = GameConfig.grid_to_local(
-					m["pos"][0],
-					m["pos"][1],
-					tile_size,
-					x_off,
-					y_off
-				)
-
-			if GameConfig.gamedata.game.collider_debug:
-				var shape = instance.get_node_or_null("CollisionShape2D")
-				if shape:
-					# This forces the collider to be drawn with a specific color at runtime
-					shape.z_index = 100          # Ensure it draws over blocks
-					shape.visible = true 
-					shape.modulate = Color(1, 0, 0, 0.8) # Bright Red
-					print("Forcing collider visibility for: ", instance.family)
-
-	# Spawn blocks
-	for b in data["blocks"]:
-		# Create a new block instance from scene
-		add_block(b["pos"][0], b["pos"][1], b["family"])
-
-	# Spawn items
-	if data.has("items"):
-		for i in data["items"]:
-			# Create a new block instance from scene
-			add_item(i["pos"][0], i["pos"][1], i["family"])
 
 
-func add_block(bx, by, type):
+func add_block(bx, by, type, is_visible = false):
 	var block = block_scene.instantiate()
 
 	var block_x = bx
@@ -280,6 +179,8 @@ func add_block(bx, by, type):
 		
 	block.add_to_group("debug_collision")
 
+	block.visible = is_visible
+	
 	add_child(block)
 	var cell = Vector2i(bx, by)
 	blocks[cell] = block
@@ -292,54 +193,8 @@ func add_block(bx, by, type):
 		y_off           # vertical centering offset
 	)	
 
-func add_monster2DEL(mx, my, type, dir):
-	var monster = monster_scene.instantiate()
-
-	var monster_x = mx
-	var monster_y = my
-
-	monster.family = type
-	monster.name = "MO_" + str(monster.family)
-
-	monster.add_to_group("debug_collision")
-	monster.add_to_group("monstergroup")
-
-	add_child(monster)
-
-	if monster.family == "spark" or monster.family == "dragon":
-		debug_monster(monster)
-
-	if dir == "up":
-		monster.rotation_degrees = -90
-		print(monster.family, " UP")
-	elif dir == "down":
-		monster.rotation_degrees = 90
-		print(monster.family, " DOWN")
-	elif dir == "left":
-#		monster.rotation_degrees = 180		
-		monster.scale.x = -1
-		print(monster.family, " LEFT")
-
-	monster.position = GameConfig.grid_to_local(
-		monster_x,        # grid column
-		monster_y,        # grid row
-		tile_size,      # size of one tile in pixels
-		x_off,          # horizontal centering offset
-		y_off           # vertical centering offset
-	)	
-
-
-func debug_monster(monster):
-	print("--- DEBUG SPARK ---")
-	print("Position: ", monster.position)
-	print("Scale: ", monster.scale)
-	print("Visible: ", monster.visible)
-	var shape = monster.get_node_or_null("CollisionShape2D")
-	if shape:
-		print("Shape Found: ", shape.shape)
-		shape.debug_color = Color(1, 0, 0, 0.5) # Force it to Red
 		
-func add_item(ix, iy, type):
+func add_item(ix, iy, type, is_visible = false):
 	var item = item_scene.instantiate()
 
 	var item_x = ix
@@ -390,7 +245,9 @@ func add_item(ix, iy, type):
 	# Tell the item to refresh its debug info
 	if item.has_method("_update_debug_text"):
 		item._update_debug_text()
-		
+	
+	item.visible = is_visible
+	
 	add_child(item)
 
 	item.position = GameConfig.grid_to_local(
@@ -400,7 +257,19 @@ func add_item(ix, iy, type):
 		x_off,          # horizontal centering offset
 		y_off           # vertical centering offset
 	)	
-	
+
+func spawn_player(px, py, xoff, yoff):
+
+	var player = player_scene.instantiate()
+	player.add_to_group("playergroup")
+
+	# add to the SAME node that holds the blocks
+	add_child(player)
+
+	# now the transform chain is correct
+	player.spawn_at(px, py, xoff, yoff)
+	player.fire_pressed.connect(_on_player_fire)
+
 
 func start_level_transition():
 	
@@ -511,3 +380,192 @@ func debug_block(block):
 	shape.debug_color = Color(randf(), randf(), randf())
 	print("Top level:", shape.top_level)
 		
+func _run_level_intro(data):
+	# Initial state: Everything we are about to spawn should be hidden
+	# Or, we can spawn them and set visible = false
+	
+	# 1. Show room name for 3 seconds [cite: 8]
+	await get_tree().create_timer(3.0).timeout
+	level_label.visible = false
+
+	# 2. Spawn the level content but keep it invisible
+	_spawn_level_content_hidden(data)
+
+	# 3. Door closing animation (Logic needed for Door node)
+	# play_door_animation() 
+
+	# 4. Star to Key logic
+	await _animate_star_to_key(data["items"])
+
+	# 5. Star to Player logic
+	await _animate_star_to_player(data["player_start"])
+	
+	# Start Gameplay
+	get_tree().call_group("monstergroup", "set_physics_process", true)
+
+func _spawn_level_content_hidden(data):
+
+	var player_start = data["player_start"]
+
+	# 1. Clear previous level data if any 
+	blocks.clear()
+	monsters.clear()
+
+	# 2. Spawn Blocks (Hidden)
+	for b in data["blocks"]:
+		# Create a new block instance from scene
+		add_block(b["pos"][0], b["pos"][1], b["family"], false)
+
+	# 3. Spawn Monsters (Hidden + Physics Disabled)
+	if data.has("monsters"):
+		_spawn_monster_logic(data) # Refactor your m loop into this
+
+	# 4. Spawn Items (Hidden)
+	if data.has("items"):
+		for i in data["items"]:
+			# Create a new block instance from scene
+			add_item(i["pos"][0], i["pos"][1], i["family"], false)
+
+	# 5. Spawn Player (Hidden + Input Disabled)
+# 	spawn_player(data["player_start"][0], data["player_start"][1], x_off, y_off)
+	spawn_player(
+		player_start[0],   # grid X
+		player_start[1],   # grid Y
+		x_off,       	   # same centering offset used for blocks
+		y_off
+	)
+#	print("player_start: [" + str(player_start[0]) + ","  + str(player_start[1]) + "] x_off:"  + str(x_off) + " y_off:"  + str(y_off))
+
+	var player = get_tree().get_first_node_in_group("playergroup")
+	player.visible = false
+	player.set_process_input(false)
+
+
+func _spawn_monster_logic(data):
+	# Spawn monsters
+	if data.has("monsters"):
+		for m in data["monsters"]:
+			# Create a new monster instance from scene		
+			var instance = scenes[m["family"]].instantiate()
+			instance.family = m["family"]
+
+			if instance.family == "spark":
+#				var start_surface = GameConfig.monsterdata.spark.get("attached", "bottom")
+				var start_surface = m["attached"]
+				print("spark attached to ", start_surface) 
+				instance.current_surface = start_surface 
+				# Adjust position to be flush with the block edge
+				var spawn_pos = GameConfig.grid_to_local(m["pos"][0], m["pos"][1], tile_size, x_off, y_off)
+
+				match start_surface:
+					"bottom": spawn_pos.y += (tile_size / 2) - 1 
+					"top":    spawn_pos.y -= (tile_size / 2) - 1
+					"left":   spawn_pos.x -= (tile_size / 2) - 1
+					"right":  spawn_pos.x += (tile_size / 2) - 1
+
+				instance.position = spawn_pos
+
+			#SIGNAL-ghost-3 Connect the signal from Ghost			
+			#LAMBDA for wall impact to pass 'false' for the 'crouching' parameter
+			# Only connect if the specific monster has the signal defined
+			if instance.has_signal("wall_impact"):
+				instance.wall_impact.connect(
+					func(pos, dir): create_or_destroy_block(pos, dir, false)
+				)
+				
+			if m.has("direction"):
+				var dir = m["direction"]
+				if dir == "up":
+					instance.rotation_degrees = -90
+					print(instance.family, " UP")
+				elif dir == "down":
+					instance.rotation_degrees = 90
+					print(instance.family, " DOWN")
+				elif dir == "left":
+			#		monster.rotation_degrees = 180		
+					instance.scale.x = -1
+					print(instance.family, " LEFT")
+
+			instance.name = "MO_" + str(instance.family)
+
+			instance.add_to_group("debug_collision")
+			instance.add_to_group("monstergroup")
+
+			if instance.family == "spark" or instance.family == "dragon":
+				debug_monster(instance)
+
+			add_child(instance)
+			
+			if instance.family != "spark":
+				instance.position = GameConfig.grid_to_local(
+					m["pos"][0],
+					m["pos"][1],
+					tile_size,
+					x_off,
+					y_off
+				)
+
+			if GameConfig.gamedata.game.collider_debug:
+				var shape = instance.get_node_or_null("CollisionShape2D")
+				if shape:
+					# This forces the collider to be drawn with a specific color at runtime
+					shape.z_index = 100          # Ensure it draws over blocks
+					shape.visible = true 
+					shape.modulate = Color(1, 0, 0, 0.8) # Bright Red
+					print("Forcing collider visibility for: ", instance.family)
+
+			m.visible = false
+#			m.set_physics_process(false) 
+
+
+
+func _animate_star_to_key(items_data):
+	# Find the key in the items list
+	var key_pos_grid = Vector2i.ZERO
+	for i in items_data:
+		if i["family"] == "key":
+			key_pos_grid = Vector2i(i["pos"][0], i["pos"][1])
+			break
+			
+	var target_pos = GameConfig.grid_to_local(key_pos_grid.x, key_pos_grid.y, tile_size, x_off, y_off)
+	
+	# Instantiate a star FX
+	var star = fx_scene.instantiate() 
+	add_child(star)
+#	star.global_position = door_position # You'll need to define where the door is
+	
+	var tween = create_tween()
+	tween.tween_property(star, "global_position", target_pos, 1.5).set_trans(Tween.TRANS_SINE)
+	await tween.finished
+	
+	# Spawn the "Foop" smoke and show the key
+	spawn_fx("foop", target_pos, key_pos_grid, false)
+	# Find the key node in your 'items' dictionary/group and make it visible
+	star.queue_free()
+
+func _animate_star_to_player(player_start):
+	var target_pos = GameConfig.grid_to_local(player_start[0], player_start[1], tile_size, x_off, y_off)
+	
+	# Twirl animation: You can use a wrapper node to rotate the star 
+	# while the tween moves it to create the 'twirling' effect
+	var star = fx_scene.instantiate()
+	add_child(star)
+	
+	var tween = create_tween()
+	tween.tween_property(star, "global_position", target_pos, 1.0)
+	await tween.finished
+	
+	# Make player visible
+	get_tree().call_group("playergroup", "set_visible", true)
+	spawn_fx("foop", target_pos, Vector2i(player_start[0], player_start[1]), false)
+	star.queue_free()
+
+func debug_monster(monster):
+	print("--- DEBUG SPARK ---")
+	print("Position: ", monster.position)
+	print("Scale: ", monster.scale)
+	print("Visible: ", monster.visible)
+	var shape = monster.get_node_or_null("CollisionShape2D")
+	if shape:
+		print("Shape Found: ", shape.shape)
+		shape.debug_color = Color(1, 0, 0, 0.5) # Force it to Red

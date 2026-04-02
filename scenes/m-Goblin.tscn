@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://djxyuy2fhgw50" path="res://scripts/m-goblin.gd" id="1_4c4ub"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_4c4ub"]
+height = 36.0
 
 [node name="Goblin" type="CharacterBody2D" unique_id=343220961]
 collision_layer = 2
