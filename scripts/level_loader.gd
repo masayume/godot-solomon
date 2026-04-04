@@ -153,19 +153,27 @@ func load_level(id: int):
 	LevelRoot.position.y = -tile_size -(screen_size.y - level_pixel_size.y) / 2
 	
 	# show level info: level_loader reads it → exposes it → UI displays it.
-	level_label.text = "LEVEL %d - %s" % [data["id"], data["name"]]
-
 	# Hide UI or show Level Card
 	level_label.text = "ROOM %d - %s" % [data["id"], data["name"]]
 	level_label.visible = true 
 
-	# 1. Background stays visible, but we delay gameplay
-	# Wrap your spawning in an intro sequence
-	_run_level_intro(data)
-
 	x_off = (-screen_size[0] / 2) + ((width / 2) * tile_size) / 2
 	y_off = -((height / 2) * tile_size) 
 
+	# 1. Background stays visible, but we delay gameplay
+	# Wrap your spawning in an intro sequence
+	# 2. Spawn the level content but keep it invisible
+	_spawn_level_content_hidden(data)
+
+	# Instantiate the intro helper
+	var intro_manager = GameIntro.new(self)
+	print("calling play intro")
+	intro_manager.play_intro(data)
+	
+	# Start Gameplay
+#	get_tree().call_group("monstergroup", "set_physics_process", true)
+
+	
 
 
 func add_block(bx, by, type, is_visible = false):
@@ -269,7 +277,7 @@ func spawn_player(px, py, xoff, yoff):
 	# now the transform chain is correct
 	player.spawn_at(px, py, xoff, yoff)
 	player.fire_pressed.connect(_on_player_fire)
-
+	print("player spawned")
 
 func start_level_transition():
 	
@@ -380,28 +388,7 @@ func debug_block(block):
 	shape.debug_color = Color(randf(), randf(), randf())
 	print("Top level:", shape.top_level)
 		
-func _run_level_intro(data):
-	# Initial state: Everything we are about to spawn should be hidden
-	# Or, we can spawn them and set visible = false
 	
-	# 1. Show room name for 3 seconds [cite: 8]
-	await get_tree().create_timer(3.0).timeout
-	level_label.visible = false
-
-	# 2. Spawn the level content but keep it invisible
-	_spawn_level_content_hidden(data)
-
-	# 3. Door closing animation (Logic needed for Door node)
-	# play_door_animation() 
-
-	# 4. Star to Key logic
-	await _animate_star_to_key(data["items"])
-
-	# 5. Star to Player logic
-	await _animate_star_to_player(data["player_start"])
-	
-	# Start Gameplay
-	get_tree().call_group("monstergroup", "set_physics_process", true)
 
 func _spawn_level_content_hidden(data):
 
@@ -514,8 +501,8 @@ func _spawn_monster_logic(data):
 					shape.modulate = Color(1, 0, 0, 0.8) # Bright Red
 					print("Forcing collider visibility for: ", instance.family)
 
-			m.visible = false
-#			m.set_physics_process(false) 
+			instance.visible = false
+			instance.set_physics_process(false) 
 
 
 
