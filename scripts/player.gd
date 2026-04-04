@@ -5,7 +5,7 @@ extends CharacterBody2D
 @onready var gravity = GameConfig.gamedata.player.gravity
 @onready var off_xp = GameConfig.gamedata.player.off_xp
 @onready var sprite = $Sprite2D
-@onready var score_label: RichTextLabel = $"../../../UI/Score"
+@onready var score_label: RichTextLabel = $"../../UI/Score"
 
 var crouch_texture = preload("res://sprites/player/player-crouch-frames.png")
 var idle_texture = preload("res://sprites/player/player-idle-frames.png")

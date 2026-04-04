@@ -20,7 +20,8 @@ var scenes = {
 	"spark": preload("res://scenes/m-Spark.tscn"),
 }
 
-@onready var level_label: Label = $"../../UI/LevelInfo"
+@onready var level_label: Label = $"../UI/LevelInfo"
+@onready var intro_room_label: Label = $"../UI/IntroRoomLabel"
 
 const Grid = preload("res://scripts/grid.gd")
 
@@ -154,8 +155,8 @@ func load_level(id: int):
 	
 	# show level info: level_loader reads it → exposes it → UI displays it.
 	# Hide UI or show Level Card
-	level_label.text = "ROOM %d - %s" % [data["id"], data["name"]]
-	level_label.visible = true 
+#	level_label.text = "ROOM %d - %s" % [data["id"], data["name"]]
+#	level_label.visible = true 
 
 	x_off = (-screen_size[0] / 2) + ((width / 2) * tile_size) / 2
 	y_off = -((height / 2) * tile_size) 

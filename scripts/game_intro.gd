@@ -14,14 +14,16 @@ func play_intro(data: Dictionary):
 	await loader.get_tree().process_frame
 	
 	# 1. Show Room Name (3 Seconds)
-	loader.level_label.text = "ROOM %d - %s" % [data["id"], data["name"]]
+	loader.level_label.text = "Stage %d - %s" % [data["id"], data["name"]]
 	loader.level_label.visible = true
-	
+	loader.intro_room_label.text = "Stage %d - %s" % [data["id"], data["name"]]
+	loader.intro_room_label.visible = true
+		
 	# 2. Spawn everything at 50% opacity
 #	_spawn_dimmed_content(data)
 	
 	await loader.get_tree().create_timer(3.0).timeout
-	loader.level_label.visible = false
+	loader.intro_room_label.visible = false
 
 	# 3. Door Animation (Placeholder for your door logic)
 	# await _animate_door()
