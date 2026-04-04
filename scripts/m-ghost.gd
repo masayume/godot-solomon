@@ -29,7 +29,7 @@ func _ready():
 
 func _process(delta):
 	animate(delta)
-	var current_pos = global_position 
+#	var current_pos = global_position 
 
 	var current_offset = eye_offset
 	if $Sprite2D.flip_h:

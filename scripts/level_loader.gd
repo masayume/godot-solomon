@@ -139,7 +139,7 @@ func load_level(id: int):
 	tile_size = data["tile_size"]
 	var width = data["block_width"]
 	var height = data["block_height"]
-	var player_start = data["player_start"]
+#	var player_start = data["player_start"]
 
 	var screen_size = get_viewport_rect().size
 
@@ -176,7 +176,7 @@ func load_level(id: int):
 	
 
 
-func add_block(bx, by, type, is_visible = false):
+func add_block(bx, by, type, showing = false):
 	var block = block_scene.instantiate()
 
 	var block_x = bx
@@ -187,7 +187,7 @@ func add_block(bx, by, type, is_visible = false):
 		
 	block.add_to_group("debug_collision")
 
-	block.visible = is_visible
+	block.visible = showing
 	
 	add_child(block)
 	var cell = Vector2i(bx, by)
@@ -202,7 +202,7 @@ func add_block(bx, by, type, is_visible = false):
 	)	
 
 		
-func add_item(ix, iy, type, is_visible = false):
+func add_item(ix, iy, type, showing = false):
 	var item = item_scene.instantiate()
 
 	var item_x = ix
@@ -254,7 +254,7 @@ func add_item(ix, iy, type, is_visible = false):
 	if item.has_method("_update_debug_text"):
 		item._update_debug_text()
 	
-	item.visible = is_visible
+	item.visible = showing
 	
 	add_child(item)
 
@@ -346,7 +346,7 @@ func calculate_bonus():
 	return 100
 
 func show_level_card(level_id, level_name):
-	print("show_level_card")
+	print("show_level_card: ", level_name, " (", level_id, ")")
 	
 
 func show_ending_credits():
