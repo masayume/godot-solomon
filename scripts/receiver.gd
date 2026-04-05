@@ -3,14 +3,18 @@ class_name Receiver
 
 var data: Dictionary = {}
 
-func _ready():
+func _log():
 ###DEBUG_5l 	
 	# This will print: "Receiver added to: Key_Gold_01 with logic: collectible"
-	print("DEBUG: Receiver added to: ", get_parent().name, " with action_type: ", data.get("action_type", "NONE"))	
 	# Optional: Draw a small icon or change the parent's color to prove it's active
+#	print("DEBUG: Receiver added to: ", get_parent().name, " with action_type: ", data.get("action_type", "NONE"))	
+	return
+
+func _ready():
 #	if OS.is_debug_build():
 #		get_parent().modulate = Color.GREEN # Turns the item green if it has a receiver
-		
+	_log()
+
 func receive(action, source):
 	print(get_parent().name, " received ", action, " from: ", source.name)	
 	match GameConfig.itemdata.get("action_type"):

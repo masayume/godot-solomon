@@ -32,6 +32,8 @@ var blocks := {} 	## blocks dictionary to check/update; Vector2i  →  Block nod
 var monsters := {} 	## monsters dictionary to check/update; Vector2i  →  Block node
 var current_level
 
+	
+	
 func _ready():
 	center_level()
 	current_level = GameConfig.gamedata.sequence.initial_level
@@ -214,6 +216,13 @@ func add_item(ix, iy, type, showing = false):
 	
 	item.add_to_group("debug_collision")
 	item.add_to_group("itemgroup")
+
+	if (item.family == "door"):
+		item.add_to_group("doorgroup")
+
+	if (item.family == "key"):
+		item.add_to_group("keygroup")
+		
 
 ###TODO: fix duplicate collision_layer_mask/value
 	# 1. Physical Blocking Logic
@@ -506,47 +515,6 @@ func _spawn_monster_logic(data):
 			instance.set_physics_process(false) 
 
 
-
-func _animate_star_to_key(items_data):
-	# Find the key in the items list
-	var key_pos_grid = Vector2i.ZERO
-	for i in items_data:
-		if i["family"] == "key":
-			key_pos_grid = Vector2i(i["pos"][0], i["pos"][1])
-			break
-			
-	var target_pos = GameConfig.grid_to_local(key_pos_grid.x, key_pos_grid.y, tile_size, x_off, y_off)
-	
-	# Instantiate a star FX
-	var star = fx_scene.instantiate() 
-	add_child(star)
-#	star.global_position = door_position # You'll need to define where the door is
-	
-	var tween = create_tween()
-	tween.tween_property(star, "global_position", target_pos, 1.5).set_trans(Tween.TRANS_SINE)
-	await tween.finished
-	
-	# Spawn the "Foop" smoke and show the key
-	spawn_fx("foop", target_pos, key_pos_grid, false)
-	# Find the key node in your 'items' dictionary/group and make it visible
-	star.queue_free()
-
-func _animate_star_to_player(player_start):
-	var target_pos = GameConfig.grid_to_local(player_start[0], player_start[1], tile_size, x_off, y_off)
-	
-	# Twirl animation: You can use a wrapper node to rotate the star 
-	# while the tween moves it to create the 'twirling' effect
-	var star = fx_scene.instantiate()
-	add_child(star)
-	
-	var tween = create_tween()
-	tween.tween_property(star, "global_position", target_pos, 1.0)
-	await tween.finished
-	
-	# Make player visible
-	get_tree().call_group("playergroup", "set_visible", true)
-	spawn_fx("foop", target_pos, Vector2i(player_start[0], player_start[1]), false)
-	star.queue_free()
 
 func debug_monster(monster):
 	print("--- DEBUG SPARK ---")

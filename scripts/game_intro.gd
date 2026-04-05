@@ -4,6 +4,9 @@ class_name GameIntro
 var loader: Node2D
 var fx_scene: PackedScene
 
+var door_node: Node2D = null
+var key_node: Node2D = null
+
 func _init(_loader: Node2D):
 	loader = _loader
 	fx_scene = loader.fx_scene
@@ -14,28 +17,37 @@ func play_intro(data: Dictionary):
 	await loader.get_tree().process_frame
 	
 	# 1. Show Room Name (3 Seconds)
-	loader.level_label.text = "Stage %d - %s" % [data["id"], data["name"]]
+	loader.level_label.text = "Round %d - %s" % [data["id"], data["name"]]
 	loader.level_label.visible = true
-	loader.intro_room_label.text = "Stage %d - %s" % [data["id"], data["name"]]
+	loader.intro_room_label.text = "Round %d - %s" % [data["id"], data["name"]]
 	loader.intro_room_label.visible = true
 		
 	# 2. Spawn everything at 50% opacity
 #	_spawn_dimmed_content(data)
 	
-	await loader.get_tree().create_timer(3.0).timeout
+	await loader.get_tree().create_timer(1.0).timeout
 	loader.intro_room_label.visible = false
-
+	await loader.get_tree().create_timer(1.0).timeout
+	loader.intro_room_label.text = "READY!"
+	
 	# 3. Door Animation (Placeholder for your door logic)
-	# await _animate_door()
+	await _animate_door()
 
 	# 4. Star to Key
-	await _animate_star_to_target(data, "key")
+	door_node = loader.get_tree().get_first_node_in_group("doorgroup")
+	key_node = loader.get_tree().get_first_node_in_group("keygroup")
+	await _animate_star_to_target(door_node, key_node) # fx from door to key position
 
 	# 5. Star to Player
-	await _animate_star_to_target(data, "player")
+#	await _animate_star_to_target(data, "player") # fx stars twirl around player position
 	
 	# 6. Finalize: Make everything else (blocks/monsters) 100% visible
 	_reveal_all_content()
+
+func _animate_door():
+	# get door node
+	door_node = loader.get_tree().get_first_node_in_group("doorgroup")
+	door_node.visible = true
 
 func _spawn_dimmed_content(data):
 	# Call loader functions with 0.5 opacity
@@ -53,42 +65,57 @@ func _spawn_dimmed_content(data):
 	loader.get_tree().call_group("monstergroup", "set_physics_process", false)
 	loader.get_tree().call_group("monstergroup", "set_modulate", Color(1,1,1,0.5))
 
-func _animate_star_to_target(data, target_type: String):
-	var target_pos: Vector2
-	var grid_pos: Vector2i
-	var target_node: Node2D
+# Inside game_intro.gd
 
-	if target_type == "key":
-		for i in data["items"]:
-			if i["family"] == "key":
-				grid_pos = Vector2i(i["pos"][0], i["pos"][1])
-				target_pos = GameConfig.grid_to_local(grid_pos.x, grid_pos.y, loader.tile_size, loader.x_off, loader.y_off)
-				# Find the actual node in the scene
-				for item in loader.get_tree().get_nodes_in_group("itemgroup"):
-					if item.family == "key": target_node = item
-				break
-	else: # Player
-		grid_pos = Vector2i(data["player_start"][0], data["player_start"][1])
-		target_node = loader.get_tree().get_first_node_in_group("playergroup")
-		target_pos = target_node.global_position
-				
-	if target_node:
-		var star = fx_scene.instantiate()
-		loader.add_child(star)
-		star.global_position = Vector2(0,0) # Starting point (the door)
+func _animate_star_to_target(source_node: Node2D, dest_node: Node2D):
+	if source_node == null or dest_node == null:
+		print("Intro Error: Missing source or destination node")
+		return
+
+	# 1. Create the star at the source position (the door)
+	var star = fx_scene.instantiate()
+	loader.add_child(star)
+	star.global_position = source_node.global_position 
+	if star.has_method("setup_fx"):
+		star.setup_fx("star") # matches [star] section in fx.cfg 
+
+	# 2. Get the specific movement duration from config
+	var fx_data = GameConfig.fxdata.get("star", {})
+	# Fallback to 1.0 if move_speed is missing in cfg
+	var move_duration = fx_data.get("move_speed", 1.0)
+	
+	# 3.1 Setup the Tween for movement
+	var target_pos = dest_node.global_position 
+	var tween = loader.create_tween()	
+	
+	# 3.2 Trans_Sine + Ease_In_Out gives it that smooth "magical" feel
+	# Use move_duration for the time parameter
+	tween.tween_property(star, "global_position", target_pos, move_duration)\
+		.set_trans(Tween.TRANS_SINE)\
+		.set_ease(Tween.EASE_IN_OUT)	
 		
-		var tween = loader.create_tween()
-		tween.tween_property(star, "global_position", target_pos, 1.2).set_trans(Tween.TRANS_SINE)
-		await tween.finished
-		
-		loader.spawn_fx("foop", target_pos, grid_pos, false)
-		target_node.modulate.a = 1.0 # Pop to full visibility
-		star.queue_free()
+	
+	# 4. Wait for the star to arrive
+	await tween.finished 
+	
+	# 5. Trigger arrival effects
+	# We pass a dummy grid pos because spawn_fx usually expects one
+	var grid_pos = Vector2i(-1, -1) 
+	#loader.spawn_fx("star", target_pos, grid_pos, false) 
+	loader.spawn_fx("foop", target_pos, Vector2i(-1, -1), false)
+	
+	# 5. Reveal the destination node
+	dest_node.modulate.a = 1.0 
+	
+	# 6. Clean up the star
+	star.queue_free()
+
 
 func _reveal_all_content():
 	# Make everything else full opacity and start physics
 	for node in loader.get_children():
 		node.modulate.a = 1.0
+		node.visible = true
 	
 	loader.get_tree().call_group("monstergroup", "set_physics_process", true)
 	var player = loader.get_tree().get_first_node_in_group("playergroup")
