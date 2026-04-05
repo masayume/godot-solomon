@@ -6,6 +6,7 @@ var fx_scene: PackedScene
 
 var door_node: Node2D = null
 var key_node: Node2D = null
+var player_node: Node2D = null
 
 func _init(_loader: Node2D):
 	loader = _loader
@@ -36,10 +37,11 @@ func play_intro(data: Dictionary):
 	# 4. Star to Key
 	door_node = loader.get_tree().get_first_node_in_group("doorgroup")
 	key_node = loader.get_tree().get_first_node_in_group("keygroup")
+	player_node = loader.get_tree().get_first_node_in_group("playergroup")
 	await _animate_star_to_target(door_node, key_node) # fx from door to key position
 
 	# 5. Star to Player
-#	await _animate_star_to_target(data, "player") # fx stars twirl around player position
+	await _animate_stars_twirl_out(player_node) # fx stars twirl around player position
 	
 	# 6. Finalize: Make everything else (blocks/monsters) 100% visible
 	_reveal_all_content()
@@ -66,6 +68,93 @@ func _spawn_dimmed_content(data):
 	loader.get_tree().call_group("monstergroup", "set_modulate", Color(1,1,1,0.5))
 
 # Inside game_intro.gd
+func _animate_stars_twirl_out(target_node: Node2D):
+	if target_node == null: return
+
+	var data = GameConfig.fxdata.get("stars", {})
+	var num_stars = data.get("stars_num", 16)
+	var move_duration = data.get("move_speed", 1.5)
+	var radius = data.get("radius", 200.0) # Starting distance from player
+	var center_pos = target_node.global_position
+	var star_nodes = []
+
+	# 1. Spawn stars in a circle
+	for i in range(num_stars):
+		var star = fx_scene.instantiate()
+		loader.add_child(star)
+		
+		# Calculate position on circumference
+		var angle = (PI * 2 / num_stars) * i
+		var spawn_offset = Vector2(cos(angle), sin(angle)) * radius
+		star.global_position = center_pos + spawn_offset
+		
+		star.setup_fx("stars")
+		star_nodes.append({"node": star, "angle": angle})
+
+	# 2. Create Tween for the twirl and inward movement
+	var tween = loader.create_tween().set_parallel(true)
+	for item in star_nodes:
+		var s_node = item["node"]
+		var start_angle = item["angle"]
+		
+		# Twirl effect: move position using a custom step or simple inward tween
+		# For a true spiral, we animate a property and update position in a loop, 
+		# but for this structure, we move them to center while rotating a container 
+		# OR simply tweening to center:
+		tween.tween_property(s_node, "global_position", center_pos, move_duration)\
+			.set_trans(Tween.TRANS_SINE)\
+			.set_ease(Tween.EASE_IN_OUT)
+			
+		# Optional: Fade them out as they hit the center
+		tween.tween_property(s_node, "modulate:a", 0.0, move_duration).set_delay(move_duration * 0.1)
+
+	await tween.finished
+	
+	# 3. Clean up and reveal player
+	for item in star_nodes:
+		if is_instance_valid(item["node"]): item["node"].queue_free()
+	
+	loader.spawn_fx("foop", center_pos, Vector2i(-1,-1), false)
+	target_node.modulate.a = 1.0
+	target_node.visible = true	
+
+func _animate_stars_explode(origin_node: Node2D):
+	if origin_node == null: return
+
+	var data = GameConfig.fxdata.get("stars", {})
+	var num_stars = data.get("stars_num", 16)
+	var move_duration = data.get("move_speed", 1.5)
+	var radius = 200.0 # Distance stars travel outward
+	var center_pos = origin_node.global_position
+	
+	var tween = loader.create_tween().set_parallel(true)
+
+	for i in range(num_stars):
+		var star = fx_scene.instantiate()
+		loader.add_child(star)
+		
+		# Start all stars at the player/origin position
+		star.global_position = center_pos
+		star.setup_fx("stars") # Uses your looping logic 
+
+		# Calculate destination on the circumference
+		var angle = (PI * 2 / num_stars) * i
+		var target_offset = Vector2(cos(angle), sin(angle)) * radius
+		var target_pos = center_pos + target_offset
+		
+		# Move outward
+		tween.tween_property(star, "global_position", target_pos, move_duration)\
+			.set_trans(Tween.TRANS_SINE)\
+			.set_ease(Tween.EASE_OUT)
+			
+		# Fade out as they expand
+		tween.tween_property(star, "modulate:a", 0.0, move_duration)
+		
+		# Clean up star after tween
+		tween.finished.connect(star.queue_free)
+
+	await tween.finished
+
 
 func _animate_star_to_target(source_node: Node2D, dest_node: Node2D):
 	if source_node == null or dest_node == null:

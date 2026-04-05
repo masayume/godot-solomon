@@ -9,7 +9,7 @@ var frame_sequence = []
 var target_grid_pos: Vector2i
 var block_type: String
 var is_looping: bool = false # Add this variable
-var fx_name_stored
+var fx_name_stored: String
 
 	# Calculate total duration if you need it for other logic:
 	# var total_duration = data["frames"].size() * data["anim_speed"]
