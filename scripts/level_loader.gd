@@ -120,6 +120,9 @@ func spawn_fx(fx_type: String, world_pos: Vector2, grid_pos: Vector2i, should_sp
 	add_child(fx)
 	fx.global_position = world_pos
 	
+	# NOTE !
+	# fx.gd _on_timer_timeout_ only emits that signal if it's a "one-shot" effect that deletes itself.
+	
 	if should_spawn_block:
 		# Connect the signal so we know when to call add_block
 		fx.animation_finished.connect(_on_foop_finished)
@@ -129,8 +132,8 @@ func spawn_fx(fx_type: String, world_pos: Vector2, grid_pos: Vector2i, should_sp
 
 func _on_foop_finished(grid_pos, type):
 	# NOW create the actual block 
-	add_block(grid_pos.x, grid_pos.y, type)
-
+	# add_block(grid_pos.x, grid_pos.y, type)
+	add_block(grid_pos.x, grid_pos.y, type, true)
 
 
 func load_level(id: int):

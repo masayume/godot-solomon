@@ -123,6 +123,11 @@ Function _level_loader(n)_ is the level manager for each stage.
 Function _setup_fx(...)_ defines the fx attributes: sprite, hframes, frames[], velocity
 Function _on_timer_timeout()_ may wait for the fx to finish to play what happens after the fx.
 
+When a block is created, the spawn_fx(...) function is called with should_spawn_block = true. This connects the _animation_finished_ signal to fx _on_foop_finished_, which actually creates the block, ensuring that it's visible. 
+
+The "star" effect in your configuration has a move_speed so it has to be considered a "looping" or "moving" effect, 
+
+
 # Player
 
 Player is a _CharacterBody2D_, instantiated from Player.tscn scene.

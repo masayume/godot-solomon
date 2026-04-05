@@ -12,13 +12,6 @@ var idle_texture = preload("res://sprites/player/player-idle-frames.png")
 
 var flags = []
 
-func set_flag(flag_name: String):
-	if not flags.has(flag_name):
-		flags.append(flag_name)
-
-func has_flag(flag_name: String) -> bool:
-	return flags.has(flag_name)
-	
 @export var block_scene: PackedScene
 var tile_size = 64
 var facing := 1   # 1 = right, -1 = left
@@ -180,6 +173,13 @@ func spawn_at(tile_x: int, tile_y: int, x_off: float, y_off: float):
 			x_off, 
 			y_off
 		)
+
+func set_flag(flag_name: String):
+	if not flags.has(flag_name):
+		flags.append(flag_name)
+
+func has_flag(flag_name: String) -> bool:
+	return flags.has(flag_name)
 
 #	if GameConfig.itemdata.get("is_interactable", false):
 	# Create the Receiver node dynamically
