@@ -31,9 +31,8 @@ var y_off: float
 var blocks := {} 	## blocks dictionary to check/update; Vector2i  →  Block node
 var monsters := {} 	## monsters dictionary to check/update; Vector2i  →  Block node
 var current_level
+var player
 
-	
-	
 func _ready():
 	center_level()
 	current_level = GameConfig.gamedata.sequence.initial_level
@@ -172,7 +171,7 @@ func load_level(id: int):
 	_spawn_level_content_hidden(data)
 
 	# Instantiate the intro helper
-	var intro_manager = GameIntro.new(self)
+	var intro_manager = RoomIntro.new(self)
 	print("calling play intro")
 	intro_manager.play_intro(data)
 	
@@ -281,7 +280,7 @@ func add_item(ix, iy, type, showing = false):
 
 func spawn_player(px, py, xoff, yoff):
 
-	var player = player_scene.instantiate()
+	player = player_scene.instantiate()
 	player.add_to_group("playergroup")
 
 	# add to the SAME node that holds the blocks
@@ -314,8 +313,14 @@ func start_level_transition():
 	
 	# 4. Show the "Level Card" for N seconds
 	level_label.text = "NEXT: " + next_name 
-	await get_tree().create_timer(3.0).timeout	
 	
+#	await get_tree().create_timer(3.0).timeout	
+
+	# Instantiate the intro helper
+	var intro_manager = RoomOutro.new(self)
+	print("calling play intro")
+	intro_manager._animate_stars_explode(player)
+
 	# 1. Calculate Bonus Score
 	var bonus = calculate_bonus()
 	GameConfig.score += bonus # Global score tracking

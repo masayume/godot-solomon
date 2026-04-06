@@ -1,5 +1,5 @@
 extends Node
-class_name GameIntro
+class_name RoomIntro
 
 var loader: Node2D
 var fx_scene: PackedScene
