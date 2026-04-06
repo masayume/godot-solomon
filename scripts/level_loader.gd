@@ -309,18 +309,24 @@ func start_level_transition():
 
 	# 3. Get metadata for the UI
 	var next_name = "level_" + str(next_id)
-	print("next_name: ", next_name )
+#	print("next_name: ", next_name )
 	
 	# 4. Show the "Level Card" for N seconds
 	level_label.text = "NEXT: " + next_name 
 	
 #	await get_tree().create_timer(3.0).timeout	
 
-	# Instantiate the intro helper
+	# Instantiate the intro helper to play the outro
 	var intro_manager = RoomOutro.new(self)
-	print("calling play intro")
+#	print("calling play intro")
 	intro_manager._animate_stars_explode(player)
 
+	# disable the current player's logic so they don't move or collide with things 
+	# while the stars are exploding, and then they are removed before the next level loads.
+	player.visible = false
+	player.set_physics_process(false)
+	player.set_process_input(false)
+	
 	# 1. Calculate Bonus Score
 	var bonus = calculate_bonus()
 	GameConfig.score += bonus # Global score tracking
