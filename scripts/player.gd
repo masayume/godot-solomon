@@ -24,7 +24,7 @@ signal fire_pressed(position, direction, crouching)
 func _ready():
 	z_index = 10
 #	print("Player ready:", self)
-	level_loader = get_parent().get_parent()
+	level_loader = get_tree().get_first_node_in_group("level_loader")
 	level = get_parent()
 	$CollectionZone.area_entered.connect(_on_interaction_detector_area_entered)
 	
@@ -140,7 +140,7 @@ func _on_interaction_detector_area_entered(area: Area2D):
 		print("score: ", GameConfig.score)
 		score_label.text = "[right][color=green]1p[/color] [color=white]" + str(GameConfig.score) + "[/color][/right]"
 	
-	# If the item is a door
+	# If the item is the door
 	if item_type == "door":
 		if self.has_flag("has_key"):
 			print("Access Granted!")
@@ -150,6 +150,33 @@ func _on_interaction_detector_area_entered(area: Area2D):
 		else:
 			print("The door is locked. You need the key flag!")
 			# Optional: Play a "locked" sound or animation	
+
+	# If the item is the key
+	if item_type == "key":
+		print("key collected!")
+		
+		# 1. Freeze the player to prevent movement during the animation
+		self.set_physics_process(false)
+		self.set_process_input(false)
+	
+		# 2. Identify nodes for the animation
+		var key_node = get_tree().get_first_node_in_group("keygroup")
+		# The loader is the parent of the key_node (Item)
+		var loader = key_node.get_parent() 
+		var door_node = loader.get_tree().get_first_node_in_group("doorgroup")
+	
+		# 3. Create the intro manager to run the tween
+		# GameIntro needs the loader reference passed in _init
+		var intro_manager = RoomIntro.new(level_loader)
+	
+		# 4. Run the animation and wait for it to finish
+		# Using the function you already defined in game_intro.gd 
+		await intro_manager._animate_star_to_target(key_node, door_node)
+		
+		# 6. Unfreeze the player
+		self.set_physics_process(true)
+		self.set_process_input(true)
+
 
 	###DEBUG main player interaction with item code
 #	if target.has_node("Receiver"):

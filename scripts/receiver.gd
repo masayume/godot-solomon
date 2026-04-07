@@ -17,7 +17,8 @@ func _ready():
 
 func receive(action, source):
 	print(get_parent().name, " received ", action, " from: ", source.name)	
-	match GameConfig.itemdata.get("action_type"):
+#	match GameConfig.itemdata.get("action_type"):
+	match data.get("action_type"):
 		"collect":
 			_handle_collection(source)
 		"door":
@@ -27,6 +28,7 @@ func _handle_collection(player):
 	var flag = GameConfig.itemdata.get("on_collect_flag")
 	player.set_flag(flag, true) # Player now "owns" the key state
 	print("collected: ", GameConfig.itemdata.get("name"))
+
 	get_parent().queue_free()
 
 func _handle_door(player):

@@ -34,6 +34,7 @@ var current_level
 var player
 
 func _ready():
+	add_to_group("level_loader")
 	center_level()
 	current_level = GameConfig.gamedata.sequence.initial_level
 	load_level(current_level)

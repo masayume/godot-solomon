@@ -10,8 +10,13 @@ var player_node: Node2D = null
 
 func _init(_loader: Node2D):
 	loader = _loader
-	fx_scene = loader.fx_scene
+#	fx_scene = loader.fx_scene
+	if "fx_scene" in loader:
+		fx_scene = loader.fx_scene
+	else:
+		push_error("RoomIntro Error: The passed loader node does not have an fx_scene property! Check scene tree.")
 
+		
 func play_intro(data: Dictionary):
 	
 	# wait for player to be registered on the scene tree in next frame
