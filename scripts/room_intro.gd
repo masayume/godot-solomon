@@ -44,7 +44,8 @@ func play_intro(data: Dictionary):
 	key_node = loader.get_tree().get_first_node_in_group("keygroup")
 	player_node = loader.get_tree().get_first_node_in_group("playergroup")
 	await _animate_star_to_target(door_node, key_node) # fx from door to key position
-
+	key_node.visible = true
+	
 	# 5. Star to Player
 	await _animate_stars_twirl_out(player_node) # fx stars twirl around player position
 	

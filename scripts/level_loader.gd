@@ -288,6 +288,7 @@ func spawn_player(px, py, xoff, yoff):
 	add_child(player)
 
 	# now the transform chain is correct
+	player.visible=false
 	player.spawn_at(px, py, xoff, yoff)
 	player.fire_pressed.connect(_on_player_fire)
 	print("player spawned")
