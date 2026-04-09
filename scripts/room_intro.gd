@@ -8,13 +8,17 @@ var door_node: Node2D = null
 var key_node: Node2D = null
 var player_node: Node2D = null
 
+var bg: Sprite2D = null
+
 func _init(_loader: Node2D):
 	loader = _loader
+
 #	fx_scene = loader.fx_scene
 	if "fx_scene" in loader:
 		fx_scene = loader.fx_scene
 	else:
 		push_error("RoomIntro Error: The passed loader node does not have an fx_scene property! Check scene tree.")
+	
 
 		
 func play_intro(data: Dictionary):
@@ -22,6 +26,8 @@ func play_intro(data: Dictionary):
 	# wait for player to be registered on the scene tree in next frame
 	await loader.get_tree().process_frame
 	
+	bg = loader.find_child("Background", true, false)
+
 	# 1. Show Room Name (3 Seconds)
 	loader.level_label.text = "Round %d - %s" % [data["id"], data["name"]]
 	loader.level_label.visible = true
@@ -215,3 +221,8 @@ func _reveal_all_content():
 	loader.get_tree().call_group("monstergroup", "set_physics_process", true)
 	var player = loader.get_tree().get_first_node_in_group("playergroup")
 	if player: player.set_process_input(true)
+	
+	if bg:
+		bg.modulate = Color(0.5, 0.5, 0.5, 0.6)
+	else:
+		print("Warning: Background node not found during play_intro")

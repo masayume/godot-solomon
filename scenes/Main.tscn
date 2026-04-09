@@ -36,6 +36,12 @@ monster_scene = ExtResource("4_c01mt")
 item_scene = ExtResource("5_nxtc6")
 fx_scene = ExtResource("6_jlsqs")
 
+[node name="Background" type="Sprite2D" parent="LevelRoot" unique_id=246905057]
+z_index = -10
+position = Vector2(168, 0)
+texture = ExtResource("9_q8u5g")
+script = ExtResource("10_lhr70")
+
 [node name="GradientTop" type="TextureRect" parent="LevelRoot" unique_id=1311633994]
 z_index = 15
 offset_left = -381.0
@@ -116,9 +122,3 @@ vertical_alignment = 1
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=324845360]
 zoom = Vector2(0.75, 0.75)
-
-[node name="Background" type="Sprite2D" parent="." unique_id=246905057]
-z_index = -10
-position = Vector2(226, 0)
-texture = ExtResource("9_q8u5g")
-script = ExtResource("10_lhr70")

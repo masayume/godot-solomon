@@ -22,7 +22,7 @@ var scenes = {
 
 @onready var level_label: Label = $"../UI/LevelInfo"
 @onready var intro_room_label: Label = $"../UI/IntroRoomLabel"
-@onready var top_grad = $"../UI/TopGradient"
+@onready var bg = $"../Background"
 
 const Grid = preload("res://scripts/grid.gd")
 
@@ -33,19 +33,12 @@ var blocks := {} 	## blocks dictionary to check/update; Vector2i  →  Block nod
 var monsters := {} 	## monsters dictionary to check/update; Vector2i  →  Block node
 var current_level
 var player
-
-func set_ui_focus(active: bool):
-	var target_alpha = 1.0 if active else 0.0
-	var tween = self.create_tween()
-	tween.parallel().tween_property(top_grad, "modulate:a", target_alpha, 0.5)
-#	tween.parallel().tween_property(bot_grad, "modulate:a", target_alpha, 0.5)
 	
 func _ready():
 	add_to_group("level_loader")
 	center_level()
 	current_level = GameConfig.gamedata.sequence.initial_level
 	load_level(current_level)
-	set_ui_focus(true)
 	
 func center_level():
 	# print("THIS NODE:", get_path())
@@ -423,6 +416,12 @@ func debug_block(block):
 
 func _spawn_level_content_hidden(data):
 
+	if bg:
+#		print("black background found via search")
+		bg.modulate = Color(0, 0, 0, 1)
+	else:
+		print("Background NOT found. Check if the node name is exactly 'Background'")
+			
 	var player_start = data["player_start"]
 
 	# 1. Clear previous level data if any 
@@ -457,8 +456,7 @@ func _spawn_level_content_hidden(data):
 	var player = get_tree().get_first_node_in_group("playergroup")
 	player.visible = false
 	player.set_process_input(false)
-
-
+	
 func _spawn_monster_logic(data):
 	# Spawn monsters
 	if data.has("monsters"):
