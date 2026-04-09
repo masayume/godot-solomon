@@ -11,6 +11,13 @@
 [ext_resource type="Texture2D" uid="uid://dhqmw3vc0ehv3" path="res://sprites/backgrounds/back_001.png" id="9_q8u5g"]
 [ext_resource type="Script" uid="uid://bscq63mdk8dmw" path="res://scripts/background.gd" id="10_lhr70"]
 
+[sub_resource type="Gradient" id="Gradient_lhr70"]
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_wp0k4"]
+gradient = SubResource("Gradient_lhr70")
+fill_from = Vector2(1, 0)
+fill_to = Vector2(1, 1)
+
 [node name="Main" type="Node2D" unique_id=802376119]
 
 [node name="LevelRoot" type="Node2D" parent="." unique_id=1167918664]
@@ -80,6 +87,14 @@ size_flags_horizontal = 8
 theme_override_fonts/font = ExtResource("4_rarhs")
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="ColorRect" type="TextureRect" parent="LevelRoot/UI" unique_id=1311633994]
+z_index = 30
+offset_left = -292.0
+offset_top = -434.0
+offset_right = 761.0
+offset_bottom = -322.0
+texture = SubResource("GradientTexture2D_wp0k4")
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=324845360]
 zoom = Vector2(0.75, 0.75)

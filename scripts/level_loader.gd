@@ -22,6 +22,7 @@ var scenes = {
 
 @onready var level_label: Label = $"../UI/LevelInfo"
 @onready var intro_room_label: Label = $"../UI/IntroRoomLabel"
+@onready var top_grad = $"../UI/TopGradient"
 
 const Grid = preload("res://scripts/grid.gd")
 
@@ -33,12 +34,19 @@ var monsters := {} 	## monsters dictionary to check/update; Vector2i  →  Block
 var current_level
 var player
 
+func set_ui_focus(active: bool):
+	var target_alpha = 1.0 if active else 0.0
+	var tween = self.create_tween()
+	tween.parallel().tween_property(top_grad, "modulate:a", target_alpha, 0.5)
+#	tween.parallel().tween_property(bot_grad, "modulate:a", target_alpha, 0.5)
+	
 func _ready():
 	add_to_group("level_loader")
 	center_level()
 	current_level = GameConfig.gamedata.sequence.initial_level
 	load_level(current_level)
-
+	set_ui_focus(true)
+	
 func center_level():
 	# print("THIS NODE:", get_path())
 	var screen_size = get_viewport_rect().size
@@ -297,21 +305,34 @@ func start_level_transition():
 	
 # 1. Get current level info from the CFG
 	var section = "level_" + str(current_level)
+
 	current_level += 1
 	print("section: ", section)
+
 	# 2. Find the next ID
-	var next_id = GameConfig.gamedata[section].next_level
+#	var next_id = GameConfig.gamedata[section].next_level
+
+	# 2. Extract the 'next_level' ID from the config instead of using += 1
+	# This ensures level 99 correctly points to level 1
+	var next_id = -1
+	if GameConfig.gamedata.has(section):
+		next_id = GameConfig.gamedata[section].get("next_level", -1)
 	
-	print("next_id:", next_id)
-	
+	print("Transitioning from: ", section, " to next_id: ", next_id)
+
+	# 3. Handle the end of the game	
 	if next_id == -1:
 		print("Victory! No more levels.")
 		show_ending_credits()
 		return
-
-	# 3. Get metadata for the UI
+	
+	# 4. Update the current level tracker
+	current_level = next_id
+	
+	# 5. Show the Level Card UI
 	var next_name = "level_" + str(next_id)
-#	print("next_name: ", next_name )
+	level_label.text = "NEXT: " + next_name 
+	show_level_card(next_id, next_name)
 	
 	# 4. Show the "Level Card" for N seconds
 	level_label.text = "NEXT: " + next_name 
@@ -350,22 +371,6 @@ func start_level_transition():
 	clear_current_level()
 	load_level(next_id)
 
-func load_new_level(id: int):
-	# Clear current dictionaries [cite: 3, 4, 5]
-	blocks.clear() 
-	monsters.clear()
-	
-	# Delete all physical nodes
-	for child in get_children():
-		child.queue_free()
-		
-	# Update global state
-	GameConfig.current_level_id = id
-	
-	# Call your existing JSON loader [cite: 3]
-	load_level(id)
-
-	
 func calculate_bonus():
 	# calculate bonus score
 	print("calculate_bonus")
