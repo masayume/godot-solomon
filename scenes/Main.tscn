@@ -12,11 +12,17 @@
 [ext_resource type="Script" uid="uid://bscq63mdk8dmw" path="res://scripts/background.gd" id="10_lhr70"]
 
 [sub_resource type="Gradient" id="Gradient_lhr70"]
+offsets = PackedFloat32Array(0.0295858, 1)
+colors = PackedColorArray(0, 0, 0, 1, 0.3254902, 0.3254902, 0.3254902, 0)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_wp0k4"]
 gradient = SubResource("Gradient_lhr70")
-fill_from = Vector2(1, 0)
-fill_to = Vector2(1, 1)
+fill_to = Vector2(0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_lhr70"]
+gradient = SubResource("Gradient_lhr70")
+fill_from = Vector2(0.014778325, 1)
+fill_to = Vector2(0, 0)
 
 [node name="Main" type="Node2D" unique_id=802376119]
 
@@ -30,12 +36,29 @@ monster_scene = ExtResource("4_c01mt")
 item_scene = ExtResource("5_nxtc6")
 fx_scene = ExtResource("6_jlsqs")
 
+[node name="GradientTop" type="TextureRect" parent="LevelRoot" unique_id=1311633994]
+z_index = 15
+offset_left = -381.0
+offset_top = -434.0
+offset_right = 761.0
+offset_bottom = -322.0
+texture = SubResource("GradientTexture2D_wp0k4")
+
+[node name="GradientBottom" type="TextureRect" parent="LevelRoot" unique_id=730004015]
+z_index = 15
+offset_left = -381.0
+offset_top = 327.0
+offset_right = 761.0
+offset_bottom = 439.0
+texture = SubResource("GradientTexture2D_lhr70")
+
 [node name="DebugCollider" type="Node2D" parent="LevelRoot" unique_id=96074542]
 script = ExtResource("4_vcsgt")
 
 [node name="UI" type="CanvasLayer" parent="LevelRoot" unique_id=1473752072]
 
 [node name="Score" type="RichTextLabel" parent="LevelRoot/UI" unique_id=743049461]
+z_index = 10
 offset_left = 8.0
 offset_top = 5.0
 offset_right = 137.0
@@ -45,6 +68,7 @@ bbcode_enabled = true
 text = "[right][color=green]1p[/color]"
 
 [node name="Bonus" type="RichTextLabel" parent="LevelRoot/UI" unique_id=1205272488]
+z_index = 10
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
@@ -57,6 +81,7 @@ bbcode_enabled = true
 text = "[right][color=yellow]Bonus[/color]"
 
 [node name="LevelInfo" type="Label" parent="LevelRoot/UI" unique_id=2078616138]
+z_index = 10
 anchors_preset = 3
 anchor_left = 1.0
 anchor_top = 1.0
@@ -72,6 +97,7 @@ text = "LEVEL"
 vertical_alignment = 2
 
 [node name="IntroRoomLabel" type="Label" parent="LevelRoot/UI" unique_id=2121135997]
+z_index = 10
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
@@ -87,14 +113,6 @@ size_flags_horizontal = 8
 theme_override_fonts/font = ExtResource("4_rarhs")
 horizontal_alignment = 1
 vertical_alignment = 1
-
-[node name="ColorRect" type="TextureRect" parent="LevelRoot/UI" unique_id=1311633994]
-z_index = 30
-offset_left = -292.0
-offset_top = -434.0
-offset_right = 761.0
-offset_bottom = -322.0
-texture = SubResource("GradientTexture2D_wp0k4")
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=324845360]
 zoom = Vector2(0.75, 0.75)
