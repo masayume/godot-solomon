@@ -22,6 +22,7 @@ config/icon="res://icon.svg"
 [autoload]
 
 GameConfig="*res://scripts/game_config.gd"
+GameManager="*uid://bke7su6vvtpl0"
 
 [input]
 

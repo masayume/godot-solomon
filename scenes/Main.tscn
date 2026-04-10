@@ -120,5 +120,20 @@ theme_override_fonts/font = ExtResource("4_rarhs")
 horizontal_alignment = 1
 vertical_alignment = 1
 
+[node name="ContFireballs" type="HBoxContainer" parent="LevelRoot/UI" unique_id=2114869794]
+offset_left = 410.0
+offset_top = 600.0
+offset_right = 661.0
+offset_bottom = 640.0
+theme_override_constants/separation = 4
+alignment = 2
+
+[node name="ContLives" type="HBoxContainer" parent="LevelRoot/UI" unique_id=1095330318]
+offset_left = 9.0
+offset_top = 600.0
+offset_right = 217.0
+offset_bottom = 641.0
+theme_override_constants/separation = 4
+
 [node name="Camera2D" type="Camera2D" parent="." unique_id=324845360]
 zoom = Vector2(0.75, 0.75)
