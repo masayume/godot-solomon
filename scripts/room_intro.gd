@@ -223,6 +223,11 @@ func _reveal_all_content():
 	if player: player.set_process_input(true)
 	
 	if bg:
-		bg.modulate = Color(0.5, 0.5, 0.5, 0.6)
+		var tween = loader.create_tween()
+		# Fading from Black to a slightly dimmed state or full color
+		tween.tween_property(bg, "modulate", Color(0.5, 0.5, 0.5, 0.6), 0.5)\
+			.set_trans(Tween.TRANS_SINE)\
+			.set_ease(Tween.EASE_IN_OUT)
+
 	else:
 		print("Warning: Background node not found during play_intro")

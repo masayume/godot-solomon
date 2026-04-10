@@ -22,7 +22,7 @@ var scenes = {
 
 @onready var level_label: Label = $"../UI/LevelInfo"
 @onready var intro_room_label: Label = $"../UI/IntroRoomLabel"
-@onready var bg = $"../Background"
+@onready var bg = $"Background"
 
 const Grid = preload("res://scripts/grid.gd")
 

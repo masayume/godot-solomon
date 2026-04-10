@@ -36,7 +36,7 @@ monster_scene = ExtResource("4_c01mt")
 item_scene = ExtResource("5_nxtc6")
 fx_scene = ExtResource("6_jlsqs")
 
-[node name="Background" type="Sprite2D" parent="LevelRoot" unique_id=246905057]
+[node name="Background" type="Sprite2D" parent="LevelRoot/Level" unique_id=246905057]
 z_index = -10
 position = Vector2(168, 0)
 texture = ExtResource("9_q8u5g")
