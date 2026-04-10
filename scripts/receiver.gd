@@ -29,6 +29,11 @@ func _handle_collection(player):
 	player.set_flag(flag, true) # Player now "owns" the key state
 	print("collected: ", GameConfig.itemdata.get("name"))
 
+	var item_name = data.get("name")
+	if item_name == "extra_life":
+		GameManager.add_life()
+		print("Life added via GameManager")
+		
 	get_parent().queue_free()
 
 func _handle_door(player):

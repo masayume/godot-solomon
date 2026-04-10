@@ -10,6 +10,8 @@
 [ext_resource type="PackedScene" uid="uid://de2xcgvqhu2nk" path="res://scenes/Fx.tscn" id="6_jlsqs"]
 [ext_resource type="Texture2D" uid="uid://dhqmw3vc0ehv3" path="res://sprites/backgrounds/back_001.png" id="9_q8u5g"]
 [ext_resource type="Script" uid="uid://bscq63mdk8dmw" path="res://scripts/background.gd" id="10_lhr70"]
+[ext_resource type="Script" uid="uid://cse3vw5iqvimt" path="res://scripts/hud_lives.gd" id="11_wp0k4"]
+[ext_resource type="Texture2D" uid="uid://bcp2eoc0nsci7" path="res://sprites/ui/lives.png" id="12_bjd11"]
 
 [sub_resource type="Gradient" id="Gradient_lhr70"]
 offsets = PackedFloat32Array(0.0295858, 1)
@@ -129,11 +131,13 @@ theme_override_constants/separation = 4
 alignment = 2
 
 [node name="ContLives" type="HBoxContainer" parent="LevelRoot/UI" unique_id=1095330318]
-offset_left = 9.0
-offset_top = 600.0
-offset_right = 217.0
-offset_bottom = 641.0
-theme_override_constants/separation = 4
+offset_left = 346.0
+offset_top = 611.0
+offset_right = 554.0
+offset_bottom = 652.0
+theme_override_constants/separation = 0
+script = ExtResource("11_wp0k4")
+life_icon = ExtResource("12_bjd11")
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=324845360]
 zoom = Vector2(0.75, 0.75)
