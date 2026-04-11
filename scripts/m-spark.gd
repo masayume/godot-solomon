@@ -40,8 +40,41 @@ func _process(delta):
 func _physics_process(_delta):
 	behave(_delta) # includes move_and_slide()
 
-
 func behave(_delta):
+	# 1. Update the 'Up' vector to match the wall we are currently hugging 
+	up_direction = surface_normals.get(current_surface, Vector2.UP)
+
+	# 2. Calculate movement 
+	var move_dir = Vector2.RIGHT.rotated(rotation) 
+	velocity = move_dir * direction * GameConfig.monsterdata[family].speed
+	
+	# STICKINESS: Apply a force towards the wall to keep is_on_floor() true
+	velocity -= up_direction * 100.0 
+	
+	move_and_slide()
+
+	# 3. Handle Corner Turning
+	if is_on_wall():
+		# CONCAVE CORNER: Hitting a wall in front 
+		rotation += PI/2 # Swapped for direction -1
+		_update_current_surface()
+		# Slight adjustment to prevent getting stuck in the corner
+		global_position -= move_dir * 2.0 
+		
+	elif not is_on_floor():
+		# CONVEX CORNER: Rounding an outside edge (the 270° turn) 
+		rotation -= PI/2 # Swapped for direction -1
+		_update_current_surface()
+
+		# SNAP: This is the critical fix for convex corners.
+		# We must move the Spark "forward" and "down" into the new wall.
+		var new_move_dir = Vector2.RIGHT.rotated(rotation)
+		var snap_forward = new_move_dir * direction * 15.0
+		var snap_down = -surface_normals[current_surface] * 10.0
+		global_position += snap_forward + snap_down
+
+
+func behave2DEL(_delta):
 	
 	# 2. Update 'up_direction' so Godot knows what is 'floor' vs 'wall' 
 	# for this specific surface
