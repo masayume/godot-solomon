@@ -40,7 +40,7 @@ fx_scene = ExtResource("6_jlsqs")
 
 [node name="Background" type="Sprite2D" parent="LevelRoot/Level" unique_id=246905057]
 z_index = -10
-position = Vector2(168, 0)
+position = Vector2(160, -50)
 texture = ExtResource("9_q8u5g")
 script = ExtResource("10_lhr70")
 

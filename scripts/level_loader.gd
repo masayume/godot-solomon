@@ -167,6 +167,9 @@ func load_level(id: int):
 	x_off = (-screen_size[0] / 2) + ((width / 2) * tile_size) / 2
 	y_off = -((height / 2) * tile_size) 
 
+	if bg and bg.has_method("refresh_background"):
+		bg.refresh_background()
+		
 	# 1. Background stays visible, but we delay gameplay
 	# Wrap your spawning in an intro sequence
 	# 2. Spawn the level content but keep it invisible
@@ -364,6 +367,7 @@ func start_level_transition():
 	clear_current_level()
 	load_level(next_id)
 
+
 func calculate_bonus():
 	# calculate bonus score
 	print("calculate_bonus")
@@ -383,9 +387,13 @@ func clear_current_level():
 	blocks.clear()
 	# Reset offsets 
 	blocks = {}
+
+	monsters.clear()
+	monsters = {}
 	
 	for child in get_children(): 
-		child.queue_free()
+		if child.name != "Background":
+			child.queue_free()
 
 
 

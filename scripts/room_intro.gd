@@ -28,6 +28,13 @@ func play_intro(data: Dictionary):
 	
 	bg = loader.find_child("Background", true, false)
 
+	if bg:
+		bg.modulate = Color.BLACK # Ensure it starts dark for the reveal later
+		print("Background found for level: ", data["id"])
+	else:
+		# If this triggers, your node name in the scene or loader is wrong
+		push_warning("CRITICAL: Background node not found for level ", data["id"])
+		
 	# 1. Show Room Name (3 Seconds)
 	loader.level_label.text = "Round %d - %s" % [data["id"], data["name"]]
 	loader.level_label.visible = true
