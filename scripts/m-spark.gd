@@ -40,6 +40,11 @@ func _process(delta):
 func _physics_process(_delta):
 	behave(_delta) # includes move_and_slide()
 
+
+
+
+
+
 func behave(_delta):
 	# 1. Update the 'Up' vector to match the wall we are currently hugging 
 	up_direction = surface_normals.get(current_surface, Vector2.UP)
@@ -50,12 +55,11 @@ func behave(_delta):
 	
 	# STICKINESS: Apply a force towards the wall to keep is_on_floor() true
 	velocity -= up_direction * 100.0 
-	
+
 	move_and_slide()
 
-	# 3. Handle Corner Turning
+	# 3. Handle Corner Turning (Hitting a wall in front) # CONCAVE CORNER
 	if is_on_wall():
-		# CONCAVE CORNER: Hitting a wall in front 
 		rotation += PI/2 # Swapped for direction -1
 		_update_current_surface()
 		# Slight adjustment to prevent getting stuck in the corner
@@ -73,33 +77,36 @@ func behave(_delta):
 		var snap_down = -surface_normals[current_surface] * 10.0
 		global_position += snap_forward + snap_down
 
-
-func behave2DEL(_delta):
+func deleteme():
 	
-	# 2. Update 'up_direction' so Godot knows what is 'floor' vs 'wall' 
-	# for this specific surface
-	up_direction = surface_normals.get(current_surface, Vector2.UP)
-
-	# 1. Calculate direction based on current rotation
-	# Vector2.RIGHT.rotated(rotation) gives us the 'Forward' vector
-	var move_dir = Vector2.RIGHT.rotated(rotation) 
-	velocity = move_dir * direction * GameConfig.monsterdata[family].speed
-	
-	move_and_slide()
-
-	# 3. Handle Corner Turning
-	if is_on_wall():
-		# We hit a front wall -> Climb it
-		rotation -= PI/2 
-		_update_current_surface()
+	if true:
+		pass
 	elif not is_on_floor():
-		# We ran out of floor -> Wrap around the corner
-		rotation += PI/2
-		_update_current_surface()
+		# VALIDATION: Check if there's actually a wall to turn onto.
+		# We check if a block exists in the direction we are currently moving.
+		# (If we are at an edge, the "side" of the block is right there).
+		var check_dist = Vector2.RIGHT.rotated(rotation) * direction * 10.0
+		
+		if test_move(global_transform, check_dist):
+			# A wall is detected! Perform the corner wrap.
+			rotation -= PI/2 
+			_update_current_surface()
+			
+			# Snap the spark to the new wall to ensure is_on_floor() becomes true
+			var new_move_dir = Vector2.RIGHT.rotated(rotation)
+			var snap_forward = new_move_dir * direction * 5.0
+			var snap_onto_wall = -surface_normals[current_surface] * 8.0
+			global_position += snap_forward + snap_onto_wall
+			
+			print("Corner turned successfully")
+		else:
+			# NO WALL FOUND: The block was destroyed or there's a large gap.
+			# We do NOT rotate. We keep moving straight as requested.
+			pass
 
-		# CRITICAL: After rotating outward, move the spark 1-2 pixels
-		# forward so it doesn't immediately think it's 'on a wall' in the next frame
-		global_position += velocity * _delta
+
+
+
 		
 func _update_current_surface():
 	# Use the current rotation (snapped to 90 deg) to find the new surface

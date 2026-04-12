@@ -21,14 +21,16 @@
   ],
 
   "monsters": [
-	{"pos": [5,10],"family":"ghost"},	
-	{"pos": [8,4],"family":"goblin"},	
-	{"pos": [3,2],"family":"spark","attached":"right"},
+	{"pos": [5,10],"family":"ghost"},
+	{"pos": [8,4],"family":"goblin"},
+
+	{"pos": [4,8],"family":"spark","attached":"left"},
 
   ],
 
   "blocks": [
-	{"pos": [4,8],"family":"earth"},		{"pos": [5,8],"family":"earth"},	
+
+	{"pos": [3,8],"family":"earth"},		{"pos": [5,8],"family":"earth"},	
 	{"pos": [11,4],"family":"earth"},	
 	{"pos": [4,5],"family":"blue-flame"},	{"pos": [12,5],"family":"blue-flame"},
 
