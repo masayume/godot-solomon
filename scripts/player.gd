@@ -57,15 +57,11 @@ func _physics_process(delta):
 			change_state("idle")
 
 	# Update facing direction visually
-	sprite.flip_h = facing == -1 # Flips when moving left
-				
-	move_and_slide()
-
-	if Input.is_action_pressed("move_left"):
-		facing = -1
-
-	if Input.is_action_pressed("move_right"):
-		facing = 1
+#	sprite.flip_h = facing == -1 # Flips when moving left				
+#	if Input.is_action_pressed("move_left"):
+#		facing = -1
+#	if Input.is_action_pressed("move_right"):
+#		facing = 1
 
 	# Detect Input
 	if Input.is_action_pressed("crouch") and is_on_floor():
@@ -267,19 +263,39 @@ func animate(delta):
 		if frames.size() == 1:
 			sprite.frame = frames[0]
 		return	
-	
+
 	time_accumulator += delta
 
 	if time_accumulator >= anim_speed:
 		time_accumulator -= anim_speed
 
-		frame_index += 1
-		if frame_index >= frames.size():
-			# Loop the animation
-			frame_index = 0
+#		frame_index += 1
+#		if frame_index >= frames.size():
+#			# Loop the animation
+#			frame_index = 0
+#		sprite.frame = frames[frame_index]
 
-		sprite.frame = frames[frame_index]
+		# Check if we are at the last frame
+		if frame_index >= frames.size() - 1:
+			# If the state is "crouch", stay on the last frame and don't loop
+
+			# Manage loop=false animations
+			var data = GameConfig.playerdata[current_state]
+			if frame_index >= frames.size() - 1:
+				if data.get("loop", true) == false: # Defaults to true if missing
+					return
+				frame_index = 0
+
+#			if current_state == "crouch":
+#				return 
+#			else:
+#				# Loop other animations like "walk" or "crouchwalk" 
+#				frame_index = 0
+		else:
+			frame_index += 1
 		
+		sprite.frame = frames[frame_index]
+
 func setup_animation():
 	# We use "idle" as the default starting state
 	change_state("idle")
