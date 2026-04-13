@@ -53,7 +53,7 @@ func _physics_process(delta):
 	else:
 		if velocity.x != 0:
 			change_state("walk")
-		else:
+		else: # idle change_state must being called explicitly
 			change_state("idle")
 
 	# Update facing direction visually
@@ -70,12 +70,10 @@ func _physics_process(delta):
 	# Detect Input
 	if Input.is_action_pressed("crouch") and is_on_floor():
 		crouch()
-		update_animation()
 	elif crouching:
 		# Check if there's room to stand up!
 #		if not is_something_above_head():
 		stand_up()
-		update_animation()
 
 	# (Your existing movement logic here...)
 	# If crouching, you might want to multiply speed by 0.5 or 0.
@@ -110,12 +108,6 @@ func _physics_process(delta):
 	# Move the body
 	move_and_slide()
 
-func update_animation():
-
-	if crouching:
-		sprite.texture = crouch_texture
-	else:
-		sprite.texture = idle_texture
 		
 func crouch():
 	if crouching: return
@@ -244,8 +236,10 @@ func has_flag(flag_name: String) -> bool:
 #	receiver.action_type = GameConfig.itemdata.get("action_type", "default")	
 
 func change_state(new_state):
-	if current_state == new_state:
-		return
+
+	# 1. Check if the state is already active or doesn't exist in config
+	if current_state == new_state or not GameConfig.playerdata.has(new_state):
+		return	
 	
 	current_state = new_state
 	# Accessing GameConfig similarly to how demonhead.gd does 
@@ -254,6 +248,9 @@ func change_state(new_state):
 	# Update texture and layout based on player.cfg
 	sprite.texture = load(data.sprite)
 	sprite.hframes = data.hframes
+
+	sprite.region_enabled = false
+	sprite.region_rect = Rect2(0, 0, 0, 0)
 		
 	frames = data.frames 
 	anim_speed = data.anim_speed 
@@ -264,6 +261,13 @@ func change_state(new_state):
 	sprite.frame = frames[0]
 
 func animate(delta):
+	
+	# If there's only one frame, just ensure it's set and exit
+	if frames.size() <= 1:
+		if frames.size() == 1:
+			sprite.frame = frames[0]
+	return	
+	
 	time_accumulator += delta
 
 	if time_accumulator >= anim_speed:
