@@ -266,7 +266,7 @@ func animate(delta):
 	if frames.size() <= 1:
 		if frames.size() == 1:
 			sprite.frame = frames[0]
-	return	
+		return	
 	
 	time_accumulator += delta
 

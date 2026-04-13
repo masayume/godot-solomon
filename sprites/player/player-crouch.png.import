@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://ds0kviq2krumg"
-path="res://.godot/imported/player_crouch.png-c4c77320ff1e2f9b302e52e4e6bda735.ctex"
+path="res://.godot/imported/player-crouch.png-5d622a6b65a06f54d9c1674c237500d1.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://sprites/player/player_crouch.png"
-dest_files=["res://.godot/imported/player_crouch.png-c4c77320ff1e2f9b302e52e4e6bda735.ctex"]
+source_file="res://sprites/player/player-crouch.png"
+dest_files=["res://.godot/imported/player-crouch.png-5d622a6b65a06f54d9c1674c237500d1.ctex"]
 
 [params]
 
