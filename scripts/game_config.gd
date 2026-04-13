@@ -6,6 +6,8 @@ var gridutils = {}
 var monsterdata = {}
 var itemdata = {}
 var fxdata = {}
+var playerdata = {}
+
 var score = 0
 var current_level_id
 
@@ -79,6 +81,20 @@ func load_config():
 		for key in fxcfg.get_section_keys(section):
 			data[key] = fxcfg.get_value(section, key)
 		fxdata[section] = data
+
+	# LOAD PLAYER CONFIGURATION DATA	
+	var plcfg = ConfigFile.new()
+	err = plcfg.load("res://config/player.cfg")
+	if err != OK:
+		print("ERROR: Failed to load player.cfg")
+		return
+
+	for section in plcfg.get_sections():
+		var data := {}
+		for key in plcfg.get_section_keys(section):
+			data[key] = plcfg.get_value(section, key)
+		playerdata[section] = data
+
 
 func grid_to_local(tile_x: int, tile_y: int, tile_size: int, x_off: float, y_off: float) -> Vector2:    
 	var half_tile = tile_size / 2.0

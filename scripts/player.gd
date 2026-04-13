@@ -19,6 +19,13 @@ var level_loader
 var level
 var crouching = false
 
+# animation variables
+var current_state = "idle"
+var frames = []
+var anim_speed = 0.1
+var frame_index = 0
+var time_accumulator = 0.0
+
 signal fire_pressed(position, direction, crouching)
 
 func _ready():
@@ -27,12 +34,31 @@ func _ready():
 	level_loader = get_tree().get_first_node_in_group("level_loader")
 	level = get_parent()
 	$CollectionZone.area_entered.connect(_on_interaction_detector_area_entered)
-	
+	setup_animation()
+		
+func _process(delta):
+	animate(delta)
+
 func _physics_process(delta):
 
-	# Apply gravity
+	# Determine Animation State
 	if not is_on_floor():
 		velocity.y += gravity * delta 
+		change_state("jump")
+	elif crouching:
+		if velocity.x != 0:
+			change_state("crouchwalk")
+		else:
+			change_state("crouch")
+	else:
+		if velocity.x != 0:
+			change_state("walk")
+		else:
+			change_state("idle")
+
+	# Update facing direction visually
+	sprite.flip_h = facing == -1 # Flips when moving left
+				
 	move_and_slide()
 
 	if Input.is_action_pressed("move_left"):
@@ -217,4 +243,45 @@ func has_flag(flag_name: String) -> bool:
 	# Optionally pass data to the receiver so it knows what to do
 #	receiver.action_type = GameConfig.itemdata.get("action_type", "default")	
 
+func change_state(new_state):
+	if current_state == new_state:
+		return
 	
+	current_state = new_state
+	# Accessing GameConfig similarly to how demonhead.gd does 
+	var data = GameConfig.playerdata[current_state] 
+
+	# Update texture and layout based on player.cfg
+	sprite.texture = load(data.sprite)
+	sprite.hframes = data.hframes
+		
+	frames = data.frames 
+	anim_speed = data.anim_speed 
+	
+	# Reset animation tracking
+	frame_index = 0
+	time_accumulator = 0.0
+	sprite.frame = frames[0]
+
+func animate(delta):
+	time_accumulator += delta
+
+	if time_accumulator >= anim_speed:
+		time_accumulator -= anim_speed
+
+		frame_index += 1
+		if frame_index >= frames.size():
+			# Loop the animation
+			frame_index = 0
+
+		sprite.frame = frames[frame_index]
+		
+func setup_animation():
+	# We use "idle" as the default starting state
+	change_state("idle")
+
+#	frames = GameConfig.playerdata[family].frames
+#	anim_speed = GameConfig.playerdata[family].anim_speed
+
+#	frame_index = 0
+#	sprite.frame = frames[0]
