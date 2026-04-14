@@ -91,8 +91,16 @@ func create_or_destroy_block(pos, dir, crouching, is_player=false):
 		
 		# Only destroy if the config says it is destructible
 		if GameConfig.blockdata[block.family]["destructible"]:
+
 			# Play Poof (Destruction)
 			spawn_fx("poof", block.global_position, target, false)
+
+			if GameConfig.blockdata["earth"].has("sound"):
+				var sfx = load(GameConfig.blockdata["earth"].get("sound"))
+				if sfx:
+					player.audio_player.stream = sfx
+					player.audio_player.play() # Plays once when the state starts
+						
 			block.queue_free()
 			blocks.erase(target)
 		else:
