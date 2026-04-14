@@ -6,6 +6,7 @@ extends CharacterBody2D
 @onready var off_xp = GameConfig.playerdata.player.off_xp
 @onready var sprite = $Sprite2D
 @onready var score_label: RichTextLabel = $"../../UI/Score"
+@onready var audio_player = $AudioStreamPlayer2D
 
 var crouch_texture = preload("res://sprites/player/player-crouch-frames.png")
 var idle_texture = preload("res://sprites/player/player-idle-frames.png")
@@ -17,8 +18,10 @@ var tile_size = 64
 var facing := 1   # 1 = right, -1 = left
 var level_loader
 var level
+
 var crouching = false
 var is_casting = false
+var is_collecting_key := false
 
 # animation variables
 var current_state = "idle"
@@ -42,8 +45,8 @@ func _process(delta):
 
 func _physics_process(delta):
 
-	if is_casting:
-		velocity = Vector2.ZERO # Stops the player (even mid-air)
+	if is_casting or is_collecting_key:
+		velocity = Vector2.ZERO # Stops the player while casting (even mid-air)
 		move_and_slide()
 		return # Skip the rest of the movement/input logic
 		
@@ -140,7 +143,7 @@ func _input(event):
 #		print("is_action_pressed(fire)")
 		return
 		
-###MAIN_INTERACTION player interacts with items
+### MAIN_INTERACTION player interacts with items
 func _on_interaction_detector_area_entered(area: Area2D):
 	# The 'area' is the child of the Item. We want the Item itself.
 	###DEBUG player area interaction
@@ -182,9 +185,14 @@ func _on_interaction_detector_area_entered(area: Area2D):
 	if item_type == "key":
 		print("key collected!")
 		
+		# 0. Lock the player while collects key
+		is_collecting_key = true
+		change_state("idle")
+		
 		# 1. Freeze the player to prevent movement during the animation
 		self.set_physics_process(false)
 		self.set_process_input(false)
+
 	
 		# 2. Identify nodes for the animation
 		var key_node = get_tree().get_first_node_in_group("keygroup")
@@ -203,8 +211,8 @@ func _on_interaction_detector_area_entered(area: Area2D):
 		# 6. Unfreeze the player
 		self.set_physics_process(true)
 		self.set_process_input(true)
-
-
+		is_collecting_key = false
+	
 	###DEBUG main player interaction with item code
 #	if target.has_node("Receiver"):
 #		print("DEBUG: Receiver FOUND on ", target.name)		
@@ -268,6 +276,14 @@ func change_state(new_state):
 	frame_index = 0
 	time_accumulator = 0.0
 	sprite.frame = frames[0]
+
+	# Handle Sound Playback
+	if data.has("sound"):
+		var sfx = load(data.sound)
+		if sfx:
+			audio_player.stream = sfx
+			audio_player.play() # Plays once when the state starts
+			
 
 func animate(delta):
 	

@@ -27,3 +27,5 @@ script = ExtResource("3_3li8b")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CollectionZone" unique_id=431477230]
 shape = SubResource("RectangleShape2D_v6fml")
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="." unique_id=346654754]
