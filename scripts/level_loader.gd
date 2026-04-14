@@ -107,6 +107,12 @@ func create_or_destroy_block(pos, dir, crouching, is_player=false):
 			# It's a stone block (not destructible)
 			# Do nothing here so it doesn't fall into the 'else' below
 			print("Hit indestructible block: ", block.family)
+			if GameConfig.blockdata[block.family].has("sound"):
+				var sfx = load(GameConfig.blockdata[block.family].get("sound"))
+				if sfx:
+					player.audio_player.stream = sfx
+					player.audio_player.play() # Plays once when the state starts
+
 			return
 			
 	# CREATE BLOCK after playing fx "foop"
