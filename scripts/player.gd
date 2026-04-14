@@ -1,9 +1,9 @@
 extends CharacterBody2D
 
-@onready var speed = GameConfig.gamedata.player.move_speed
-@onready var jump_force = GameConfig.gamedata.player.jump_force
-@onready var gravity = GameConfig.gamedata.player.gravity
-@onready var off_xp = GameConfig.gamedata.player.off_xp
+@onready var speed = GameConfig.playerdata.player.move_speed
+@onready var jump_force = GameConfig.playerdata.player.jump_force
+@onready var gravity = GameConfig.playerdata.player.gravity
+@onready var off_xp = GameConfig.playerdata.player.off_xp
 @onready var sprite = $Sprite2D
 @onready var score_label: RichTextLabel = $"../../UI/Score"
 
@@ -18,6 +18,7 @@ var facing := 1   # 1 = right, -1 = left
 var level_loader
 var level
 var crouching = false
+var is_casting = false
 
 # animation variables
 var current_state = "idle"
@@ -41,6 +42,11 @@ func _process(delta):
 
 func _physics_process(delta):
 
+	if is_casting:
+		velocity = Vector2.ZERO # Stops the player (even mid-air)
+		move_and_slide()
+		return # Skip the rest of the movement/input logic
+		
 	# Determine Animation State
 	if not is_on_floor():
 		velocity.y += gravity * delta 
@@ -87,14 +93,21 @@ func _physics_process(delta):
 		velocity.y = -jump_force
 
 	if Input.is_action_just_pressed("fire"):
-		fire_pressed.emit(global_position, facing, crouching)
 
-		var _grid = GameConfig.world_to_grid(
-			global_position,
-			level.x_off,
-			level.y_off,
-			tile_size
-		)
+		is_casting = true
+		change_state("cast")
+		
+		print("block spell cast ")
+		change_state("cast")
+		fire_pressed.emit(global_position, facing, crouching)
+		return # Exit early to start the lock immediately
+
+#		var _grid = GameConfig.world_to_grid(
+#			global_position,
+#			level.x_off,
+#			level.y_off,
+#			tile_size
+#		)
 
 #		print("PLAYER WORLD:", global_position)
 #		print("PLAYER GRID:", _grid)
@@ -269,16 +282,15 @@ func animate(delta):
 	if time_accumulator >= anim_speed:
 		time_accumulator -= anim_speed
 
-#		frame_index += 1
-#		if frame_index >= frames.size():
-#			# Loop the animation
-#			frame_index = 0
-#		sprite.frame = frames[frame_index]
-
 		# Check if we are at the last frame
 		if frame_index >= frames.size() - 1:
-			# If the state is "crouch", stay on the last frame and don't loop
+			# CHECK: If we just finished the last frame of 'cast'
+			if current_state == "cast":
+				is_casting = false # Release the movement lock
+				change_state("idle") # Return to idle
+				return
 
+			# If the state is "crouch", stay on the last frame and don't loop
 			# Manage loop=false animations
 			var data = GameConfig.playerdata[current_state]
 			if frame_index >= frames.size() - 1:
@@ -286,11 +298,6 @@ func animate(delta):
 					return
 				frame_index = 0
 
-#			if current_state == "crouch":
-#				return 
-#			else:
-#				# Loop other animations like "walk" or "crouchwalk" 
-#				frame_index = 0
 		else:
 			frame_index += 1
 		
