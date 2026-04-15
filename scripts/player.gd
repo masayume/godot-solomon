@@ -49,21 +49,22 @@ func _physics_process(delta):
 		velocity = Vector2.ZERO # Stops the player while casting (even mid-air)
 		move_and_slide()
 		return # Skip the rest of the movement/input logic
-		
-	# Determine Animation State
-	if not is_on_floor():
-		velocity.y += gravity * delta 
-		change_state("jump")
-	elif crouching:
-		if velocity.x != 0:
-			change_state("crouchwalk")
+	
+	elif not is_casting and not is_collecting_key:
+		# Determine Animation State
+		if not is_on_floor():
+			velocity.y += gravity * delta 
+			change_state("jump")
+		elif crouching:
+			if velocity.x != 0:
+				change_state("crouchwalk")
+			else:
+				change_state("crouch")
 		else:
-			change_state("crouch")
-	else:
-		if velocity.x != 0:
-			change_state("walk")
-		else: # idle change_state must being called explicitly
-			change_state("idle")
+			if velocity.x != 0:
+				change_state("walk")
+			else: # idle change_state must being called explicitly
+				change_state("idle")
 
 	# Update facing direction visually
 #	sprite.flip_h = facing == -1 # Flips when moving left				
@@ -98,10 +99,15 @@ func _physics_process(delta):
 	if Input.is_action_just_pressed("fire"):
 
 		is_casting = true
-		change_state("cast")
+
+		# Select the correct animation based on current posture
+		if crouching:
+			change_state("crouchcast")
+		else:
+			change_state("cast")
 		
 		print("block spell cast ")
-		change_state("cast")
+#		change_state("cast")
 		fire_pressed.emit(global_position, facing, crouching)
 		return # Exit early to start the lock immediately
 
@@ -148,14 +154,14 @@ func _on_interaction_detector_area_entered(area: Area2D):
 	# The 'area' is the child of the Item. We want the Item itself.
 	###DEBUG player area interaction
 	print("DEBUG: Player Area hit SOMETHING: ", area.name, " (Parent: ", area.get_parent().family, ")")
-
+		
 	var target = area.get_parent() 
 	var item_type = target.family
+	# 1. Safely get item info
+	if not GameConfig.itemdata.has(target.family):
+		print("ERROR: Item type ", target.family, " not found in config.")
+		return
 	var item_info = GameConfig.itemdata[item_type]
-
-	if item_info.has("action_type"):
-		if item_info["action_type"] == "collect":
-			area.get_parent().queue_free() # Remove the item node
 
 	# 1. Set Player Flags (e.g., "has_key")
 	if GameConfig.itemdata[area.get_parent().family].has("on_collect_flag"):
@@ -169,7 +175,17 @@ func _on_interaction_detector_area_entered(area: Area2D):
 		GameConfig.score += GameConfig.itemdata[area.get_parent().family].score
 		print("score: ", GameConfig.score)
 		score_label.text = "[right][color=green]1p[/color] [color=white]" + str(GameConfig.score) + "[/color][/right]"
-	
+
+		if GameConfig.itemdata[area.get_parent().family].has("sound"):
+			var sfx = load(GameConfig.itemdata[area.get_parent().family].get("sound"))
+			if sfx:
+				audio_player.stream = sfx
+				audio_player.play() # Plays once when the state starts
+
+	if item_info.has("action_type"):
+		if item_info["action_type"] == "collect":
+			area.get_parent().queue_free() # Remove the item node
+			
 	# If the item is the door
 	if item_type == "door":
 		if self.has_flag("has_key"):
@@ -226,8 +242,6 @@ func spawn_at(tile_x: int, tile_y: int, x_off: float, y_off: float):
 	tile_size = GameConfig.gamedata.screen.TILE_SIZE
 	# Convert grid coordinates into pixel position
 	
-#	print("spawn_at: " + str(x_off))
-#	print("parent:", get_parent())
 	position = GameConfig.grid_to_local(
 			tile_x, 
 			tile_y, 
@@ -301,10 +315,21 @@ func animate(delta):
 		# Check if we are at the last frame
 		if frame_index >= frames.size() - 1:
 			# CHECK: If we just finished the last frame of 'cast'
-			if current_state == "cast":
-				is_casting = false # Release the movement lock
-				change_state("idle") # Return to idle
+
+		# Release the movement lock for BOTH casting states
+			if current_state == "cast" or current_state == "crouchcast":
+				is_casting = false 
+				# If they were crouching, go back to crouch, otherwise idle
+				if crouching:
+					change_state("crouch")
+				else:
+					change_state("idle")
 				return
+
+#			if current_state == "cast":
+#				is_casting = false # Release the movement lock
+#				change_state("idle") # Return to idle
+#				return
 
 			# If the state is "crouch", stay on the last frame and don't loop
 			# Manage loop=false animations
@@ -321,7 +346,8 @@ func animate(delta):
 
 func setup_animation():
 	# We use "idle" as the default starting state
-	change_state("idle")
+	if not crouching:
+		change_state("idle")
 
 #	frames = GameConfig.playerdata[family].frames
 #	anim_speed = GameConfig.playerdata[family].anim_speed
