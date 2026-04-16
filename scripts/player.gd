@@ -52,8 +52,14 @@ func _physics_process(delta):
 	
 	elif not is_casting and not is_collecting_key:
 		# Determine Animation State
+
 		if not is_on_floor():
 			velocity.y += gravity * delta 
+			if velocity.y > 0:
+				change_state("fall") # Add a [fall] section to player.cfg with a sound
+			else:
+				change_state("jump") # Add a [jump] section to player.cfg with a sound
+
 			change_state("jump")
 		elif crouching:
 			if velocity.x != 0:
