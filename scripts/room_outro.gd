@@ -8,6 +8,7 @@ var fx_scene: PackedScene
 var door_node: Node2D = null
 var key_node: Node2D = null
 var player_node: Node2D = null
+@onready var audio_player = $AudioStreamPlayer2D
 
 func _init(_loader: Node2D):
 	loader = _loader
@@ -21,7 +22,14 @@ func _animate_stars_explode(origin_node: Node2D):
 	var move_duration = data.get("move_speed", 1.5)
 	var radius = 200.0 # Distance stars travel outward
 	var center_pos = origin_node.global_position
-	
+
+	print("play orig-player-out.wav")
+	if GameConfig.itemdata["door"].has("outrosound"):
+		var sfx = load(GameConfig.itemdata["door"].outrosound)
+		if sfx:
+			loader.get_tree().get_first_node_in_group("playergroup").audio_player.stream = sfx
+			loader.get_tree().get_first_node_in_group("playergroup").audio_player.play() # Plays once when the state starts
+
 	var tween = loader.create_tween().set_parallel(true)
 
 	for i in range(num_stars):

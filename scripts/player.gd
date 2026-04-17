@@ -160,7 +160,7 @@ func _on_interaction_detector_area_entered(area: Area2D):
 	# The 'area' is the child of the Item. We want the Item itself.
 	###DEBUG player area interaction
 	print("DEBUG: Player Area hit SOMETHING: ", area.name, " (Parent: ", area.get_parent().family, ")")
-		
+
 	var target = area.get_parent() 
 	var item_type = target.family
 	# 1. Safely get item info
@@ -188,9 +188,9 @@ func _on_interaction_detector_area_entered(area: Area2D):
 				audio_player.stream = sfx
 				audio_player.play() # Plays once when the state starts
 
-	if item_info.has("action_type"):
-		if item_info["action_type"] == "collect":
-			area.get_parent().queue_free() # Remove the item node
+#	if item_info.has("action_type"):
+#		if item_info["action_type"] == "collect":
+#			area.get_parent().queue_free() # Remove the item node
 			
 	# If the item is the door
 	if item_type == "door":
@@ -233,17 +233,26 @@ func _on_interaction_detector_area_entered(area: Area2D):
 			if sfx:
 				audio_player.stream = sfx
 				audio_player.play() # Plays once when the state starts
+				await audio_player.finished
+		if GameConfig.itemdata["key"].has("introsound"):
+			var sfx2 = load(GameConfig.itemdata["key"].introsound)
+			if sfx2:
+				audio_player.stream = sfx2
+				audio_player.play() # Plays once when the state starts
 					
 		# 5. Run the animation and wait for it to finish
 		# Using the function you already defined in game_intro.gd 
 		await intro_manager._animate_star_to_target(key_node, door_node)
 
-		
 		# 6. Unfreeze the player
 		self.set_physics_process(true)
 		self.set_process_input(true)
 		is_collecting_key = false
-	
+
+	if item_info.has("action_type"):
+		if item_info["action_type"] == "collect":
+			area.get_parent().queue_free() # Remove the item node
+
 	###DEBUG main player interaction with item code
 #	if target.has_node("Receiver"):
 #		print("DEBUG: Receiver FOUND on ", target.name)		
