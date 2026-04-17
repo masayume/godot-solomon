@@ -10,6 +10,8 @@ var player_node: Node2D = null
 
 var bg: Sprite2D = null
 
+var audio_player
+
 func _init(_loader: Node2D):
 	loader = _loader
 
@@ -59,12 +61,24 @@ func play_intro(data: Dictionary):
 	player_node = loader.get_tree().get_first_node_in_group("playergroup")
 
 	if loader.current_level != 99: # skip room intro in test level
+
+		if GameConfig.itemdata["key"].has("introsound"):
+			var sfx = load(GameConfig.itemdata["key"].introsound)
+			if sfx:
+				player_node.audio_player.stream = sfx
+				player_node.audio_player.play() # Plays once when the state starts
+							
 		await _animate_star_to_target(door_node, key_node) # fx from door to key position
 	key_node.visible = true
 	
 	# 5. Star to Player
 	if loader.current_level != 99: # skip room intro in test level
-		await _animate_stars_twirl_out(player_node) # fx stars twirl around player position
+		if GameConfig.playerdata["player"].has("introsound"):
+			var sfx = load(GameConfig.playerdata["player"].introsound)
+			if sfx:
+				player_node.audio_player.stream = sfx
+				player_node.audio_player.play() # Plays once when the state starts
+		await _animate_stars_twirl_in(player_node) # fx stars twirl around player position
 	
 	# 6. Finalize: Make everything else (blocks/monsters) 100% visible
 	_reveal_all_content()
@@ -91,7 +105,7 @@ func _spawn_dimmed_content(data):
 	loader.get_tree().call_group("monstergroup", "set_modulate", Color(1,1,1,0.5))
 
 # Inside game_intro.gd
-func _animate_stars_twirl_out(target_node: Node2D):
+func _animate_stars_twirl_in(target_node: Node2D):
 	if target_node == null: return
 
 	var data = GameConfig.fxdata.get("stars", {})
@@ -183,6 +197,7 @@ func _animate_star_to_target(source_node: Node2D, dest_node: Node2D):
 	if source_node == null or dest_node == null:
 		print("Intro Error: Missing source or destination node")
 		return
+
 
 	# 1. Create the star at the source position (the door)
 	var star = fx_scene.instantiate()

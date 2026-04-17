@@ -225,10 +225,19 @@ func _on_interaction_detector_area_entered(area: Area2D):
 		# 3. Create the intro manager to run the tween
 		# GameIntro needs the loader reference passed in _init
 		var intro_manager = RoomIntro.new(level_loader)
-	
-		# 4. Run the animation and wait for it to finish
+
+		# 4. play the key collected sample
+		# Handle Sound Playback
+		if GameConfig.itemdata["key"].has("sound"):
+			var sfx = load(GameConfig.itemdata["key"].sound)
+			if sfx:
+				audio_player.stream = sfx
+				audio_player.play() # Plays once when the state starts
+					
+		# 5. Run the animation and wait for it to finish
 		# Using the function you already defined in game_intro.gd 
 		await intro_manager._animate_star_to_target(key_node, door_node)
+
 		
 		# 6. Unfreeze the player
 		self.set_physics_process(true)
