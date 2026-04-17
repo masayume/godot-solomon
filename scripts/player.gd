@@ -128,9 +128,36 @@ func _physics_process(delta):
 #		print("PLAYER GRID:", _grid)
 
 	if crouching: velocity.x = 0
-	
+
 	# Move the body
 	move_and_slide()
+
+	# After moving, check if we bumped our head
+	if is_on_ceiling():
+		check_block_destruction()
+
+
+func check_block_destruction():
+	# Get the number of collisions this frame
+	for i in get_slide_collision_count():
+		var collision = get_slide_collision(i)
+		var collider = collision.get_collider()
+		
+		# Ensure we are hitting a StaticBody2D (your blocks)
+		if collider is StaticBody2D:
+			# Get the normal of the collision
+			# Vector2(0, 1) means the surface is facing down (a ceiling)
+			if collision.get_normal().dot(Vector2.DOWN) > 0.9:
+				handle_head_bump(collider)
+
+func handle_head_bump(block):
+	# Check if this block is actually destructible based on your config logic
+	# Assuming your block scenes have a script or name that identifies them
+	if block.has_method("destroy"):
+		block.destroy()
+	elif block.is_in_group("destructible"):
+		# Or handle it via the level_loader's dictionary
+		level_loader.remove_block_at_pos(block.global_position)
 
 		
 func crouch():

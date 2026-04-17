@@ -35,6 +35,9 @@ var current_level
 var player
 	
 func _ready():
+	# Sets the engine's background clearing color to pure black
+	RenderingServer.set_default_clear_color(Color.BLACK)
+	
 	add_to_group("level_loader")
 	center_level()
 	current_level = GameConfig.gamedata.sequence.initial_level

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ceb85ph7hkr5m"
-path="res://.godot/imported/lava.png-43b987296ac51c4c196841e1939b6a8c.ctex"
+uid="uid://b1hlbf6slj71n"
+path="res://.godot/imported/earthcrush.png-8a08a71dda9926aad02925ee7b125d03.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://sprites/blocks/lava.png"
-dest_files=["res://.godot/imported/lava.png-43b987296ac51c4c196841e1939b6a8c.ctex"]
+source_file="res://sprites/blocks/earthcrush.png"
+dest_files=["res://.godot/imported/earthcrush.png-8a08a71dda9926aad02925ee7b125d03.ctex"]
 
 [params]
 

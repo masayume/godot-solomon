@@ -7,7 +7,7 @@
   "block_width": 16,
   "block_height": 12,
 
-  "player_start": [5, 9],
+  "player_start": [5, 1],
 
   "items": [
 	{"pos": [8,11],"family":"door"},	
@@ -34,7 +34,7 @@
 	{"pos": [11,4],"family":"earth"},	
 	{"pos": [4,5],"family":"blue-flame"},	{"pos": [12,5],"family":"blue-flame"},
 
-	{"pos": [6,9],"family":"stone"},	{"pos": [10,9],"family":"stone"},
+	{"pos": [6,9],"family":"lava"},	{"pos": [10,9],"family":"stone"},
 	{"pos": [6,7],"family":"stone"},	{"pos": [10,7],"family":"stone"},
 	{"pos": [6,8],"family":"earth"},	{"pos": [10,8],"family":"earth"},
 
