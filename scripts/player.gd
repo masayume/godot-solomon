@@ -7,6 +7,7 @@ extends CharacterBody2D
 @onready var sprite = $Sprite2D
 @onready var score_label: RichTextLabel = $"../../UI/Score"
 @onready var audio_player = $AudioStreamPlayer2D
+@onready var sfx_player = $SfxPlayer # The new dedicated SFX node
 
 var crouch_texture = preload("res://sprites/player/player-crouch-frames.png")
 var idle_texture = preload("res://sprites/player/player-idle-frames.png")
@@ -19,9 +20,11 @@ var facing := 1   # 1 = right, -1 = left
 var level_loader
 var level
 
+# state machine flags
 var crouching = false
 var is_casting = false
 var is_collecting_key := false
+var is_hit := false
 
 # animation variables
 var current_state = "idle"
@@ -45,7 +48,9 @@ func _process(delta):
 
 func _physics_process(delta):
 
-	if is_casting or is_collecting_key:
+	if is_casting or is_collecting_key or is_hit:
+		# While hit or casting, we still want to apply gravity 
+		# so the player falls back down, but we DON'T change the state.		
 		velocity = Vector2.ZERO # Stops the player while casting (even mid-air)
 		move_and_slide()
 		return # Skip the rest of the movement/input logic
@@ -137,9 +142,8 @@ func _physics_process(delta):
 		check_block_destruction()
 
 
-
 func check_block_destruction():
-	# Iterate through all collisions this frame [cite: 12]
+	# Iterate through all collisions this frame
 	for i in get_slide_collision_count():
 		var collision = get_slide_collision(i)
 		var block = collision.get_collider()
@@ -149,6 +153,15 @@ func check_block_destruction():
 			handle_head_bump(block)
 
 func handle_head_bump(block):
+
+	if is_hit: 
+		return # Don't trigger multiple times per jump
+
+	is_hit = true
+
+	# Trigger the visual 'hit' state defined in player.cfg
+	change_state("hit")
+	
 	# Ensure the collider is a block with a 'family' property 
 	if not block or not block.get("family"):
 		return
@@ -158,22 +171,25 @@ func handle_head_bump(block):
 	if type == "earth":
 		# Step 1: Replace earth with earthcrush
 		level_loader.replace_block(block.global_position, "earthcrush")
-		_play_block_sound(type)
+		_play_secondary_sfx(type)
 		
 	elif type == "earthcrush":
 		# Step 2: Remove the earthcrush block entirely
 		level_loader.remove_block_at_pos(block.global_position)
-		_play_block_sound(type)
+		_play_secondary_sfx(type)
 
-func _play_block_sound(type):
-	# Look up the sound path in blocks.cfg 
+	# Wait for a fraction of a second before allowing state changes again
+	await get_tree().create_timer(0.12).timeout
+	is_hit = false
+
+func _play_secondary_sfx(type):
+	# Play the sound on the dedicated SFX player so it isn't cut off by movement sounds 
 	var data = GameConfig.blockdata.get(type)
 	if data and data.has("sound"):
 		var sfx = load(data.sound)
 		if sfx:
-			audio_player.stream = sfx
-			audio_player.play()
-
+			sfx_player.stream = sfx
+			sfx_player.play()
 
 		
 func crouch():

@@ -29,3 +29,5 @@ script = ExtResource("3_3li8b")
 shape = SubResource("RectangleShape2D_v6fml")
 
 [node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="." unique_id=346654754]
+
+[node name="SfxPlayer" type="AudioStreamPlayer2D" parent="." unique_id=106681326]
