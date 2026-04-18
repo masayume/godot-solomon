@@ -201,6 +201,24 @@ func load_level(id: int):
 #	get_tree().call_group("monstergroup", "set_physics_process", true)
 
 	
+func remove_block_at_pos(world_pos: Vector2):
+	# Convert the world position to grid coordinates 
+	var grid_pos = Grid.world_to_grid(world_pos, x_off, y_off, tile_size)
+	var cell = Vector2i(grid_pos.x, grid_pos.y)
+	
+	if blocks.has(cell):
+		blocks[cell].queue_free()
+		blocks.erase(cell)
+
+func spawn_block_at_world_pos(world_pos: Vector2, type: String):
+	# Convert world position to grid and use the existing add_block logic 
+	var grid_pos = Grid.world_to_grid(world_pos, x_off, y_off, tile_size)
+	add_block(grid_pos.x, grid_pos.y, type, true)
+
+func replace_block(world_pos: Vector2, new_family: String):
+	# Remove the old one and spawn the new one at the same spot
+	remove_block_at_pos(world_pos)
+	spawn_block_at_world_pos(world_pos, new_family)
 
 
 func add_block(bx, by, type, showing = false):

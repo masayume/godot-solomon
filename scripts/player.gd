@@ -137,27 +137,43 @@ func _physics_process(delta):
 		check_block_destruction()
 
 
+
 func check_block_destruction():
-	# Get the number of collisions this frame
+	# Iterate through all collisions this frame [cite: 12]
 	for i in get_slide_collision_count():
 		var collision = get_slide_collision(i)
-		var collider = collision.get_collider()
+		var block = collision.get_collider()
 		
-		# Ensure we are hitting a StaticBody2D (your blocks)
-		if collider is StaticBody2D:
-			# Get the normal of the collision
-			# Vector2(0, 1) means the surface is facing down (a ceiling)
-			if collision.get_normal().dot(Vector2.DOWN) > 0.9:
-				handle_head_bump(collider)
+		# Detect hitting the ceiling (Vector2.DOWN is (0,1), dot > 0.9 means head hit)
+		if collision.get_normal().dot(Vector2.DOWN) > 0.9:
+			handle_head_bump(block)
 
 func handle_head_bump(block):
-	# Check if this block is actually destructible based on your config logic
-	# Assuming your block scenes have a script or name that identifies them
-	if block.has_method("destroy"):
-		block.destroy()
-	elif block.is_in_group("destructible"):
-		# Or handle it via the level_loader's dictionary
+	# Ensure the collider is a block with a 'family' property 
+	if not block or not block.get("family"):
+		return
+		
+	var type = block.family
+	
+	if type == "earth":
+		# Step 1: Replace earth with earthcrush
+		level_loader.replace_block(block.global_position, "earthcrush")
+		_play_block_sound(type)
+		
+	elif type == "earthcrush":
+		# Step 2: Remove the earthcrush block entirely
 		level_loader.remove_block_at_pos(block.global_position)
+		_play_block_sound(type)
+
+func _play_block_sound(type):
+	# Look up the sound path in blocks.cfg 
+	var data = GameConfig.blockdata.get(type)
+	if data and data.has("sound"):
+		var sfx = load(data.sound)
+		if sfx:
+			audio_player.stream = sfx
+			audio_player.play()
+
 
 		
 func crouch():
