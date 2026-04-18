@@ -7,7 +7,7 @@
   "block_width": 16,
   "block_height": 12,
 
-  "player_start": [5, 1],
+  "player_start": [5, 9],
 
   "items": [
 	{"pos": [8,11],"family":"door"},	
