@@ -7,7 +7,7 @@
   "block_width": 16,
   "block_height": 12,
 
-  "player_start": [5, 9],
+  "player_start": [6, 10],
 
   "items": [
 	{"pos": [8,11],"family":"door"},	
@@ -21,7 +21,7 @@
   ],
 
   "monsters": [
-	{"pos": [5,10],"family":"ghost"},
+	{"pos": [1,10],"family":"ghost", "direction":"right"},
 	{"pos": [8,4],"family":"goblin"},
 
 	{"pos": [4,8],"family":"spark","attached":"left"},
