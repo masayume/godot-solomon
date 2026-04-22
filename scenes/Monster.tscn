@@ -4,6 +4,9 @@
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_v6fml"]
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_xquod"]
+size = Vector2(40, 40)
+
 [node name="Monster" type="CharacterBody2D" unique_id=1889007890]
 script = ExtResource("1_ybq8a")
 
@@ -13,3 +16,10 @@ shape = SubResource("CapsuleShape2D_v6fml")
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1724168563]
 
 [node name="Marker2D" type="Marker2D" parent="." unique_id=1128873762]
+
+[node name="HitBox" type="Area2D" parent="." unique_id=1898356504]
+collision_layer = 4
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HitBox" unique_id=1927129562]
+shape = SubResource("RectangleShape2D_xquod")

@@ -9,6 +9,7 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_v6fml"]
 
 [node name="Player" type="CharacterBody2D" unique_id=1889007890]
+collision_layer = 2
 script = ExtResource("1_v6fml")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=2053116779]
@@ -21,8 +22,8 @@ region_enabled = true
 region_rect = Rect2(0, 0, 62, 64)
 
 [node name="CollectionZone" type="Area2D" parent="." unique_id=1738113694]
-collision_layer = 2
-collision_mask = 4
+collision_layer = 0
+collision_mask = 12
 script = ExtResource("3_3li8b")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CollectionZone" unique_id=431477230]

@@ -25,6 +25,7 @@ var crouching = false
 var is_casting = false
 var is_collecting_key := false
 var is_hit := false
+var is_dead := false
 
 # animation variables
 var current_state = "idle"
@@ -220,7 +221,17 @@ func _on_interaction_detector_area_entered(area: Area2D):
 	###DEBUG player area interaction
 	print("DEBUG: Player Area hit SOMETHING: ", area.name, " (Parent: ", area.get_parent().family, ")")
 
+	# Note: In Godot, the Layer is what the object "is,"
+	#       the Mask is what the object "looks for".
 	var target = area.get_parent() 
+	print("Area Entered! Touching: ", target.name, " (Group: ", target.get_groups(), ")")
+	
+	# Check for contact with monsters using the group assigned in level_loader
+	if target.is_in_group("monstergroup"):
+		print("Touched monster: ", target.name)
+		trigger_death_from_monster()
+		return
+
 	var item_type = target.family
 	# 1. Safely get item info
 	if not GameConfig.itemdata.has(target.family):
@@ -312,14 +323,37 @@ func _on_interaction_detector_area_entered(area: Area2D):
 		if item_info["action_type"] == "collect":
 			area.get_parent().queue_free() # Remove the item node
 
-	###DEBUG main player interaction with item code
-#	if target.has_node("Receiver"):
-#		print("DEBUG: Receiver FOUND on ", target.name)		
-#		$CollectionZone.interact(target)
-#	else:
-#		print("DEBUG: No Receiver found on ", target.name)
 
 
+
+func trigger_death_from_monster():
+
+	if is_dead: 
+		return	
+	
+	is_dead = true
+
+	print("contact with monster !!")
+
+# 1. Stop all movement and input
+	velocity = Vector2.ZERO
+	self.set_physics_process(false)
+	self.set_process_input(false)
+
+	# 2. Change state to 'hit' or a new 'death' state
+	# Your player.cfg already has a [hit] section with a death sprite
+	change_state("death1")
+
+# 3. Optional: Play a death sound
+	if GameConfig.playerdata.has("death_sound"):
+		audio_player.stream = load(GameConfig.playerdata.death_sound)
+		audio_player.play()
+
+	# 4. Handle the "Outro" or Restart
+#	_handle_death_outro()
+	
+
+	
 func spawn_at(tile_x: int, tile_y: int, x_off: float, y_off: float):
 	# Get tile size from config (single source of truth)
 	tile_size = GameConfig.gamedata.screen.TILE_SIZE

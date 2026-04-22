@@ -15,6 +15,8 @@ shape = SubResource("RectangleShape2D_hm0qy")
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=369631713]
 
 [node name="Area2D" type="Area2D" parent="." unique_id=740162485]
+collision_layer = 8
+collision_mask = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=990145311]
 shape = SubResource("RectangleShape2D_j3wwg")

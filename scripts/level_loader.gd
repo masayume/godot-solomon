@@ -326,11 +326,15 @@ func spawn_player(px, py, xoff, yoff):
 	# add to the SAME node that holds the blocks
 	add_child(player)
 
+	if GameConfig.gamedata.game.collider_debug:
+		_debug_node_shapes(player, Color(0, 1, 0, 0.7)) # Green
+		
 	# now the transform chain is correct
 	player.visible=false
 	player.spawn_at(px, py, xoff, yoff)
 	player.fire_pressed.connect(_on_player_fire)
 	print("player spawned")
+
 
 func start_level_transition():
 	
@@ -565,17 +569,35 @@ func _spawn_monster_logic(data):
 				)
 
 			if GameConfig.gamedata.game.collider_debug:
-				var shape = instance.get_node_or_null("CollisionShape2D")
-				if shape:
-					# This forces the collider to be drawn with a specific color at runtime
-					shape.z_index = 100          # Ensure it draws over blocks
-					shape.visible = true 
-					shape.modulate = Color(1, 0, 0, 0.8) # Bright Red
-					print("Forcing collider visibility for: ", instance.family)
-
+				_debug_node_shapes(instance, Color(1, 0, 0, 0.7)) # Red
+			
 			instance.visible = false
 			instance.set_physics_process(false) 
 
+
+# 3. Add this helper function to the bottom of level_loader.gd
+func _force_debug_shapes(node: Node, default_color: Color):
+	var shapes = node.find_children("*", "CollisionShape2D", true)
+	for shape in shapes:
+		shape.z_index = 300
+		shape.visible = true 
+		if shape.get_parent() is Area2D:
+			shape.modulate = Color(1, 1, 0, 0.8) # Yellow for Hitboxes
+		else:
+			shape.modulate = default_color
+
+# function to debug EVERYTHING
+func _debug_node_shapes(node: Node, color: Color):
+	var shapes = node.find_children("*", "CollisionShape2D", true)
+	for shape in shapes:
+		shape.z_index = 500
+		shape.visible = true
+		# If it's a HitBox/Area2D, make it Yellow. If Physics, use the passed color.
+		if shape.get_parent() is Area2D:
+			shape.modulate = Color(1, 1, 0, 0.7) # Yellow Hitbox
+		else:
+			shape.modulate = color
+		print("Debug: Showing shape for ", node.name, " in ", shape.get_parent().name)
 
 
 func debug_monster(monster):

@@ -16,6 +16,11 @@ func _ready():
 	
 	setup_animation()
 
+	# Force visibility of collision for this specific instance
+	# if you want to be 100% sure during debug
+	if get_node_or_null("CollisionShape2D"):
+		get_node("CollisionShape2D").visible = true
+		
 func _process(delta):
 	animate(delta)
 
