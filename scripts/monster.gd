@@ -13,31 +13,133 @@ var stats = {}
 
 func _ready():
 	z_index = 20
+	add_to_group("monstergroup")
 	
-	collision_layer = 4 
-	collision_mask = 1
-	
+	set_collision_layer_value(4, true)  # Monster Layer (Box 4)
+	set_collision_mask_value(1, true)   # Only see Walls (Box 1)
+		
 	set_texture()
 	set_random_variant()
 	set_collidable()
 
 	if not GameConfig.monsterdata.has(family):
-		print("Unknown monster family:", family)
+		push_error("CONFIG ERROR: Monster family '%s' not found in GameConfig!" % family)
 		return
 
 	stats = GameConfig.monsterdata[family]
 
+	_ensure_receiver_setup()
+	_force_hitbox_setup()
 	apply_stats()
 
+
+func _force_hitbox_setup():
+	# If HitBox is missing from the .tscn (common in inherited scenes), CREATE IT
+	var hb = get_node_or_null("HitBox")
+	if not hb:
+		print("[DEBUG] HitBox missing in scene tree for ", name, ". Creating one programmatically.")
+		hb = Area2D.new()
+		hb.name = "HitBox"
+		add_child(hb)
+		
+		# We need a shape for the new Area2D
+		var shape = CollisionShape2D.new()
+		var circle = CircleShape2D.new()
+		circle.radius = 20.0 # Default hazard size
+		shape.shape = circle
+		hb.add_child(shape)
+
+	# Setup detection layers
+	hb.collision_layer = 0
+	hb.collision_mask = 0
+	hb.set_collision_layer_value(4, true) # Is a Monster
+	hb.set_collision_mask_value(2, true)  # LOOKS FOR PLAYER (Layer 2)
+	
+	hb.monitoring = true
+	hb.monitorable = true
+	
+	# Connect signal
+	if not hb.body_entered.is_connected(_on_hitbox_entered):
+		hb.body_entered.connect(_on_hitbox_entered)
+		print("[SUCCESS] Hitbox connected for ", name)
+
+func _ensure_receiver_setup():
+	var receiver = get_node_or_null("Receiver")
+	if not receiver:
+		receiver = Receiver.new()
+		receiver.name = "Receiver"
+		add_child(receiver)
+		print("[DEBUG] Created missing Receiver node for ", name)
+	
+	receiver.data = {
+		"action_type": "hazard",
+		"family": family
+	}
+
+func _ensure_receiver_setup2DEL():
+	var receiver = get_node_or_null("Receiver")
+	if not receiver:
+		receiver = Receiver.new()
+		receiver.name = "Receiver"
+		add_child(receiver)
+	
+	# This data is what receiver.gd uses to decide what to do
+	receiver.data = {
+		"action_type": "hazard",
+		"family": family
+	}
+
+	if not receiver.has_method("receive"):
+		push_warning("RECEIVER ERROR: Node exists but is missing 'receive' method on %s" % name)
+
+
+func _setup_hitbox():
+	# The HitBox is the Area2D node defined in Monster.tscn
+	var hb = get_node_or_null("HitBox")
+	if not hb:
+		push_warning("NODE ERROR: Monster '%s' is missing a 'HitBox' Area2D!" % name)
+		return
+		
+	hb.collision_layer = 0
+	hb.collision_mask = 0
+		
+	# Hitbox is a 'Monster' (Layer 4)
+	hb.set_collision_layer_value(4, true)
+	# Hitbox MUST look for 'Player' (Layer 2)
+	hb.set_collision_mask_value(2, true)
+		
+	hb.monitoring = true
+	hb.monitorable = true # Player needs to see it too
+		
+	# Connect to body_entered because the Player is a CharacterBody2D
+	if not hb.body_entered.is_connected(_on_hitbox_entered):
+		hb.body_entered.connect(_on_hitbox_entered)
+
+func _on_hitbox_entered(body: Node2D):
+	# If the thing entering the Area is the Player
+	if body.has_method("trigger_death_from_monster"):
+		var receiver = get_node_or_null("Receiver")
+		if receiver:
+			# Pass the interaction to the receiver
+			receiver.receive("monster_hit", body)
+		else:
+			# Fallback if receiver failed
+			body.trigger_death_from_monster()
+			
+			
 func apply_stats():
 
 	# --- common Sprite setup ---
 	if stats.has("sprite"):
 		$Sprite2D.texture = load(stats["sprite"])
-		print(stats)
+#		print(stats)
 
-	sprite.hframes = GameConfig.monsterdata[family].hframes
+	sprite.hframes = stats.get("hframes", 1)
 	sprite.vframes = 1
+	sprite.region_enabled = false
+	
+#	sprite.hframes = GameConfig.monsterdata[family].hframes
+#	sprite.vframes = 1
 
 	set_texture()
 

@@ -43,10 +43,10 @@ func _ready():
 	level = get_parent()
 	$CollectionZone.collision_mask = 12 
 	$CollectionZone.area_entered.connect(_on_interaction_detector_area_entered)
-
 	print("Player layer:", collision_layer, " mask: ", collision_mask)
-	collision_layer = 2
-	collision_mask = 1  # fine, doesn't matter for this interaction
+
+	set_collision_layer_value(2, true) # Mark player as Layer 2
+	set_collision_mask_value(1, true) 
 
 	setup_animation()
 		
