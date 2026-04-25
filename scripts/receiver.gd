@@ -23,18 +23,24 @@ func receive(action, source):
 			_handle_collection(source)
 		"door":
 			_handle_door(source)
-
+		"monster_hit": # Add this case
+			if GameConfig.monsterdata[source.name].get("is_lethal"):
+				if source.has_method("trigger_death_from_monster"):
+					source.trigger_death_from_monster()
+				
 func _handle_collection(player):
-	var flag = GameConfig.itemdata.get("on_collect_flag")
-	player.set_flag(flag, true) # Player now "owns" the key state
-	print("collected: ", GameConfig.itemdata.get("name"))
+#	var flag = GameConfig.itemdata.get("on_collect_flag")
+	if data.has("on_collect_flag"):
+		var flag = data.get("on_collect_flag")
+		player.set_flag(flag) # Player now "owns" the key state
+		print("collected: ", GameConfig.itemdata.get("name"))
 
 	var item_name = data.get("name")
 	if item_name == "extra_life":
 		GameManager.add_life()
 		print("Life added via GameManager")
 		
-	get_parent().queue_free()
+#	get_parent().queue_free()
 
 func _handle_door(player):
 	var requirement = GameConfig.itemdata.get("requires_flag")

@@ -41,7 +41,9 @@ func _ready():
 #	print("Player ready:", self)
 	level_loader = get_tree().get_first_node_in_group("level_loader")
 	level = get_parent()
+	$CollectionZone.collision_mask = 12 
 	$CollectionZone.area_entered.connect(_on_interaction_detector_area_entered)
+	
 	setup_animation()
 		
 func _process(delta):
@@ -225,12 +227,22 @@ func _on_interaction_detector_area_entered(area: Area2D):
 	#       the Mask is what the object "looks for".
 	var target = area.get_parent() 
 	print("Area Entered! Touching: ", target.name, " (Group: ", target.get_groups(), ")")
+
+	# SYSTEM: Always look for a Receiver node
+	var receiver = target.get_node_or_null("Receiver")
+	if receiver:
+		# We pass "interact" as the signal, and self (the Player) as the source
+		receiver.receive("interact", self)
+	else:
+		# Fallback for legacy monster detection if receiver isn't there yet
+		if target.is_in_group("monstergroup"):
+			trigger_death_from_monster()
 	
 	# Check for contact with monsters using the group assigned in level_loader
-	if target.is_in_group("monstergroup"):
-		print("Touched monster: ", target.name)
-		trigger_death_from_monster()
-		return
+#	if target.is_in_group("monstergroup"):
+#		print("Touched monster: ", target.name)
+#		trigger_death_from_monster()
+#		return
 
 	var item_type = target.family
 	# 1. Safely get item info
@@ -312,12 +324,19 @@ func _on_interaction_detector_area_entered(area: Area2D):
 					
 		# 5. Run the animation and wait for it to finish
 		# Using the function you already defined in game_intro.gd 
+		
+		# 1. Process logic (flags/score) - Key becomes invisible here
+		receiver.receive("collect", self)
 		await intro_manager._animate_star_to_target(key_node, door_node)
 
 		# 6. Unfreeze the player
 		self.set_physics_process(true)
 		self.set_process_input(true)
 		is_collecting_key = false
+
+		# 3. NOW free the node
+		key_node.queue_free()
+		
 
 	if item_info.has("action_type"):
 		if item_info["action_type"] == "collect":
@@ -328,7 +347,7 @@ func _on_interaction_detector_area_entered(area: Area2D):
 
 func trigger_death_from_monster():
 
-	if is_dead: 
+	if is_dead or is_hit: 
 		return	
 	
 	is_dead = true
@@ -367,10 +386,15 @@ func spawn_at(tile_x: int, tile_y: int, x_off: float, y_off: float):
 			y_off
 		)
 
-func set_flag(flag_name: String):
+func set_flag2DEL(flag_name: String):
 	if not flags.has(flag_name):
 		flags.append(flag_name)
 
+func set_flag(flag_name: String):
+	if not flags.has(flag_name):
+		flags.append(flag_name)
+		print("Player gained flag: ", flag_name)
+		
 func has_flag(flag_name: String) -> bool:
 	return flags.has(flag_name)
 

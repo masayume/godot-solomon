@@ -13,6 +13,10 @@ var stats = {}
 
 func _ready():
 	z_index = 20
+	
+	collision_layer = 4 
+	collision_mask = 1
+	
 	set_texture()
 	set_random_variant()
 	set_collidable()
@@ -37,13 +41,15 @@ func apply_stats():
 
 	set_texture()
 
+
 		
 func _physics_process(_delta: float):
 	# Let children define behavior
 	pass	
 	
 func set_texture():
-	var path = "res://sprites/monsters/%s.png" % family
+#	var path = "res://sprites/monsters/%s.png" % family
+	var path = GameConfig.monsterdata[family].sprite
 	sprite.texture = load(path)
 	# 🔥 FORCE RESET EVERYTHING RELATED TO REGION/SLICING
 	sprite.region_enabled = false
@@ -55,6 +61,12 @@ func set_random_variant():
 	sprite.region_enabled = true
 	sprite.region_rect = Rect2(x, 0, tile_size, tile_size)
 
+func _on_body_entered(body):
+	# We use the Interactor node already attached to the Player
+	# instead of creating a new one with .new() every time.
+	if $Interactor: 
+		$Interactor.interact(body)
+		
 func set_collidable():
 		
 	if !GameConfig.monsterdata.has(family):

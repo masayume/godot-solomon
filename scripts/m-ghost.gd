@@ -11,6 +11,7 @@ var time_accumulator = 0.0
 var trail: Line2D
 var max_points: int = 77
 @export var eye_offset: Vector2 = Vector2(25, -22)
+var hitbox: Area2D 
 
 #SIGNAL-ghost-1 Define the signal with parameters able to destroy a block when hit
 signal wall_impact(pos: Vector2, dir: int)
@@ -31,7 +32,33 @@ func _ready():
 	# if you want to be 100% sure during debug
 	if get_node_or_null("CollisionShape2D"):
 		get_node("CollisionShape2D").visible = true
-		
+
+	hitbox = get_node_or_null("HitBox")
+	_setup_hitbox()
+
+func _setup_hitbox():
+	if not hitbox: return
+	
+	# Ensure Hitbox is set to detect the Player (Layer 2)
+	hitbox.collision_layer = 0 # Hitbox doesn't need to be found
+	hitbox.collision_mask = 2  # Monitor the Player's Layer
+	
+	if not hitbox.area_entered.is_connected(_on_hitbox_entered):
+		hitbox.area_entered.connect(_on_hitbox_entered)
+	if not hitbox.body_entered.is_connected(_on_hitbox_body_entered):
+		hitbox.body_entered.connect(_on_hitbox_body_entered)
+
+func _on_hitbox_entered(area):
+	# If we hit the player's detection area
+	if area.get_parent().has_method("trigger_death_from_monster"):
+		area.get_parent().trigger_death_from_monster()
+
+func _on_hitbox_body_entered(body):
+	# If we hit the player's physical body
+	if body.has_method("trigger_death_from_monster"):
+		body.trigger_death_from_monster()
+
+
 func _process(delta):
 	animate(delta)
 #	var current_pos = global_position 

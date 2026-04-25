@@ -5,8 +5,7 @@
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_618pn"]
 
 [node name="Ghost" type="CharacterBody2D" unique_id=1516638309]
-collision_layer = 2
-collision_mask = 3
+collision_layer = 4
 script = ExtResource("1_618pn")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1111532687]

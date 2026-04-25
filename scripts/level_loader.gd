@@ -267,13 +267,13 @@ func add_item(ix, iy, type, showing = false):
 		
 
 ###TODO: fix duplicate collision_layer_mask/value
-	# 1. Physical Blocking Logic
-	if GameConfig.itemdata.get("is_interactable", true):
-		item.set_collision_layer_value(3, true)  # It is an Interactable
-		item.set_collision_mask_value(2, true)   # It blocks the Player
-	else:
-		item.set_collision_layer_value(3, false) # Player walks through it
-		item.set_collision_mask_value(2, false)
+#	# 1. Physical Blocking Logic
+#	if GameConfig.itemdata.get("is_interactable", true):
+#		item.set_collision_layer_value(3, true)  # It is an Interactable
+#		item.set_collision_mask_value(2, true)   # It blocks the Player
+#	else:
+#		item.set_collision_layer_value(3, false) # Player walks through it
+#		item.set_collision_mask_value(2, false)
 
 
 	# 2. Interaction Logic (The Sensor)
@@ -297,8 +297,6 @@ func add_item(ix, iy, type, showing = false):
 	# 3. Add the Receiver component
 	var receiver = Receiver.new()
 	receiver.name = "Receiver"
-
-#	print(GameConfig.itemdata[type])
 	receiver.data = GameConfig.itemdata[type]
 	item.add_child(receiver)
 
@@ -475,16 +473,22 @@ func _spawn_level_content_hidden(data):
 	blocks.clear()
 	monsters.clear()
 
-	# 2. Spawn Blocks (Hidden)
+	###############################
+	#  2. Spawn Blocks (Hidden)   #
+	###############################
 	for b in data["blocks"]:
 		# Create a new block instance from scene
 		add_block(b["pos"][0], b["pos"][1], b["family"], false)
 
-	# 3. Spawn Monsters (Hidden + Physics Disabled)
+	#################################################
+	# 3. Spawn Monsters (Hidden + Physics Disabled) #
+	#################################################
 	if data.has("monsters"):
 		_spawn_monster_logic(data) # Refactor your m loop into this
-
-	# 4. Spawn Items (Hidden)
+	
+	#################################
+	# 	4. Spawn Items (Hidden)		#
+	#################################
 	if data.has("items"):
 		for i in data["items"]:
 			# Create a new block instance from scene
@@ -554,11 +558,53 @@ func _spawn_monster_logic(data):
 			instance.add_to_group("debug_collision")
 			instance.add_to_group("monstergroup")
 
-			if instance.family == "spark" or instance.family == "dragon":
+			if instance.family == "ghost" or instance.family == "spark" or instance.family == "dragon" :
 				debug_monster(instance)
 
-			add_child(instance)
+			# 2. Interaction Logic (The Sensor)
+#			var area = instance.add_node("Area2D")
+			var area = Area2D.new()
+			area.name = "HitBox"
+
+			# Reset everything first to be safe
+			instance.collision_mask = 0
+			area.collision_layer = 0
+			area.collision_mask = 0
 			
+			# Who am I? (Layer 3: Interactables)
+			area.set_collision_layer_value(4, true)      # Sensor is on Interactable layer
+
+			# Who am I looking for? (Layer 2: Player)
+			area.set_collision_mask_value(2, true)       # Sensor looks for the Player
+
+			# CONSOLIDATION: Force Layer 4 for Monsters
+			instance.collision_layer = 4
+			instance.collision_mask = 3 # Can see Walls (1) and Player (2)
+
+			# 3. Add the Receiver component
+			if not instance.has_node("Receiver"):
+				var receiver = Receiver.new()
+				receiver.name = "Receiver"
+				print("for ", instance.family, " added receiver for ",  GameConfig.monsterdata[instance.family] )
+				receiver.data = GameConfig.monsterdata[instance.family]
+				instance.add_child(receiver)
+
+			# IMPORTANT: Ensure the HitBox (Area2D) exists and is on Layer 4
+			var hitbox = instance.get_node_or_null("HitBox")
+			if hitbox:
+				hitbox.collision_layer = 4
+				hitbox.collision_mask = 0 # It just exists to be 'seen' by the player
+		
+			# 2. Fix the collision mask at runtime just to be sure
+#			instance.collision_mask |= 2 # Adds 'Layer 2' to the monster's vision
+
+#			var receiver = Receiver.new() 
+#			receiver.name = "Receiver"
+#			area.add_child(receiver)
+
+			add_child(instance)
+			instance.add_child(area)
+						
 			if instance.family != "spark":
 				instance.position = GameConfig.grid_to_local(
 					m["pos"][0],
