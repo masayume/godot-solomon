@@ -484,7 +484,7 @@ func _spawn_level_content_hidden(data):
 	# 3. Spawn Monsters (Hidden + Physics Disabled) #
 	#################################################
 	if data.has("monsters"):
-		_spawn_monster_logic(data) # Refactor your m loop into this
+		_spawn_monsters(data) # Refactor your m loop into this
 	
 	#################################
 	# 	4. Spawn Items (Hidden)		#
@@ -508,8 +508,7 @@ func _spawn_level_content_hidden(data):
 	player.visible = false
 	player.set_process_input(false)
 	
-func _spawn_monster_logic(data):
-	# Spawn monsters
+func _spawn_monsters(data):
 	if data.has("monsters"):
 		for m in data["monsters"]:
 			# Create a new monster instance from scene		
@@ -569,8 +568,11 @@ func _spawn_monster_logic(data):
 			# Reset everything first to be safe
 			instance.collision_mask = 0
 			area.collision_layer = 0
-			area.collision_mask = 0
-			
+			area.collision_mask = 3
+
+			area.monitoring = false 
+			area.monitorable = true 	# can be seen by Player CollectionZone
+						
 			# Who am I? (Layer 3: Interactables)
 			area.set_collision_layer_value(4, true)      # Sensor is on Interactable layer
 

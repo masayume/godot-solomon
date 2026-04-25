@@ -43,7 +43,11 @@ func _ready():
 	level = get_parent()
 	$CollectionZone.collision_mask = 12 
 	$CollectionZone.area_entered.connect(_on_interaction_detector_area_entered)
-	
+
+	print("Player layer:", collision_layer, " mask: ", collision_mask)
+	collision_layer = 2
+	collision_mask = 1  # fine, doesn't matter for this interaction
+
 	setup_animation()
 		
 func _process(delta):
@@ -233,10 +237,10 @@ func _on_interaction_detector_area_entered(area: Area2D):
 	if receiver:
 		# We pass "interact" as the signal, and self (the Player) as the source
 		receiver.receive("interact", self)
-	else:
-		# Fallback for legacy monster detection if receiver isn't there yet
-		if target.is_in_group("monstergroup"):
-			trigger_death_from_monster()
+#	else:
+#		# Fallback for legacy monster detection if receiver isn't there yet
+#		if target.is_in_group("monstergroup"):
+#			trigger_death_from_monster()
 	
 	# Check for contact with monsters using the group assigned in level_loader
 #	if target.is_in_group("monstergroup"):

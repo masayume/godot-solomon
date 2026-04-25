@@ -36,6 +36,11 @@ func _ready():
 	hitbox = get_node_or_null("HitBox")
 	_setup_hitbox()
 
+	print("Ghost layer:", collision_layer, " mask: ", collision_mask)
+	# Ghost HitBox
+	collision_layer = 4   # (or anything, not important)
+	collision_mask = 1    # must match Player layer	
+
 func _setup_hitbox():
 	if not hitbox: return
 	
@@ -49,12 +54,14 @@ func _setup_hitbox():
 		hitbox.body_entered.connect(_on_hitbox_body_entered)
 
 func _on_hitbox_entered(area):
+	print("Ghost hit area:", area)
 	# If we hit the player's detection area
 	if area.get_parent().has_method("trigger_death_from_monster"):
 		area.get_parent().trigger_death_from_monster()
 
 func _on_hitbox_body_entered(body):
 	# If we hit the player's physical body
+	print("Ghost hit body:", body)
 	if body.has_method("trigger_death_from_monster"):
 		body.trigger_death_from_monster()
 
