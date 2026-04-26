@@ -321,6 +321,15 @@ func spawn_player(px, py, xoff, yoff):
 	player = player_scene.instantiate()
 	player.add_to_group("playergroup")
 
+# After instancing player
+#	var hud = get_tree().get_first_node_in_group("hud_lives") # Ensure hud_lives is in this group
+	var hud = $"../UI/ContLives"	
+	if hud:
+		hud.set_player_active(true)
+	else:
+		print("no hud found: ", hud)
+	
+
 	# add to the SAME node that holds the blocks
 	add_child(player)
 
@@ -373,6 +382,10 @@ func start_level_transition():
 #	await get_tree().create_timer(3.0).timeout	
 
 	# Instantiate the intro helper to play the outro
+	var hud = get_tree().get_first_node_in_group("hud_lives")
+	if hud:
+		hud.set_player_active(false)
+
 	var intro_manager = RoomOutro.new(self)
 #	print("calling play intro")
 	intro_manager._animate_stars_explode(player)
