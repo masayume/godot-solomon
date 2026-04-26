@@ -1,5 +1,5 @@
 extends Monster
-class_name Pannel
+class_name Salamander
 
 var direction := -1
 
@@ -8,12 +8,12 @@ var anim_speed = 0.1
 var frame_index = 0
 var time_accumulator = 0.0
 
-var gravity = GameConfig.monsterdata.pannel.gravity
+var gravity = GameConfig.monsterdata.salamander.gravity
 
 var hitbox: Area2D 
 
 func _ready():
-	family = "pannel"
+	family = "salamander"
 	super._ready()
 	
 	setup_animation()
@@ -21,17 +21,17 @@ func _ready():
 	hitbox = get_node_or_null("HitBox")
 	_setup_hitbox()
 	
-	print("Panel layer:", collision_layer, " mask: ", collision_mask)
+	print("Salamander layer:", collision_layer, " mask: ", collision_mask)
 	# Ghost HitBox
 	collision_layer = 4   # (or anything, not important)
 	collision_mask = 1    # must match Player layer	
-	
+
 func _process(delta):
 	animate(delta)
 
 func _physics_process(_delta):
 
-	velocity.x = direction * GameConfig.monsterdata.pannel.speed
+	velocity.x = direction * GameConfig.monsterdata.salamander.speed
 
 	behave(_delta) # includes move_and_slide()
 

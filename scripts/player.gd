@@ -241,12 +241,6 @@ func _on_interaction_detector_area_entered(area: Area2D):
 #		# Fallback for legacy monster detection if receiver isn't there yet
 #		if target.is_in_group("monstergroup"):
 #			trigger_death_from_monster()
-	
-	# Check for contact with monsters using the group assigned in level_loader
-#	if target.is_in_group("monstergroup"):
-#		print("Touched monster: ", target.name)
-#		trigger_death_from_monster()
-#		return
 
 	var item_type = target.family
 	# 1. Safely get item info
@@ -356,7 +350,7 @@ func trigger_death_from_monster():
 	
 	is_dead = true
 
-	print("contact with monster !!")
+	print("contact with monster: trigger death scene !!")
 
 # 1. Stop all movement and input
 	velocity = Vector2.ZERO
@@ -365,7 +359,8 @@ func trigger_death_from_monster():
 
 	# 2. Change state to 'hit' or a new 'death' state
 	# Your player.cfg already has a [hit] section with a death sprite
-	change_state("death1")
+	await change_state("death1")
+	change_state("death2")
 
 # 3. Optional: Play a death sound
 	if GameConfig.playerdata.has("death_sound"):

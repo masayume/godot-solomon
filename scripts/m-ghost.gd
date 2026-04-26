@@ -48,20 +48,14 @@ func _setup_hitbox():
 	hitbox.collision_layer = 0 # Hitbox doesn't need to be found
 	hitbox.collision_mask = 2  # Monitor the Player's Layer
 	
-	if not hitbox.area_entered.is_connected(_on_hitbox_entered):
-		hitbox.area_entered.connect(_on_hitbox_entered)
+#	if not hitbox.area_entered.is_connected(_on_hitbox_entered):
+#		hitbox.area_entered.connect(_on_hitbox_entered)
 	if not hitbox.body_entered.is_connected(_on_hitbox_body_entered):
 		hitbox.body_entered.connect(_on_hitbox_body_entered)
 
-func _on_hitbox_entered(area):
-	print("Ghost hit area:", area)
-	# If we hit the player's detection area
-	if area.get_parent().has_method("trigger_death_from_monster"):
-		area.get_parent().trigger_death_from_monster()
-
 func _on_hitbox_body_entered(body):
 	# If we hit the player's physical body
-	print("Ghost hit body:", body)
+#	print("Ghost hit body:", body)
 	if body.has_method("trigger_death_from_monster"):
 		body.trigger_death_from_monster()
 

@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://clnfudlb53tro"]
+
+[ext_resource type="Script" uid="uid://bta2viecvtc8q" path="res://scripts/m-salamander.gd" id="1_jt156"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_eu5gc"]
+
+[node name="m-Salamander" type="Node2D" unique_id=1216366507]
+script = ExtResource("1_jt156")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=755156142]
+shape = SubResource("RectangleShape2D_eu5gc")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=504967968]

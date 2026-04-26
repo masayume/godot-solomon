@@ -12,6 +12,8 @@ var current_surface: String = "bottom"
 
 var gravity = GameConfig.monsterdata.spark.gravity
 
+var hitbox: Area2D 
+
 # We'll use this to handle rotation based on surface
 var surface_normals = {
 	"bottom": Vector2.UP,
@@ -34,15 +36,37 @@ func _ready():
 	if get_node_or_null("CollisionShape2D"):
 		get_node("CollisionShape2D").visible = true
 
+	hitbox = get_node_or_null("HitBox")
+	_setup_hitbox()
+
+	print("Spark layer:", collision_layer, " mask: ", collision_mask)
+	# Ghost HitBox
+	collision_layer = 4   # (or anything, not important)
+	collision_mask = 1    # must match Player layer	
+
 func _process(delta):
 	animate(delta)
 
 func _physics_process(_delta):
 	behave(_delta) # includes move_and_slide()
 
+func _setup_hitbox():
+	if not hitbox: return
+	
+	# Ensure Hitbox is set to detect the Player (Layer 2)
+	hitbox.collision_layer = 0 # Hitbox doesn't need to be found
+	hitbox.collision_mask = 2  # Monitor the Player's Layer
+	
+#	if not hitbox.area_entered.is_connected(_on_hitbox_entered):
+#		hitbox.area_entered.connect(_on_hitbox_entered)
+	if not hitbox.body_entered.is_connected(_on_hitbox_body_entered):
+		hitbox.body_entered.connect(_on_hitbox_body_entered)
 
-
-
+func _on_hitbox_body_entered(body):
+	# If we hit the player's physical body
+#	print("Ghost hit body:", body)
+	if body.has_method("trigger_death_from_monster"):
+		body.trigger_death_from_monster()
 
 
 func behave(_delta):
@@ -76,36 +100,6 @@ func behave(_delta):
 		var snap_forward = new_move_dir * direction * 15.0
 		var snap_down = -surface_normals[current_surface] * 10.0
 		global_position += snap_forward + snap_down
-
-func deleteme():
-	
-	if true:
-		pass
-	elif not is_on_floor():
-		# VALIDATION: Check if there's actually a wall to turn onto.
-		# We check if a block exists in the direction we are currently moving.
-		# (If we are at an edge, the "side" of the block is right there).
-		var check_dist = Vector2.RIGHT.rotated(rotation) * direction * 10.0
-		
-		if test_move(global_transform, check_dist):
-			# A wall is detected! Perform the corner wrap.
-			rotation -= PI/2 
-			_update_current_surface()
-			
-			# Snap the spark to the new wall to ensure is_on_floor() becomes true
-			var new_move_dir = Vector2.RIGHT.rotated(rotation)
-			var snap_forward = new_move_dir * direction * 5.0
-			var snap_onto_wall = -surface_normals[current_surface] * 8.0
-			global_position += snap_forward + snap_onto_wall
-			
-			print("Corner turned successfully")
-		else:
-			# NO WALL FOUND: The block was destroyed or there's a large gap.
-			# We do NOT rotate. We keep moving straight as requested.
-			pass
-
-
-
 
 		
 func _update_current_surface():

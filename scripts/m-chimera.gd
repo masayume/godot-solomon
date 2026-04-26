@@ -10,11 +10,21 @@ var time_accumulator = 0.0
 
 var gravity = GameConfig.monsterdata.chimera.gravity
 
+var hitbox: Area2D 
+
 func _ready():
 	family = "chimera"
 	super._ready()
 	
 	setup_animation()
+
+	hitbox = get_node_or_null("HitBox")
+	_setup_hitbox()
+	
+	print("Chimera layer:", collision_layer, " mask: ", collision_mask)
+	# Ghost HitBox
+	collision_layer = 4   # (or anything, not important)
+	collision_mask = 1    # must match Player layer	
 
 func _process(delta):
 	animate(delta)
