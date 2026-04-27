@@ -362,10 +362,6 @@ func trigger_death_from_monster():
 	await change_state("death1")
 	change_state("death2")
 
-# 3. Optional: Play a death sound
-	if GameConfig.playerdata.has("death_sound"):
-		audio_player.stream = load(GameConfig.playerdata.death_sound)
-		audio_player.play()
 
 	# 4. Handle the "Outro" or Restart
 #	_handle_death_outro()

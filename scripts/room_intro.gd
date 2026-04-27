@@ -248,14 +248,9 @@ func _reveal_all_content():
 	var player = loader.get_tree().get_first_node_in_group("playergroup")
 	if player: player.set_process_input(true)
 
-	# After instancing player
-#	var hud = get_tree().get_first_node_in_group("hud_lives")
-#	if hud:
-#		hud.set_player_active(true)
-#	else:
-#		print("no hud found: ", hud)
-	# Use call_deferred to wait until the engine is in a stable state
-#	GameManager.set_player_in_game(true)
+	# This is the "Magic Trigger"
+	# Setting this to true calls the setter in GameManager, 
+	# which emits 'lives_changed', which calls 'update_icons' in HUD.
 	GameManager.is_player_active = true
 		
 	if bg:
