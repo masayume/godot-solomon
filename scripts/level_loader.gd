@@ -192,7 +192,7 @@ func load_level(id: int):
 	# 2. Spawn the level content but keep it invisible
 	_spawn_level_content_hidden(data)
 
-	# Instantiate the intro helper
+	# Instantiate the intro helper function
 	var intro_manager = RoomIntro.new(self)
 	print("calling play intro")
 	intro_manager.play_intro(data)
@@ -320,15 +320,6 @@ func spawn_player(px, py, xoff, yoff):
 
 	player = player_scene.instantiate()
 	player.add_to_group("playergroup")
-
-# After instancing player
-#	var hud = get_tree().get_first_node_in_group("hud_lives") # Ensure hud_lives is in this group
-	var hud = $"../UI/ContLives"	
-	if hud:
-		hud.set_player_active(true)
-	else:
-		print("no hud found: ", hud)
-	
 
 	# add to the SAME node that holds the blocks
 	add_child(player)
@@ -520,7 +511,8 @@ func _spawn_level_content_hidden(data):
 	var player = get_tree().get_first_node_in_group("playergroup")
 	player.visible = false
 	player.set_process_input(false)
-	
+
+
 func _spawn_monsters(data):
 	if data.has("monsters"):
 		for m in data["monsters"]:

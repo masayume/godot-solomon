@@ -247,7 +247,17 @@ func _reveal_all_content():
 	loader.get_tree().call_group("monstergroup", "set_physics_process", true)
 	var player = loader.get_tree().get_first_node_in_group("playergroup")
 	if player: player.set_process_input(true)
-	
+
+	# After instancing player
+#	var hud = get_tree().get_first_node_in_group("hud_lives")
+#	if hud:
+#		hud.set_player_active(true)
+#	else:
+#		print("no hud found: ", hud)
+	# Use call_deferred to wait until the engine is in a stable state
+#	GameManager.set_player_in_game(true)
+	GameManager.is_player_active = true
+		
 	if bg:
 		var tween = loader.create_tween()
 		# Fading from Black to a slightly dimmed state or full color

@@ -22,6 +22,7 @@ func _ready():
 
 func _on_lives_changed(new_total: int):
 	update_icons(new_total)
+	print("lives updated !")
 
 ## Call this when the player is spawned into the level
 func set_player_active(active: bool):
@@ -32,14 +33,18 @@ func update_icons(total_count: int):
 	# 1. Clear current icons
 	for child in get_children():
 		child.queue_free()
-
+	
 	# 2. Calculate displayed icons
 	# The Player in 'LevelRoot/Level' is "using" one life.
 	# We show the remaining "reserve" lives in the 'UI/ContLives' container.
 	var display_count = total_count
-	if is_player_in_stage:
+	if GameManager.is_player_active:
+		# Subtract 1 because one life is currently "in use" on screen
 		display_count = max(0, total_count - 1)
-
+		print("HUD: Player is active, showing reserve: ", display_count)
+	else:
+		print("HUD: Player not yet active, showing total: ", display_count)
+		
 	# 3. Add new icons based on the display count
 	for i in range(display_count):
 		var rect = TextureRect.new()
