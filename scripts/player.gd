@@ -360,13 +360,70 @@ func trigger_death_from_monster():
 	# 2. Change state to 'hit' or a new 'death' state
 	# Your player.cfg already has a [hit] section with a death sprite
 	await change_state("death1")
-	change_state("death2")
-
+	await change_state("death2")
 
 	# 4. Handle the "Outro" or Restart
-#	_handle_death_outro()
-	
+	_handle_death_outro()
 
+
+
+	
+func _handle_death_outro():
+
+	# 0. Wait for configured seconds while the player loses a life
+	var wait_time = GameConfig.gamedata.game.get("player_death_delay", 2.0)
+	await get_tree().create_timer(wait_time).timeout
+	
+	# 1. Player disappears
+	visible = false
+
+	# 2. Stop all monster movements and darken room
+	if level_loader:
+		level_loader.toggle_room_activity(false)
+
+	# 3. Show level label 
+	if level_loader.intro_room_label:
+		level_loader.intro_room_label.visible = true
+
+	# 4a. Wait for configured seconds
+	wait_time = GameConfig.gamedata.game.get("player_death_delay", 2.0)
+	await get_tree().create_timer(wait_time).timeout
+
+	# 3. Show level label 
+	if level_loader.intro_room_label:
+		level_loader.intro_room_label.visible = false
+
+	# 4. update lives count
+	GameManager.remove_life()
+
+	# 5. remove (eventual) block at start coordinates
+	# level_loader.current_level_data["player_start"]
+	level_loader.remove_block_at_pos(
+		Vector2i(level_loader.current_level_data["player_start"][0], 
+				 level_loader.current_level_data["player_start"][1] ))
+	# 5. respawn player at his start coordinates
+
+	self.set_physics_process(true)
+	self.set_process_input(true)
+
+	change_state("idle")
+	visible = true
+
+
+	# 	 play player show up tween
+	# 	 play player show up tween
+	#level_loader
+	
+	
+	# 6. restart all monster movements and light up the room
+	if level_loader:
+		level_loader.toggle_room_activity(true)
+
+
+
+
+	return
+	
 	
 func spawn_at(tile_x: int, tile_y: int, x_off: float, y_off: float):
 	# Get tile size from config (single source of truth)

@@ -33,7 +33,9 @@ var blocks := {} 	## blocks dictionary to check/update; Vector2i  →  Block nod
 var monsters := {} 	## monsters dictionary to check/update; Vector2i  →  Block node
 var current_level
 var player
-	
+
+var current_level_data: Dictionary
+
 func _ready():
 	# Sets the engine's background clearing color to pure black
 	RenderingServer.set_default_clear_color(Color.BLACK)
@@ -159,7 +161,9 @@ func load_level(id: int):
 	var file = FileAccess.open(path, FileAccess.READ)
 	print("path: ", path)
 	var data = JSON.parse_string(file.get_as_text())
-
+	
+	current_level_data = data
+	
 	tile_size = data["tile_size"]
 	var width = data["block_width"]
 	var height = data["block_height"]
@@ -200,7 +204,21 @@ func load_level(id: int):
 	# Start Gameplay
 #	get_tree().call_group("monstergroup", "set_physics_process", true)
 
+func toggle_room_activity(active: bool):
+	# Toggle monsters
+	get_tree().call_group("monstergroup", "set_physics_process", active)
 	
+	# Visual darkening of items and monsters
+
+#	var target_color = Color(1, 1, 1, 1) if active else Color(1.0, 1.0, 1.0, 0)
+	for item in get_tree().get_nodes_in_group("itemgroup"):
+		item.visible = active
+	for monster in get_tree().get_nodes_in_group("monstergroup"):
+		monster.visible = active
+	for block in get_tree().get_nodes_in_group("blockgroup"):
+		block.visible = active
+
+
 func remove_block_at_pos(world_pos: Vector2):
 	# Convert the world position to grid coordinates 
 	var grid_pos = Grid.world_to_grid(world_pos, x_off, y_off, tile_size)
@@ -231,6 +249,7 @@ func add_block(bx, by, type, showing = false):
 	block.name = "BL_" + str(block.family)
 		
 	block.add_to_group("debug_collision")
+	block.add_to_group("blockgroup")
 
 	block.visible = showing
 	
@@ -499,7 +518,6 @@ func _spawn_level_content_hidden(data):
 			add_item(i["pos"][0], i["pos"][1], i["family"], false)
 
 	# 5. Spawn Player (Hidden + Input Disabled)
-# 	spawn_player(data["player_start"][0], data["player_start"][1], x_off, y_off)
 	spawn_player(
 		player_start[0],   # grid X
 		player_start[1],   # grid Y
