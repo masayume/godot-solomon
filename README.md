@@ -3,6 +3,8 @@
 
 A tile-based puzzle platformer where the player can conjure and destroy blocks in front of them, similar to the 1986 TECMO arcade Solomon's Key.
 
+resources/docs/___000-solomon_godot_nodes.webp
+
 # Game Structure
 ```
 LevelRoot (Node2D)
