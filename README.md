@@ -3,7 +3,7 @@
 
 A tile-based puzzle platformer where the player can conjure and destroy blocks in front of them, similar to the 1986 TECMO arcade Solomon's Key.
 
-![Project Main Nodes Image](https://github.com/masayume/godot-solomon/resources/docs/___000-solomon_godot_nodes.webp)
+![Project Main Nodes Image](https://github.com/masayume/godot-solomon/blob/main/resources/docs/___000-solomon_godot_nodes.webp)
 
 # Game Structure
 ```
