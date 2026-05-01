@@ -40,4 +40,32 @@ func remove_life():
 		handle_game_over()
 
 func handle_game_over():
-	print("Game Over Logic Here")
+	
+	# level_loader.gd adds itself to the group_ add_to_group("level_loader")
+
+	# 1. Get reference to the level loader
+	var loader = get_tree().get_first_node_in_group("level_loader")	
+
+	if loader:
+	# 2. Call the function to wipe the current level content
+	# This clears blocks, monsters, and dictionaries
+		loader.clear_current_level()
+
+	# 3. Show the Game Over text using the existing UI label reference[cite: 1]
+		if loader.level_label:
+			loader.level_label.text = "GAME OVER"
+			loader.level_label.visible = true
+
+	# 4. Play the game over sound
+	play_game_over_sound()
+
+func play_game_over_sound():
+	var sfx_path = "res://sounds/orig-game-over.wav"
+	var sfx = load(sfx_path)
+	
+	if sfx:
+		# Create a temporary audio player if one doesn't exist in game_manager
+		var audio_player = AudioStreamPlayer.new()
+		add_child(audio_player)
+		audio_player.stream = sfx
+		audio_player.play()		

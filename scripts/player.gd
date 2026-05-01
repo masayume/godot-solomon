@@ -397,12 +397,13 @@ func _handle_death_outro():
 	GameManager.remove_life()
 
 	# 5. remove (eventual) block at start coordinates
-	# level_loader.current_level_data["player_start"]
 	level_loader.remove_block_at_pos(
 		Vector2i(level_loader.current_level_data["player_start"][0], 
 				 level_loader.current_level_data["player_start"][1] ))
-	# 5. respawn player at his start coordinates
 
+	# 6. reset player state
+	is_dead = false
+	is_hit = false
 	self.set_physics_process(true)
 	self.set_process_input(true)
 

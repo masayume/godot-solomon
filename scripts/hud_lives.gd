@@ -53,11 +53,3 @@ func update_icons(total_count: int):
 		# Optional: set a custom size for the icons
 		rect.custom_minimum_size = Vector2(32, 32)
 		add_child(rect)
-
-#	# 2. Add new icons based on the count
-#	for i in range(count):
-#		var rect = TextureRect.new()
-#		rect.texture = life_icon
-#		# Keep the player symbol from stretching
-#		rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-#		add_child(rect)
