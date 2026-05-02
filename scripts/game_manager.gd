@@ -25,8 +25,8 @@ func set_player_in_game(active: bool):
 	
 func _ready():
 	# Initialize from parsed GameConfig data 
-	current_lives = GameConfig.gamedata.get("start_lives", 3)
-	max_lives = GameConfig.gamedata.get("max_lives", 6)
+	current_lives = GameConfig.gamedata.game.start_lives
+	max_lives = GameConfig.gamedata.game.max_lives
 
 func add_life():
 	if current_lives < max_lives:
@@ -36,8 +36,8 @@ func add_life():
 func remove_life():
 	current_lives -= 1
 	lives_changed.emit(current_lives) # emit signal to UI
-	if current_lives <= 0:
-		handle_game_over()
+#	if current_lives <= 0:
+#		handle_game_over()
 
 func handle_game_over():
 	
@@ -53,8 +53,8 @@ func handle_game_over():
 
 	# 3. Show the Game Over text using the existing UI label reference[cite: 1]
 		if loader.level_label:
-			loader.level_label.text = "GAME OVER"
-			loader.level_label.visible = true
+			loader.intro_room_label.text = "GAME OVER"
+			loader.intro_room_label.visible = true
 
 	# 4. Play the game over sound
 	play_game_over_sound()

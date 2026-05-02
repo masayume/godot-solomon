@@ -35,6 +35,7 @@ var frame_index = 0
 var time_accumulator = 0.0
 
 signal fire_pressed(position, direction, crouching)
+signal state_animation_finished(state_name)
 
 func _ready():
 	z_index = 10
@@ -349,9 +350,7 @@ func trigger_death_from_monster():
 		return	
 	
 	is_dead = true
-
-	print("contact with monster: trigger death scene !!")
-
+ 
 # 1. Stop all movement and input
 	velocity = Vector2.ZERO
 	self.set_physics_process(false)
@@ -359,12 +358,18 @@ func trigger_death_from_monster():
 
 	# 2. Change state to 'hit' or a new 'death' state
 	# Your player.cfg already has a [hit] section with a death sprite
-	await change_state("death1")
-	await change_state("death2")
+	change_state("death1")
+	await state_animation_finished
+	change_state("death2")
+	await state_animation_finished
 
-	# 4. Handle the "Outro" or Restart
-	_handle_death_outro()
-
+	if GameManager.current_lives == 1: # has not removed life from count yet so it's 1 life lost already
+		print("last with monster: trigger game over !!")
+		GameManager.handle_game_over()
+	else:
+		print("contact with monster: trigger death scene !!")
+		# 4. Handle the "Outro" or Restart
+		_handle_death_outro()
 
 
 	
@@ -509,7 +514,7 @@ func animate(delta):
 		# Check if we are at the last frame
 		if frame_index >= frames.size() - 1:
 			# CHECK: If we just finished the last frame of 'cast'
-
+			
 		# Release the movement lock for BOTH casting states
 			if current_state == "cast" or current_state == "crouchcast":
 				is_casting = false 
@@ -525,6 +530,9 @@ func animate(delta):
 #				change_state("idle") # Return to idle
 #				return
 
+			# Emit signal for any state finishing its last frame
+			state_animation_finished.emit(current_state)
+			
 			# If the state is "crouch", stay on the last frame and don't loop
 			# Manage loop=false animations
 			var data = GameConfig.playerdata[current_state]
