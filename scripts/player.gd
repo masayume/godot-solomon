@@ -6,11 +6,13 @@ extends CharacterBody2D
 @onready var off_xp = GameConfig.playerdata.player.off_xp
 @onready var sprite = $Sprite2D
 @onready var score_label: RichTextLabel = $"../../UI/Score"
+@onready var added_points_label: RichTextLabel = $"../../UI/PointsAdded"
 @onready var audio_player = $AudioStreamPlayer2D
 @onready var sfx_player = $SfxPlayer # The new dedicated SFX node
 
 var crouch_texture = preload("res://sprites/player/player-crouch-frames.png")
 var idle_texture = preload("res://sprites/player/player-idle-frames.png")
+var score_tween: Tween
 
 var flags = []
 
@@ -260,7 +262,11 @@ func _on_interaction_detector_area_entered(area: Area2D):
 	# 2. Increase Score (Assuming a global score variable)
 	if GameConfig.itemdata[area.get_parent().family].has("score"):
 		GameConfig.score += GameConfig.itemdata[area.get_parent().family].score
-#		print("score: ", GameConfig.score)
+
+		# call score tween
+		var points = GameConfig.itemdata[area.get_parent().family].score
+		_update_score_with_effect(points) # Call our new helper function
+	
 		# Use %s for string formatting and lpad() to add leading spaces
 		var total_width = 9 # score length adjusted based on "Score" UI width
 		var padded_score = str(GameConfig.score).lpad(total_width, " ")
@@ -346,7 +352,32 @@ func _on_interaction_detector_area_entered(area: Area2D):
 			area.get_parent().queue_free() # Remove the item node
 
 
-
+func _update_score_with_effect(points: int):
+	# 1. Update the actual global score
+	GameConfig.score += points
+	
+	# 2. Update the main Score Label (using lpad for arcade alignment)
+	var score_display = str(GameConfig.score).lpad(8, " ")
+	score_label.text = "[color=green]1p[/color] [color=white]" + score_display + "[/color]"
+	
+	# 3. Setup the "Points Added" label
+	# We align the red text under the score digits using lpad(11) to account for "1p "
+	added_points_label.text = "[color=red]" + str(points).lpad(12, " ") + "[/color]"
+	added_points_label.modulate.a = 1.0 # Reset opacity to fully visible
+	added_points_label.visible = true
+	
+	# 4. Handle the Fade Effect
+	# If a tween is already running (e.g., player picked up two items quickly), kill it
+	if score_tween:
+		score_tween.kill()
+		
+	score_tween = create_tween()
+	
+	# Fade to transparent over 2 seconds
+	score_tween.tween_property(added_points_label, "modulate:a", 0.0, 2.0).set_trans(Tween.TRANS_SINE)
+	
+	# Optionally hide the label after it's fully transparent
+	score_tween.tween_callback(func(): added_points_label.visible = false)
 
 func trigger_death_from_monster():
 
