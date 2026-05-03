@@ -5,8 +5,11 @@ extends CharacterBody2D
 @onready var gravity = GameConfig.playerdata.player.gravity
 @onready var off_xp = GameConfig.playerdata.player.off_xp
 @onready var sprite = $Sprite2D
+
 @onready var score_label: RichTextLabel = $"../../UI/Score"
 @onready var added_points_label: RichTextLabel = $"../../UI/PointsAdded"
+@onready var timer_label: RichTextLabel = $"../../UI/Timer"
+
 @onready var audio_player = $AudioStreamPlayer2D
 @onready var sfx_player = $SfxPlayer # The new dedicated SFX node
 

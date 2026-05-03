@@ -74,3 +74,9 @@ func _animate_stars_explode(origin_node: Node2D):
 	# 5. Cleanup the entire pivot (and all stars inside it) when finished
 	await tween.finished 
 	pivot.queue_free()
+
+func time_over_outro():
+	
+	print("time over !!")
+	
+	return		

@@ -22,6 +22,16 @@ var scenes = {
 
 @onready var level_label: Label = $"../UI/LevelInfo"
 @onready var intro_room_label: Label = $"../UI/IntroRoomLabel"
+# @onready var timer_label: RichTextLabel = $"../UI/Timer"
+
+# 1. Update your UI reference
+@onready var ui_node = $"../UI" 
+@onready var timer_label: RichTextLabel = $"../UI/Timer" # Ensure this Label exists in your UI scene
+
+var current_bonus: int = 0
+var bonus_timer: Timer
+var room_outro: RoomOutro
+
 @onready var bg = $"Background"
 
 const Grid = preload("res://scripts/grid.gd")
@@ -44,7 +54,7 @@ func _ready():
 	center_level()
 	current_level = GameConfig.gamedata.sequence.initial_level
 	load_level(current_level)
-	
+
 func center_level():
 	# print("THIS NODE:", get_path())
 	var screen_size = get_viewport_rect().size
@@ -200,6 +210,9 @@ func load_level(id: int):
 	var intro_manager = RoomIntro.new(self)
 	print("calling play intro")
 	intro_manager.play_intro(data)
+	
+	start_level_timer()
+
 	
 	# Start Gameplay
 #	get_tree().call_group("monstergroup", "set_physics_process", true)
@@ -427,7 +440,6 @@ func start_level_transition():
 	clear_current_level()
 	load_level(next_id)
 
-
 func calculate_bonus():
 	# calculate bonus score
 	print("calculate_bonus")
@@ -645,6 +657,52 @@ func _spawn_monsters(data):
 			instance.visible = false
 			instance.set_physics_process(false) 
 
+
+func start_level_timer():
+	# 1. Initialize value from game.cfg
+	current_bonus = GameConfig.gamedata.game.room_bonus
+	
+	print ("*** timer start !", current_bonus)
+	
+	# 2. Setup the internal timer node for 10 updates per second
+	if not bonus_timer:
+		bonus_timer = Timer.new()
+		bonus_timer.wait_time = 0.1 # 10 times per second
+		bonus_timer.timeout.connect(_on_bonus_tick)
+
+		ui_node.add_child(bonus_timer)
+	
+	bonus_timer.start()
+	_update_timer_display()
+
+func _on_bonus_tick():
+	# 1. Decrease by 10 points
+	current_bonus -= 10
+	
+	# 2. Check for "Hurry Up" threshold (2000)
+	var hurry_threshold = GameConfig.gamedata.game.get("hurry_up", 2000)
+	if current_bonus <= hurry_threshold:
+		timer_label.modulate = Color.RED
+	else:
+		timer_label.modulate = Color.WHITE
+
+	# 3. Check for Time Over
+	if current_bonus <= 0:
+		current_bonus = 0
+		bonus_timer.stop()
+		room_outro.time_over_outro()
+	
+	_update_timer_display()
+
+func _update_timer_display():
+	# Keep the timer always at the same width for arcade feel
+	timer_label.text = str(current_bonus).lpad(5, " ")
+
+func stop_level_timer():
+	if bonus_timer:
+		bonus_timer.stop()
+
+	
 
 # 3. Add this helper function to the bottom of level_loader.gd
 func _force_debug_shapes(node: Node, default_color: Color):
