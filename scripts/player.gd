@@ -260,8 +260,12 @@ func _on_interaction_detector_area_entered(area: Area2D):
 	# 2. Increase Score (Assuming a global score variable)
 	if GameConfig.itemdata[area.get_parent().family].has("score"):
 		GameConfig.score += GameConfig.itemdata[area.get_parent().family].score
-		print("score: ", GameConfig.score)
-		score_label.text = "[right][color=green]1p[/color] [color=white]" + str(GameConfig.score) + "[/color][/right]"
+#		print("score: ", GameConfig.score)
+		# Use %s for string formatting and lpad() to add leading spaces
+		var total_width = 9 # score length adjusted based on "Score" UI width
+		var padded_score = str(GameConfig.score).lpad(total_width, " ")
+		score_label.text = "[left][color=green]1p[/color] [color=white]" + padded_score + "[/color][/left]"
+
 
 		if GameConfig.itemdata[area.get_parent().family].has("sound"):
 			var sfx = load(GameConfig.itemdata[area.get_parent().family].get("sound"))
