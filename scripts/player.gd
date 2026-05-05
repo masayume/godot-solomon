@@ -135,16 +135,6 @@ func _physics_process(delta):
 		fire_pressed.emit(global_position, facing, crouching)
 		return # Exit early to start the lock immediately
 
-#		var _grid = GameConfig.world_to_grid(
-#			global_position,
-#			level.x_off,
-#			level.y_off,
-#			tile_size
-#		)
-
-#		print("PLAYER WORLD:", global_position)
-#		print("PLAYER GRID:", _grid)
-
 	if crouching: velocity.x = 0
 
 	# Move the body
@@ -389,10 +379,12 @@ func trigger_death_from_monster():
 	
 	is_dead = true
  
-# 1. Stop all movement and input
+	# 1. Stop all movement and input, stop bonus timer
 	velocity = Vector2.ZERO
 	self.set_physics_process(false)
 	self.set_process_input(false)
+
+	level_loader.stop_level_timer()
 
 	# 2. Change state to 'hit' or a new 'death' state
 	# Your player.cfg already has a [hit] section with a death sprite
@@ -417,9 +409,10 @@ func _handle_death_outro():
 	var wait_time = GameConfig.gamedata.game.get("player_death_delay", 2.0)
 	await get_tree().create_timer(wait_time).timeout
 	
-	# 1. Player disappears
+	# 1. Player disappears; bonus timer stop
 	visible = false
-
+	level_loader.stop_level_timer()
+	
 	# 2. Stop all monster movements and darken room
 	if level_loader:
 		level_loader.toggle_room_activity(false)
@@ -452,7 +445,7 @@ func _handle_death_outro():
 
 	change_state("idle")
 	visible = true
-
+	level_loader.start_level_timer()
 
 	# 	 play player show up tween
 	# 	 play player show up tween
@@ -462,9 +455,6 @@ func _handle_death_outro():
 	# 6. restart all monster movements and light up the room
 	if level_loader:
 		level_loader.toggle_room_activity(true)
-
-
-
 
 	return
 	

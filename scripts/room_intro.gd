@@ -252,7 +252,9 @@ func _reveal_all_content():
 	# Setting this to true calls the setter in GameManager, 
 	# which emits 'lives_changed', which calls 'update_icons' in HUD.
 	GameManager.is_player_active = true
-		
+
+	loader.start_level_timer()
+
 	if bg:
 		var tween = loader.create_tween()
 		# Fading from Black to a slightly dimmed state or full color

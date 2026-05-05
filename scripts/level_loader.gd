@@ -211,8 +211,8 @@ func load_level(id: int):
 	print("calling play intro")
 	intro_manager.play_intro(data)
 	
-	start_level_timer()
-
+	# 1. Initialize value from game.cfg
+	current_bonus = GameConfig.gamedata.game.room_bonus
 	
 	# Start Gameplay
 #	get_tree().call_group("monstergroup", "set_physics_process", true)
@@ -659,8 +659,6 @@ func _spawn_monsters(data):
 
 
 func start_level_timer():
-	# 1. Initialize value from game.cfg
-	current_bonus = GameConfig.gamedata.game.room_bonus
 	
 	print ("*** timer start !", current_bonus)
 	
