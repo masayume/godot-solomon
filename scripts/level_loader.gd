@@ -397,12 +397,6 @@ func start_level_transition():
 	# 5. Show the Level Card UI
 	var next_name = "level_" + str(next_id)
 	level_label.text = "NEXT: " + next_name 
-	show_level_card(next_id, next_name)
-	
-	# 4. Show the "Level Card" for N seconds
-	level_label.text = "NEXT: " + next_name 
-	
-#	await get_tree().create_timer(3.0).timeout	
 
 	# Instantiate the intro helper to play the outro
 	var hud = get_tree().get_first_node_in_group("hud_lives")
@@ -419,17 +413,9 @@ func start_level_transition():
 	player.set_physics_process(false)
 	player.set_process_input(false)
 	
-	# 1. Calculate Bonus Score
-	var bonus = calculate_bonus()
-	GameConfig.score += bonus # Global score tracking
-	
-	# 2. Get next level data from game.cfg
-#	var current_level_id = GameConfig.gamedata.current_level
-#	var next_level_id = GameConfig.gamedata.levels[current_level_id].next_level
-#	var next_level_name = GameConfig.gamedata.levels[next_level_id].name
-	
+
 	# 3. Show UI and Wait
-	show_level_card(next_id, next_name)
+#	show_level_card(next_id, next_name)
 	
 	# 4. Use a Timer or await to pause for 'n' seconds
 	await get_tree().create_timer(3.0).timeout 
@@ -438,6 +424,11 @@ func start_level_transition():
 	
 	# 5. Clear and Load
 	clear_current_level()
+
+	# 1. Calculate Bonus Score, Show "your rest bonus" (current_bonus)
+	await show_bonus_card(current_bonus)
+	GameConfig.score += current_bonus # Global score tracking
+
 	load_level(next_id)
 
 func calculate_bonus():
@@ -445,10 +436,20 @@ func calculate_bonus():
 	print("calculate_bonus")
 	return 100
 
-func show_level_card(level_id, level_name):
-	print("show_level_card: ", level_name, " (", level_id, ")")
-	
 
+func show_bonus_card(bonus):
+	intro_room_label.text = "Your rest bonus %d" % bonus
+	intro_room_label.visible = true
+		
+	# 2. Spawn everything at 50% opacity
+#	_spawn_dimmed_content(data)
+	
+	await self.get_tree().create_timer(2.0).timeout
+	intro_room_label.visible = false
+
+	
+	print("your rest bonus: ", bonus)
+	
 func show_ending_credits():
 	print("show_ending_credits")
 
