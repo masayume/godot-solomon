@@ -422,19 +422,19 @@ func start_level_transition():
 	
 	#GameConfig.gamedata.sequence.initial_level
 	
+	GameConfig.score += current_bonus # Global score tracking
+	var tween = player._update_score_with_effect(current_bonus)
+	
+	if tween:
+		await tween.finished
+		
 	# 5. Clear and Load
 	clear_current_level()
 
 	# 1. Calculate Bonus Score, Show "your rest bonus" (current_bonus)
 	await show_bonus_card(current_bonus)
-	GameConfig.score += current_bonus # Global score tracking
-
+	
 	load_level(next_id)
-
-func calculate_bonus():
-	# calculate bonus score
-	print("calculate_bonus")
-	return 100
 
 
 func show_bonus_card(bonus):
@@ -447,7 +447,6 @@ func show_bonus_card(bonus):
 	await self.get_tree().create_timer(2.0).timeout
 	intro_room_label.visible = false
 
-	
 	print("your rest bonus: ", bonus)
 	
 func show_ending_credits():

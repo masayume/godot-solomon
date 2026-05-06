@@ -282,6 +282,7 @@ func _on_interaction_detector_area_entered(area: Area2D):
 			print("Access Granted!")
 			# Trigger level load on the loader 
 			var loader = get_tree().current_scene.find_child("Level", true, false)
+			loader.stop_level_timer()
 			loader.start_level_transition()
 		else:
 			print("The door is locked. You need the key flag!")
@@ -355,7 +356,8 @@ func _update_score_with_effect(points: int):
 	
 	# 3. Setup the "Points Added" label
 	# We align the red text under the score digits using lpad(11) to account for "1p "
-	added_points_label.text = "[color=red]" + str(points).lpad(12, " ") + "[/color]"
+#	added_points_label.text = "[color=red]" + str(points).lpad(12, " ") + "[/color]"
+	added_points_label.text = "[color=red]" + str(points) + "[/color]"
 	added_points_label.modulate.a = 1.0 # Reset opacity to fully visible
 	added_points_label.visible = true
 	
@@ -371,6 +373,8 @@ func _update_score_with_effect(points: int):
 	
 	# Optionally hide the label after it's fully transparent
 	score_tween.tween_callback(func(): added_points_label.visible = false)
+
+	return score_tween # Return the tween object
 
 func trigger_death_from_monster():
 

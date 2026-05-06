@@ -77,12 +77,13 @@ text = "[left][color=green]1p[/color]"
 
 [node name="PointsAdded" type="RichTextLabel" parent="LevelRoot/UI" unique_id=1650641767]
 z_index = 10
-offset_left = 353.0
+offset_left = 327.0
 offset_top = 29.0
-offset_right = 571.0
+offset_right = 545.0
 offset_bottom = 52.0
 theme_override_fonts/normal_font = ExtResource("4_rarhs")
 bbcode_enabled = true
+horizontal_alignment = 2
 
 [node name="Bonus" type="RichTextLabel" parent="LevelRoot/UI" unique_id=1205272488]
 z_index = 10
