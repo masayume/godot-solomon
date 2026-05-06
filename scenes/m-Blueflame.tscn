@@ -1,0 +1,15 @@
+[gd_scene format=3 uid="uid://b67pnb6qto05e"]
+
+[ext_resource type="Script" uid="uid://bwxj44sm7erl2" path="res://scripts/m-blueflame.gd" id="1_g28bo"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_fixb6"]
+height = 36.0
+
+[node name="Blueflame" type="CharacterBody2D" unique_id=2064629239]
+script = ExtResource("1_g28bo")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1872182528]
+scale = Vector2(1.6, 1.6)
+shape = SubResource("CapsuleShape2D_fixb6")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1521850481]

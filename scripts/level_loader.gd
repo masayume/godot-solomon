@@ -7,6 +7,7 @@ extends Node2D
 @export var fx_scene: PackedScene      # Assign Fx.tscn to Level in the Inspector
 
 var scenes = {
+	"blueflame": preload("res://scenes/m-Blueflame.tscn"),
 	"chimera": preload("res://scenes/m-Chimera.tscn"),
 	"demonhead": preload("res://scenes/m-Demonhead.tscn"),
 	"dragon": preload("res://scenes/m-Dragon.tscn"),
@@ -172,6 +173,7 @@ func load_level(id: int):
 	print("path: ", path)
 	var data = JSON.parse_string(file.get_as_text())
 	
+	timer_label.text = ""
 	current_level_data = data
 	
 	tile_size = data["tile_size"]
@@ -216,6 +218,9 @@ func load_level(id: int):
 	
 	# Start Gameplay
 #	get_tree().call_group("monstergroup", "set_physics_process", true)
+
+func toggle_monsters(active: bool):
+		get_tree().call_group("monstergroup", "set_physics_process", active)
 
 func toggle_room_activity(active: bool):
 	# Toggle monsters
@@ -422,8 +427,10 @@ func start_level_transition():
 	
 	#GameConfig.gamedata.sequence.initial_level
 	
-	GameConfig.score += current_bonus # Global score tracking
+	# GameConfig.score += current_bonus # Global score tracking
 	var tween = player._update_score_with_effect(current_bonus)
+	
+	# blank in bonus value
 	
 	if tween:
 		await tween.finished

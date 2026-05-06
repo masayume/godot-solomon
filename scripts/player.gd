@@ -263,6 +263,7 @@ func _on_interaction_detector_area_entered(area: Area2D):
 		# Use %s for string formatting and lpad() to add leading spaces
 		var total_width = 9 # score length adjusted based on "Score" UI width
 		var padded_score = str(GameConfig.score).lpad(total_width, " ")
+
 		score_label.text = "[left][color=green]1p[/color] [color=white]" + padded_score + "[/color][/left]"
 
 
@@ -276,13 +277,14 @@ func _on_interaction_detector_area_entered(area: Area2D):
 #		if item_info["action_type"] == "collect":
 #			area.get_parent().queue_free() # Remove the item node
 			
-	# If the item is the door
+	# If the item collected is the door => player exit
 	if item_type == "door":
 		if self.has_flag("has_key"):
 			print("Access Granted!")
 			# Trigger level load on the loader 
 			var loader = get_tree().current_scene.find_child("Level", true, false)
 			loader.stop_level_timer()
+			loader.toggle_monsters(false)
 			loader.start_level_transition()
 		else:
 			print("The door is locked. You need the key flag!")
@@ -314,6 +316,7 @@ func _on_interaction_detector_area_entered(area: Area2D):
 		# 4. play the key collected sample
 		# Handle Sound Playback
 		if GameConfig.itemdata["key"].has("sound"):
+			loader.toggle_monsters(false)
 			var sfx = load(GameConfig.itemdata["key"].sound)
 			if sfx:
 				audio_player.stream = sfx
@@ -332,9 +335,11 @@ func _on_interaction_detector_area_entered(area: Area2D):
 		receiver.receive("collect", self)
 		await intro_manager._animate_star_to_target(key_node, door_node)
 
-		# 6. Unfreeze the player
+		# 6. Unfreeze the player & monsters
 		self.set_physics_process(true)
 		self.set_process_input(true)
+		loader.toggle_monsters(true)
+
 		is_collecting_key = false
 
 		# 3. NOW free the node
@@ -475,10 +480,6 @@ func spawn_at(tile_x: int, tile_y: int, x_off: float, y_off: float):
 			x_off, 
 			y_off
 		)
-
-func set_flag2DEL(flag_name: String):
-	if not flags.has(flag_name):
-		flags.append(flag_name)
 
 func set_flag(flag_name: String):
 	if not flags.has(flag_name):
