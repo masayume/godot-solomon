@@ -35,7 +35,7 @@ func _animate_stars_explode(origin_node: Node2D):
 	if GameConfig.itemdata["door"].has("outrosound"): 
 		var sfx = load(GameConfig.itemdata["door"].outrosound) 
 		if sfx:
-			var player_node = loader.get_tree().get_first_node_in_group("playergroup")
+			player_node = loader.get_tree().get_first_node_in_group("playergroup")
 			player_node.audio_player.stream = sfx 
 			player_node.audio_player.play() 
 

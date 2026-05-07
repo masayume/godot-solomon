@@ -132,7 +132,7 @@ func _animate_stars_twirl_in(target_node: Node2D):
 	var tween = loader.create_tween().set_parallel(true)
 	for item in star_nodes:
 		var s_node = item["node"]
-		var start_angle = item["angle"]
+#		var start_angle = item["angle"]
 		
 		# Twirl effect: move position using a custom step or simple inward tween
 		# For a true spiral, we animate a property and update position in a loop, 
@@ -227,7 +227,7 @@ func _animate_star_to_target(source_node: Node2D, dest_node: Node2D):
 	
 	# 5. Trigger arrival effects
 	# We pass a dummy grid pos because spawn_fx usually expects one
-	var grid_pos = Vector2i(-1, -1) 
+#	var grid_pos = Vector2i(-1, -1) 
 	#loader.spawn_fx("star", target_pos, grid_pos, false) 
 	loader.spawn_fx("foop", target_pos, Vector2i(-1, -1), false)
 	

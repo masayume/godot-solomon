@@ -545,7 +545,7 @@ func _spawn_level_content_hidden(data):
 	)
 #	print("player_start: [" + str(player_start[0]) + ","  + str(player_start[1]) + "] x_off:"  + str(x_off) + " y_off:"  + str(y_off))
 
-	var player = get_tree().get_first_node_in_group("playergroup")
+	player = get_tree().get_first_node_in_group("playergroup")
 	player.visible = false
 	player.set_process_input(false)
 
