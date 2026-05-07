@@ -54,7 +54,7 @@ func _ready():
 	set_collision_layer_value(2, true) # Mark player as Layer 2
 	set_collision_mask_value(1, true) 
 
-	setup_animation()
+#	setup_animation()
 		
 func _process(delta):
 	animate(delta)
@@ -333,6 +333,9 @@ func _on_interaction_detector_area_entered(area: Area2D):
 		
 		# 1. Process logic (flags/score) - Key becomes invisible here
 		receiver.receive("collect", self)
+
+		await intro_manager._twirl_item(key_node, "key")
+		
 		await intro_manager._animate_star_to_target(key_node, door_node)
 
 		# 6. Unfreeze the player & monsters
@@ -349,6 +352,7 @@ func _on_interaction_detector_area_entered(area: Area2D):
 	if item_info.has("action_type"):
 		if item_info["action_type"] == "collect":
 			area.get_parent().queue_free() # Remove the item node
+
 
 
 func _update_score_with_effect(points: int):
@@ -579,13 +583,14 @@ func animate(delta):
 		
 		sprite.frame = frames[frame_index]
 
-func setup_animation():
+func setup_animation(itemname):
+	frames = GameConfig.itemdata[itemname].frames
+	anim_speed = GameConfig.itemdata[itemname].anim_speed
+
+	frame_index = 0
+	sprite.frame = frames[0]
+	
+#func setup_animation():
 	# We use "idle" as the default starting state
-	if not crouching:
-		change_state("idle")
-
-#	frames = GameConfig.playerdata[family].frames
-#	anim_speed = GameConfig.playerdata[family].anim_speed
-
-#	frame_index = 0
-#	sprite.frame = frames[0]
+#	if not crouching:
+#		change_state("idle")

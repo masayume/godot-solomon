@@ -12,6 +12,13 @@ var bg: Sprite2D = null
 
 var audio_player
 
+var frames = []
+var anim_speed = 0.1
+var frame_index = 0
+var time_accumulator = 0.0
+
+@onready var sprite: Sprite2D = $Sprite2D
+
 func _init(_loader: Node2D):
 	loader = _loader
 
@@ -192,6 +199,34 @@ func _animate_stars_explode(origin_node: Node2D):
 
 	await tween.finished
 
+# In room_intro.gd
+
+# Track the intro FX so we can clean it up later
+var active_intro_fx: Node2D = null
+
+func _twirl_item(source_node: Node2D, fx_type: String):
+	if source_node == null: return
+
+# 1. Spawn the Background effect (Boom)
+	# Because this is added to the loader first, it stays "on the back"
+	loader.spawn_fx("boom", source_node.global_position, Vector2i(-1,-1), false)
+	
+	# 2. Spawn the Foreground effect (the Key)
+	# This is added second, so it draws over the boom
+	active_intro_fx = loader.spawn_fx(fx_type, source_node.global_position, Vector2i(-1,-1), false)
+	
+	# 3. Calculate timing based on the Key (the primary effect)
+	var data = GameConfig.fxdata.get(fx_type, {})
+	var frames = data.get("frames", [0])
+	var anim_speed = data.get("anim_speed", 0.1)
+	var total_cycle_time = frames.size() * anim_speed
+
+	# 4. Wait for one full cycle so the player sees the combined effect 
+	# before the sequence continues
+	await loader.get_tree().create_timer(total_cycle_time).timeout
+	
+
+	
 
 func _animate_star_to_target(source_node: Node2D, dest_node: Node2D):
 	if source_node == null or dest_node == null:
