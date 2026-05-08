@@ -14,7 +14,42 @@ var fx_name_stored: String
 	# Calculate total duration if you need it for other logic:
 	# var total_duration = data["frames"].size() * data["anim_speed"]
 
+
 func setup_fx(fx_name: String, g_pos: Vector2i = Vector2i.ZERO, b_type: String = "earth"):
+	target_grid_pos = g_pos
+	block_type = b_type
+	fx_name_stored = fx_name
+	
+	# 1. Load data from GameConfig dictionary
+	var data = GameConfig.fxdata.get(fx_name, {})
+	if data.is_empty():
+		queue_free()
+		return
+	
+	# Read "scalex; scaley" from cfg. If it doesn't exist, default to 1.0 (normal size) [cite: 135]
+	var scale_factor_x = data.get("scalex", 1.0)
+	var scale_factor_y = data.get("scaley", 1.0)
+	self.scale = Vector2(scale_factor_x, scale_factor_y)
+
+	# Determine if this effect should loop
+	is_looping = data.has("move_speed")
+
+	sprite.texture = load(data["sprite"]) 
+	sprite.hframes = data["hframes"] 
+	frame_sequence = data["frames"] 
+	
+	sprite.frame = frame_sequence[0] 
+	timer.wait_time = data["anim_speed"] 
+	
+	if not timer.timeout.is_connected(_on_timer_timeout): 
+		timer.timeout.connect(_on_timer_timeout) 
+		
+	timer.start() 
+
+
+
+
+func setup_fx2DEL(fx_name: String, g_pos: Vector2i = Vector2i.ZERO, b_type: String = "earth"):
 	target_grid_pos = g_pos
 	block_type = b_type
 	fx_name_stored = fx_name

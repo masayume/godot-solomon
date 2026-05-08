@@ -313,6 +313,8 @@ func _on_interaction_detector_area_entered(area: Area2D):
 		# GameIntro needs the loader reference passed in _init
 		var intro_manager = RoomIntro.new(level_loader)
 
+		intro_manager._twirl_item(key_node, "key")
+
 		# 4. play the key collected sample
 		# Handle Sound Playback
 		if GameConfig.itemdata["key"].has("sound"):
@@ -322,6 +324,7 @@ func _on_interaction_detector_area_entered(area: Area2D):
 				audio_player.stream = sfx
 				audio_player.play() # Plays once when the state starts
 				await audio_player.finished
+
 		if GameConfig.itemdata["key"].has("introsound"):
 			var sfx2 = load(GameConfig.itemdata["key"].introsound)
 			if sfx2:
@@ -333,8 +336,6 @@ func _on_interaction_detector_area_entered(area: Area2D):
 		
 		# 1. Process logic (flags/score) - Key becomes invisible here
 		receiver.receive("collect", self)
-
-		await intro_manager._twirl_item(key_node, "key")
 		
 		await intro_manager._animate_star_to_target(key_node, door_node)
 
