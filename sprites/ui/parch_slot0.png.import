@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cjsun8od35h05"
-path="res://.godot/imported/parch_slot.png-04daf1652657aec91cca0161ab6608a2.ctex"
+uid="uid://ccp51pulvyum3"
+path="res://.godot/imported/parch_slot0.png-3ce97e0eaba1a36de69c588d0d73ada7.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://sprites/ui/parch_slot.png"
-dest_files=["res://.godot/imported/parch_slot.png-04daf1652657aec91cca0161ab6608a2.ctex"]
+source_file="res://sprites/ui/parch_slot0.png"
+dest_files=["res://.godot/imported/parch_slot0.png-3ce97e0eaba1a36de69c588d0d73ada7.ctex"]
 
 [params]
 

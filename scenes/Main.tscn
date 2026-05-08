@@ -12,6 +12,7 @@
 [ext_resource type="Script" uid="uid://bscq63mdk8dmw" path="res://scripts/background.gd" id="10_lhr70"]
 [ext_resource type="Script" uid="uid://cse3vw5iqvimt" path="res://scripts/hud_lives.gd" id="11_wp0k4"]
 [ext_resource type="Texture2D" uid="uid://bcp2eoc0nsci7" path="res://sprites/ui/lives.png" id="12_bjd11"]
+[ext_resource type="Script" uid="uid://cy04j35iv7umo" path="res://scripts/fireball_scroll.gd" id="13_qmy6f"]
 
 [sub_resource type="Gradient" id="Gradient_lhr70"]
 offsets = PackedFloat32Array(0.0295858, 1)
@@ -122,7 +123,8 @@ anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = -236.0
-offset_top = -23.0
+offset_top = -26.0
+offset_bottom = -3.0
 grow_horizontal = 0
 grow_vertical = 0
 size_flags_horizontal = 8
@@ -164,6 +166,14 @@ offset_bottom = 652.0
 theme_override_constants/separation = 0
 script = ExtResource("11_wp0k4")
 life_icon = ExtResource("12_bjd11")
+
+[node name="FireballHBox" type="HBoxContainer" parent="LevelRoot/UI" unique_id=628883837]
+offset_left = 565.0
+offset_top = 617.0
+offset_right = 805.0
+offset_bottom = 657.0
+alignment = 2
+script = ExtResource("13_qmy6f")
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=324845360]
 zoom = Vector2(0.75, 0.75)

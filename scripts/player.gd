@@ -314,7 +314,7 @@ func _on_interaction_detector_area_entered(area: Area2D):
 		var intro_manager = RoomIntro.new(level_loader)
 
 		intro_manager._twirl_item(key_node, "key")
-
+		key_node.visible = false
 		# 4. play the key collected sample
 		# Handle Sound Playback
 		if GameConfig.itemdata["key"].has("sound"):
@@ -348,7 +348,19 @@ func _on_interaction_detector_area_entered(area: Area2D):
 
 		# 3. NOW free the node
 		key_node.queue_free()
-		
+
+	# Reference the scroll UI node
+	var scroll_ui = get_tree().root.find_child("FireballHBox", true, false)
+			
+	# If the item is a parchment
+	if item_type == "parchment":
+		print("parchment collected!")
+		if scroll_ui: scroll_ui.add_capacity()
+
+	# If the item is a blue-lantern
+	if item_type == "blue-lantern":
+		print("blue-lantern collected!")
+		if scroll_ui: scroll_ui.fill_fireball()
 
 	if item_info.has("action_type"):
 		if item_info["action_type"] == "collect":

@@ -217,8 +217,8 @@ func _twirl_item(source_node: Node2D, fx_type: String):
 	
 	# 3. Calculate timing based on the Key (the primary effect)
 	var data = GameConfig.fxdata.get(fx_type, {})
-	var frames = data.get("frames", [0])
-	var anim_speed = data.get("anim_speed", 0.1)
+	frames = data.get("frames", [0])
+	anim_speed = data.get("anim_speed", 0.1)
 	var total_cycle_time = frames.size() * anim_speed
 
 	# 4. Wait for one full cycle so the player sees the combined effect 
