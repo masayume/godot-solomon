@@ -39,7 +39,7 @@ var anim_speed = 0.1
 var frame_index = 0
 var time_accumulator = 0.0
 
-signal fire_pressed(position, direction, crouching)
+signal spell_pressed(position, direction, crouching)
 signal state_animation_finished(state_name)
 
 func _ready():
@@ -90,13 +90,6 @@ func _physics_process(delta):
 			else: # idle change_state must being called explicitly
 				change_state("idle")
 
-	# Update facing direction visually
-#	sprite.flip_h = facing == -1 # Flips when moving left				
-#	if Input.is_action_pressed("move_left"):
-#		facing = -1
-#	if Input.is_action_pressed("move_right"):
-#		facing = 1
-
 	# Detect Input
 	if Input.is_action_pressed("crouch") and is_on_floor():
 		crouch()
@@ -120,7 +113,7 @@ func _physics_process(delta):
 	if Input.is_action_just_pressed("jump") and is_on_floor():
 		velocity.y = -jump_force
 
-	if Input.is_action_just_pressed("fire"):
+	if Input.is_action_just_pressed("spell"):
 
 		is_casting = true
 
@@ -132,7 +125,7 @@ func _physics_process(delta):
 		
 		print("block spell cast ")
 #		change_state("cast")
-		fire_pressed.emit(global_position, facing, crouching)
+		spell_pressed.emit(global_position, facing, crouching)
 		return # Exit early to start the lock immediately
 
 	if crouching: velocity.x = 0
@@ -213,7 +206,7 @@ func stand_up():
 
 	
 func _input(event):
-	if event.is_action_pressed("fire"):
+	if event.is_action_pressed("spell"):
 #		print("is_action_pressed(fire)")
 		return
 		

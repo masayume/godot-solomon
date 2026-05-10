@@ -85,7 +85,7 @@ func spawn_item(tile_x, tile_y):
 	call_deferred("add_child", item)
 
 
-func _on_player_fire(pos, dir, crouching):
+func _on_player_spell(pos, dir, crouching):
 	create_or_destroy_block(pos, dir, crouching, true)
 
 func create_or_destroy_block(pos, dir, crouching, is_player=false):
@@ -367,7 +367,7 @@ func spawn_player(px, py, xoff, yoff):
 	# now the transform chain is correct
 	player.visible=false
 	player.spawn_at(px, py, xoff, yoff)
-	player.fire_pressed.connect(_on_player_fire)
+	player.spell_pressed.connect(_on_player_spell)
 	print("player spawned")
 
 
