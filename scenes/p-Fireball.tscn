@@ -1,0 +1,22 @@
+[gd_scene format=3 uid="uid://dv5huh2s3f0bf"]
+
+[ext_resource type="Script" uid="uid://c80hhaj0wwg37" path="res://scripts/fireball.gd" id="1_hmjjh"]
+[ext_resource type="Texture2D" uid="uid://cpa20auyt7w8h" path="res://sprites/fx/fireball.png" id="2_dseki"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_t7kie"]
+
+[node name="Fireball" type="Area2D" unique_id=1296215137]
+script = ExtResource("1_hmjjh")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1437223554]
+texture = ExtResource("2_dseki")
+hframes = 8
+frame = 1
+region_enabled = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1196243631]
+shape = SubResource("CircleShape2D_t7kie")
+
+[node name="RayFront" type="RayCast2D" parent="." unique_id=1366019207]
+
+[node name="RayDown" type="RayCast2D" parent="." unique_id=1914282444]

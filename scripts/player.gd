@@ -10,6 +10,8 @@ extends CharacterBody2D
 @onready var added_points_label: RichTextLabel = $"../../UI/PointsAdded"
 @onready var timer_label: RichTextLabel = $"../../UI/Timer"
 
+@export var fireball_scene: PackedScene
+
 @onready var audio_player = $AudioStreamPlayer2D
 @onready var sfx_player = $SfxPlayer # The new dedicated SFX node
 
@@ -115,6 +117,7 @@ func _physics_process(delta):
 	if Input.is_action_just_pressed("jump") and is_on_floor():
 		velocity.y = -jump_force
 
+	# PRESS "x" TO CAST FIREBALL
 	if Input.is_action_just_pressed("fireball"):
 		is_casting = true
 
@@ -122,12 +125,30 @@ func _physics_process(delta):
 			change_state("crouchcast")
 		else:
 			change_state("cast")
+
+		var scroll_ui = get_tree().root.find_child("FireballScroll", true, false)
+	
+		if scroll_ui and scroll_ui.filled_slots > 0:
+			# 1. Spend the fireball
+			scroll_ui.filled_slots -= 1
+			scroll_ui.render_scroll()
 		
-		print("fireball cast ")
-		fireball_pressed.emit(global_position, facing, crouching)
-		return # Exit early to start the lock immediately
+			# 2. Spawn the fireball entity
+			var fb = fireball_scene.instantiate()
+			fb.global_position = self.global_position
+			fb.direction = Vector2.RIGHT if sprite.flip_h == false else Vector2.LEFT
+			get_parent().add_child(fb)
+			fireball_pressed.emit(global_position, facing, crouching)
+
+			print("fireball cast ")
+		else:
+			print("No fireballs left!")
 				
-	# Spell (Block create/destroy)
+
+		return # Exit early to start the lock immediately
+
+
+	# PRESS "s" TO CAST/DESTROY BLOCK
 	if Input.is_action_just_pressed("spell"):
 
 		is_casting = true
