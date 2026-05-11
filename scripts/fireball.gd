@@ -2,6 +2,7 @@ extends Area2D
 
 @export var speed: float = 200.0
 var direction = Vector2.RIGHT # Initial direction
+var is_crawling: bool = false # NEW: Track if we've touched a surface yet
 
 @onready var ray_front = $RayFront
 @onready var ray_down = $RayDown
@@ -15,20 +16,31 @@ func _physics_process(delta):
 	# 1. Move the fireball
 	position += direction * speed * delta
 	
-	# 2. EDGE FOLLOWING LOGIC
-	# Case A: We hit a wall in front -> Rotate UP
-	if ray_front.is_colliding():
-		var normal = ray_front.get_collision_normal()
-		direction = Vector2(normal.y, -normal.x) # Rotate 90 degrees
-		rotation = direction.angle()
-		
-	# Case B: We lost the floor -> Rotate DOWN/AROUND the corner
-	elif not ray_down.is_colliding():
-		# This part is trickier; usually involves rotating -90 degrees
-		# and snapping to the corner.
-		direction = Vector2(-direction.y, direction.x)
-		rotation = direction.angle()
-
+# 2. SURFACE DETECTION
+	# If we aren't crawling yet, look for the first wall
+	if not is_crawling:
+		if ray_front.is_colliding():
+			is_crawling = true
+			_align_to_surface(ray_front.get_collision_normal())
+	else:
+		# EDGE FOLLOWING LOGIC (Only runs once we are on a surface)
+		if ray_front.is_colliding():
+			# Case A: Hit a wall in front -> Rotate UP
+			_align_to_surface(ray_front.get_collision_normal())
+			
+		elif not ray_down.is_colliding():
+			# Case B: Lost the floor -> Rotate DOWN around the corner
+			# We rotate clockwise to "wrap" around the tile
+			direction = Vector2(-direction.y, direction.x) 
+			rotation = direction.angle()
+			# Snap position slightly forward so ray_down hits the side of the new tile
+			position += direction * 5
+			
+func _align_to_surface(normal: Vector2):
+	# Align movement direction parallel to the surface normal
+	direction = Vector2(normal.y, -normal.x) 
+	rotation = direction.angle()
+	
 func _on_area_entered(area):
 	if area.is_in_group("monsters"):
 		area.take_damage() # Or however your monsters die

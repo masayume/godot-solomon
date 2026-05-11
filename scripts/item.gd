@@ -23,11 +23,20 @@ func _ready():
 	# Ensure the Area2D is ALWAYS enabled for interactions
 	$Area2D.monitoring = true
 
-
-###DEBUG
-#	if OS.is_debug_build():
-#		_setup_debug_label()
-
+	
+func _physics_process(delta):
+	
+	var gravity = 900
+	
+	# If the item is not on the floor, apply gravity
+	if not is_on_floor():
+		velocity.y += gravity * delta
+	else:
+		velocity.y = 0
+		
+	# Move the body based on the velocity calculated above
+#	move_and_slide()
+	
 func _setup_debug_label():
 	debug_label = Label.new()
 	add_child(debug_label)
@@ -87,6 +96,23 @@ func set_random_variant():
 	sprite.region_rect = Rect2(x, 0, tile_size, tile_size)
 
 func set_collidable():
+
+	var data = GameConfig.itemdata.get(family, {})
+	var is_solid = data.get("collidable", true) # [cite: 1]
+
+	# NEVER disable the collider if you want the item to land on the floor
+	collider.disabled = false 
+
+	if is_solid:
+		# Item hits both World (Mask 1) and Player (Mask 2)
+		collision_mask = 1 | 2 
+	else:
+		# Item hits ONLY the World (Mask 1). Player can walk through it.
+		collision_mask = 1 
+		collision_layer = 0 # Player won't "bump" into it
+
+
+func set_collidableOLD():
 	
 	if !GameConfig.itemdata.has(family):
 		print("ERROR: unknown item family: ", family)

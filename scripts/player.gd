@@ -126,7 +126,7 @@ func _physics_process(delta):
 		else:
 			change_state("cast")
 
-		var scroll_ui = get_tree().root.find_child("FireballScroll", true, false)
+		var scroll_ui = get_tree().root.find_child("FireballHBox", true, false)
 	
 		if scroll_ui and scroll_ui.filled_slots > 0:
 			# 1. Spend the fireball

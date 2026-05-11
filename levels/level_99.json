@@ -23,7 +23,7 @@
   ],
 
   "monsters": [
-	{"pos": [1,10],"family":"ghost", "direction":"right"},
+	{"pos": [12,11],"family":"ghost", "direction":"right"},
 	{"pos": [8,4],"family":"goblin"},
 
 	{"pos": [4,8],"family":"spark","attached":"left"},

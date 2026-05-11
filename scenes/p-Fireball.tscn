@@ -6,13 +6,13 @@
 [sub_resource type="CircleShape2D" id="CircleShape2D_t7kie"]
 
 [node name="Fireball" type="Area2D" unique_id=1296215137]
+z_index = 11
 script = ExtResource("1_hmjjh")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1437223554]
 texture = ExtResource("2_dseki")
 hframes = 8
 frame = 1
-region_enabled = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1196243631]
 shape = SubResource("CircleShape2D_t7kie")

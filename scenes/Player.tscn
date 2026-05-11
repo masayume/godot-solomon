@@ -2,6 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://dnj3qd3yxdmmj" path="res://sprites/player/player-idle-frames.png" id="1_p0vlq"]
 [ext_resource type="Script" uid="uid://cs8p7lx7kwdyf" path="res://scripts/player.gd" id="1_v6fml"]
+[ext_resource type="PackedScene" uid="uid://dv5huh2s3f0bf" path="res://scenes/p-Fireball.tscn" id="2_mdl7e"]
 [ext_resource type="Script" uid="uid://hqbjkbbv0bfj" path="res://scripts/interactor.gd" id="3_3li8b"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_v6fml"]
@@ -12,6 +13,7 @@
 collision_layer = 0
 collision_mask = 0
 script = ExtResource("1_v6fml")
+fireball_scene = ExtResource("2_mdl7e")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=2053116779]
 scale = Vector2(1.1, 1.8)
