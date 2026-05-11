@@ -40,6 +40,8 @@ var frame_index = 0
 var time_accumulator = 0.0
 
 signal spell_pressed(position, direction, crouching)
+signal fireball_pressed(position, direction, crouching)
+
 signal state_animation_finished(state_name)
 
 func _ready():
@@ -113,6 +115,19 @@ func _physics_process(delta):
 	if Input.is_action_just_pressed("jump") and is_on_floor():
 		velocity.y = -jump_force
 
+	if Input.is_action_just_pressed("fireball"):
+		is_casting = true
+
+		if crouching:
+			change_state("crouchcast")
+		else:
+			change_state("cast")
+		
+		print("fireball cast ")
+		fireball_pressed.emit(global_position, facing, crouching)
+		return # Exit early to start the lock immediately
+				
+	# Spell (Block create/destroy)
 	if Input.is_action_just_pressed("spell"):
 
 		is_casting = true
@@ -208,6 +223,10 @@ func stand_up():
 func _input(event):
 	if event.is_action_pressed("spell"):
 #		print("is_action_pressed(fire)")
+		return
+
+	if event.is_action_pressed("fireball"):
+		print("is_action_pressed(fireball)")
 		return
 		
 ### MAIN_INTERACTION player interacts with items

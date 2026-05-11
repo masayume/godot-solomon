@@ -88,6 +88,9 @@ func spawn_item(tile_x, tile_y):
 func _on_player_spell(pos, dir, crouching):
 	create_or_destroy_block(pos, dir, crouching, true)
 
+func _on_player_fireball(pos, dir, crouching):
+	return
+	
 func create_or_destroy_block(pos, dir, crouching, is_player=false):
 
 ###DEBUG
@@ -301,17 +304,6 @@ func add_item(ix, iy, type, showing = false):
 
 	if (item.family == "key"):
 		item.add_to_group("keygroup")
-		
-
-###TODO: fix duplicate collision_layer_mask/value
-#	# 1. Physical Blocking Logic
-#	if GameConfig.itemdata.get("is_interactable", true):
-#		item.set_collision_layer_value(3, true)  # It is an Interactable
-#		item.set_collision_mask_value(2, true)   # It blocks the Player
-#	else:
-#		item.set_collision_layer_value(3, false) # Player walks through it
-#		item.set_collision_mask_value(2, false)
-
 
 	# 2. Interaction Logic (The Sensor)
 	var area = item.get_node("Area2D")
@@ -368,6 +360,7 @@ func spawn_player(px, py, xoff, yoff):
 	player.visible=false
 	player.spawn_at(px, py, xoff, yoff)
 	player.spell_pressed.connect(_on_player_spell)
+	player.fireball_pressed.connect(_on_player_fireball)
 	print("player spawned")
 
 

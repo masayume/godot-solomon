@@ -51,9 +51,19 @@ func _update_debug_text():
 	debug_label.text = text
 			
 func set_texture():
-	var path = "res://sprites/items/%s.png" % family
-	sprite.texture = load(path)
+	# 1. Getting the item data dictionary, ensuring it exists
+	var data = GameConfig.itemdata.get(family, {})	
 
+	# 2. Define the default fallback path
+	var default_path = "res://sprites/items/%s.png" % family
+
+	# 3. Check if the 'sprite' key exists in the config 
+	if data.has("sprite"):
+		sprite.texture = load(data["sprite"])
+	else:
+		# Fallback to the default path if no custom sprite is defined
+		sprite.texture = load(default_path)
+		
 func _on_body_entered(body):
 	# We use the Interactor node already attached to the Player
 	# instead of creating a new one with .new() every time.
@@ -61,7 +71,17 @@ func _on_body_entered(body):
 		$Interactor.interact(body)
 		
 func set_random_variant():
-	var tile_index = randi() % variants
+	var data = GameConfig.itemdata.get(family, {})
+
+	# Use the 'hframes' from config if available, otherwise use the default export
+	var frame_count = data.get("hframes", variants)
+
+	var tile_index	
+	if data.has("frames"):
+		tile_index = data.frames[0]
+	else: 
+		tile_index = randi() % frame_count
+		
 	var x = tile_index * tile_size
 	sprite.region_enabled = true
 	sprite.region_rect = Rect2(x, 0, tile_size, tile_size)
