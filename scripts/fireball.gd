@@ -9,6 +9,9 @@ var is_crawling: bool = false # NEW: Track if we've touched a surface yet
 
 func _ready():
 	# Connect to detect monsters
+	
+	collision_mask = 1 | 4 # Look for Layer 1 (World) and 3 (Monsters)
+	
 	area_entered.connect(_on_area_entered)
 	body_entered.connect(_on_body_entered)
 
@@ -42,8 +45,13 @@ func _align_to_surface(normal: Vector2):
 	rotation = direction.angle()
 	
 func _on_area_entered(area):
-	if area.is_in_group("monsters"):
-		area.take_damage() # Or however your monsters die
+	var target = area
+	# Check if the area itself or its parent is a monster
+	if not target.is_in_group("monsters"):
+		target = area.get_parent()
+		
+	if target.is_in_group("monsters") and target.has_method("take_damage"):
+		target.take_damage()
 		explode()
 
 func _on_body_entered(body):
@@ -55,4 +63,5 @@ func explode():
 	# Here you REUSE your fx system!
 	# Spawn a "poof" or "boom" at current position
 	# get_parent().spawn_fx("poof", global_position, ...)
+	get_parent().spawn_fx("boom", global_position, Vector2i(-1,-1), false)
 	queue_free()

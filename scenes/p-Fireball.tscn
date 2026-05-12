@@ -30,6 +30,7 @@ shape = SubResource("CircleShape2D_t7kie")
 [node name="RayDown" type="RayCast2D" parent="." unique_id=1914282444]
 
 [node name="CPUParticles2D" type="CPUParticles2D" parent="." unique_id=1817467379]
+z_index = 11
 amount = 20
 lifetime = 0.5
 speed_scale = 1.2

@@ -76,22 +76,6 @@ func _ensure_receiver_setup():
 		"family": family
 	}
 
-func _ensure_receiver_setup2DEL():
-	var receiver = get_node_or_null("Receiver")
-	if not receiver:
-		receiver = Receiver.new()
-		receiver.name = "Receiver"
-		add_child(receiver)
-	
-	# This data is what receiver.gd uses to decide what to do
-	receiver.data = {
-		"action_type": "hazard",
-		"family": family
-	}
-
-	if not receiver.has_method("receive"):
-		push_warning("RECEIVER ERROR: Node exists but is missing 'receive' method on %s" % name)
-
 
 func _setup_hitbox():
 	# The HitBox is the Area2D node defined in Monster.tscn
@@ -115,6 +99,7 @@ func _setup_hitbox():
 	if not hb.body_entered.is_connected(_on_hitbox_entered):
 		hb.body_entered.connect(_on_hitbox_entered)
 
+# this looks for a body (the Player) - Can't see a fireball
 func _on_hitbox_entered(body: Node2D):
 	# If the thing entering the Area is the Player
 	if body.has_method("trigger_death_from_monster"):
@@ -125,8 +110,18 @@ func _on_hitbox_entered(body: Node2D):
 		else:
 			# Fallback if receiver failed
 			body.trigger_death_from_monster()
-			
-			
+
+# this is called by fireball.gd _on_area_entered(area)
+func take_damage():
+	# Trigger any death animations or sounds here
+	print("Monster hit by fireball!")
+	
+	# If you have a global FX system like for items:
+	# GameConfig.spawn_fx("explosion", global_position)
+	
+	queue_free() # Remove the monster
+
+
 func apply_stats():
 
 	# --- common Sprite setup ---

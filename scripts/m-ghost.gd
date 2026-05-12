@@ -18,6 +18,7 @@ signal wall_impact(pos: Vector2, dir: int)
 
 func _ready():
 	family = "ghost"
+	add_to_group("monsters") # Add this line!
 	super._ready()
 	
 	# ghost opacity 80%
@@ -45,7 +46,7 @@ func _setup_hitbox():
 	if not hitbox: return
 	
 	# Ensure Hitbox is set to detect the Player (Layer 2)
-	hitbox.collision_layer = 0 # Hitbox doesn't need to be found
+	hitbox.collision_layer = 4 # Hitbox needs to be found by fireballs...
 	hitbox.collision_mask = 2  # Monitor the Player's Layer
 	
 #	if not hitbox.area_entered.is_connected(_on_hitbox_entered):
