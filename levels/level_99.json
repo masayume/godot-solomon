@@ -11,14 +11,16 @@
 
   "items": [
 	{"pos": [8,11],"family":"door"},	
-	{"pos": [7,10],"family":"key"},	
+	{"pos": [5,9],"family":"key"},	
 	{"pos": [8,8],"family":"gold-bell"},	
 	{"pos": [7,8],"family":"blue-lantern"},	
 	{"pos": [9,8],"family":"blue-lantern"},	
+	{"pos": [7,10],"family":"blue-lantern"},	
+	{"pos": [9,10],"family":"blue-lantern"},	
 	{"pos": [3,7],"family":"green-orb"},	
 	{"pos": [13,7],"family":"green-orb"},	
 
-	{"pos": [9,10],"family":"bag20k"},	
+	{"pos": [11,6],"family":"bag20k"},	
 
   ],
 

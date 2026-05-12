@@ -5,6 +5,14 @@
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_t7kie"]
 
+[sub_resource type="Curve" id="Curve_dseki"]
+_limits = [0.0, 2.0, 0.0, 0.962733]
+_data = [Vector2(0, 2), 0.0, 0.0, 0, 0, Vector2(0.962733, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="Gradient" id="Gradient_js8gk"]
+colors = PackedColorArray(0.93307036, 0.3543185, 0.1327681, 1, 0.827451, 0, 0, 0)
+
 [node name="Fireball" type="Area2D" unique_id=1296215137]
 z_index = 11
 script = ExtResource("1_hmjjh")
@@ -20,3 +28,14 @@ shape = SubResource("CircleShape2D_t7kie")
 [node name="RayFront" type="RayCast2D" parent="." unique_id=1366019207]
 
 [node name="RayDown" type="RayCast2D" parent="." unique_id=1914282444]
+
+[node name="CPUParticles2D" type="CPUParticles2D" parent="." unique_id=1817467379]
+amount = 20
+lifetime = 0.5
+speed_scale = 1.2
+emission_shape = 1
+emission_sphere_radius = 5.0
+gravity = Vector2(0, 0)
+scale_amount_curve = SubResource("Curve_dseki")
+color = Color(1, 0.20784314, 0, 0.14509805)
+color_ramp = SubResource("Gradient_js8gk")

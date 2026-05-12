@@ -1,6 +1,6 @@
 extends Area2D
 
-@export var speed: float = 200.0
+@export var speed: float = 300.0
 var direction = Vector2.RIGHT # Initial direction
 var is_crawling: bool = false # NEW: Track if we've touched a surface yet
 

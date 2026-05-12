@@ -136,7 +136,7 @@ func _physics_process(delta):
 			# 2. Spawn the fireball entity
 			var fb = fireball_scene.instantiate()
 			fb.global_position = self.global_position
-			fb.direction = Vector2.RIGHT if sprite.flip_h == false else Vector2.LEFT
+			fb.direction = Vector2.RIGHT if sprite.flip_h == true else Vector2.LEFT
 			get_parent().add_child(fb)
 			fireball_pressed.emit(global_position, facing, crouching)
 
