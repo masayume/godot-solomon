@@ -15,6 +15,7 @@ var hitbox: Area2D
 
 func _ready():
 	family = "blueflame"
+	add_to_group("monsters") 
 	super._ready()
 	
 	setup_animation()

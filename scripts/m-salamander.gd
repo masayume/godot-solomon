@@ -14,6 +14,7 @@ var hitbox: Area2D
 
 func _ready():
 	family = "salamander"
+	add_to_group("monsters") 
 	super._ready()
 	
 	setup_animation()
@@ -42,7 +43,7 @@ func _setup_hitbox():
 	if not hitbox: return
 	
 	# Ensure Hitbox is set to detect the Player (Layer 2)
-	hitbox.collision_layer = 0 # Hitbox doesn't need to be found
+	hitbox.collision_layer = 4 # Hitbox needs to be found by fireballs...
 	hitbox.collision_mask = 2  # Monitor the Player's Layer
 	
 #	if not hitbox.area_entered.is_connected(_on_hitbox_entered):

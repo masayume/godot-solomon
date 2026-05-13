@@ -18,7 +18,7 @@ signal wall_impact(pos: Vector2, dir: int)
 
 func _ready():
 	family = "ghost"
-	add_to_group("monsters") # Add this line!
+	add_to_group("monsters") 
 	super._ready()
 	
 	# ghost opacity 80%

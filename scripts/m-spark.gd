@@ -24,7 +24,9 @@ var surface_normals = {
 
 func _ready():
 	family = "spark"
+	add_to_group("monsters") 
 	super._ready()
+
 	z_index = 30
 	# Initial rotation based on the starting surface
 	rotation = surface_normals[current_surface].angle() + PI/2
@@ -44,17 +46,11 @@ func _ready():
 	collision_layer = 4   # (or anything, not important)
 	collision_mask = 1    # must match Player layer	
 
-func _process(delta):
-	animate(delta)
-
-func _physics_process(_delta):
-	behave(_delta) # includes move_and_slide()
-
 func _setup_hitbox():
 	if not hitbox: return
 	
 	# Ensure Hitbox is set to detect the Player (Layer 2)
-	hitbox.collision_layer = 0 # Hitbox doesn't need to be found
+	hitbox.collision_layer = 4 # Hitbox needs to be found by fireballs...
 	hitbox.collision_mask = 2  # Monitor the Player's Layer
 	
 #	if not hitbox.area_entered.is_connected(_on_hitbox_entered):
@@ -67,6 +63,14 @@ func _on_hitbox_body_entered(body):
 #	print("Ghost hit body:", body)
 	if body.has_method("trigger_death_from_monster"):
 		body.trigger_death_from_monster()
+		
+func _process(delta):
+	animate(delta)
+
+func _physics_process(_delta):
+	behave(_delta) # includes move_and_slide()
+
+
 
 
 func behave(_delta):
@@ -101,17 +105,6 @@ func behave(_delta):
 		var snap_down = -surface_normals[current_surface] * 10.0
 		global_position += snap_forward + snap_down
 
-		
-func _update_current_surface():
-	# Use the current rotation (snapped to 90 deg) to find the new surface
-	var angle = int(round(rad_to_deg(rotation))) % 360
-	if angle < 0: angle += 360
-
-	match angle:
-		0, 360: current_surface = "bottom"
-		90:      current_surface = "left"
-		180:     current_surface = "top"
-		270:     current_surface = "right"
 
 func animate(delta):
 	time_accumulator += delta
@@ -132,3 +125,13 @@ func setup_animation():
 	frame_index = 0
 	sprite.frame = frames[0]
 	
+func _update_current_surface():
+	# Use the current rotation (snapped to 90 deg) to find the new surface
+	var angle = int(round(rad_to_deg(rotation))) % 360
+	if angle < 0: angle += 360
+
+	match angle:
+		0, 360: current_surface = "bottom"
+		90:      current_surface = "left"
+		180:     current_surface = "top"
+		270:     current_surface = "right"
