@@ -36,26 +36,28 @@
 
   "blocks": [
 
-	{"pos": [3,8],"family":"earth"},		{"pos": [5,8],"family":"earth"},	
-	{"pos": [11,4],"family":"earth"},	
+	{"pos": [11,5],"family":"grass"},	
+
+	{"pos": [3,8],"family":"grass"},		{"pos": [5,8],"family":"grass"},	
+	{"pos": [11,4],"family":"grass"},	
 
 	{"pos": [6,9],"family":"lava"},	{"pos": [10,9],"family":"stone"},
 	{"pos": [6,7],"family":"stone"},	{"pos": [10,7],"family":"stone"},
-	{"pos": [6,8],"family":"earth"},	{"pos": [10,8],"family":"earth"},
+	{"pos": [6,8],"family":"grass"},	{"pos": [10,8],"family":"grass"},
 
-	{"pos": [7,9],"family":"earth"},	{"pos": [8,9],"family":"earth"},	{"pos": [9,9],"family":"earth"},
-	{"pos": [7,7],"family":"earth"},	{"pos": [8,7],"family":"earth"},	{"pos": [9,7],"family":"earth"},
-	{"pos": [7,6],"family":"earth"},	{"pos": [8,6],"family":"earth"},	{"pos": [9,6],"family":"earth"},
+	{"pos": [7,9],"family":"grass"},	{"pos": [8,9],"family":"grass"},	{"pos": [9,9],"family":"grass"},
+	{"pos": [7,7],"family":"grass"},	{"pos": [8,7],"family":"grass"},	{"pos": [9,7],"family":"grass"},
+	{"pos": [7,6],"family":"grass"},	{"pos": [8,6],"family":"grass"},	{"pos": [9,6],"family":"grass"},
 
 	{"pos": [10,4],"family":"stone"},	{"pos": [12,4],"family":"stone"},
 	{"pos": [4,4],"family":"stone"},	{"pos": [6,4],"family":"stone"},
 	{"pos": [10,2],"family":"stone"},	{"pos": [12,2],"family":"stone"},
 	{"pos": [4,2],"family":"stone"},	
 
-	{"pos": [4,3],"family":"earth"},	{"pos": [6,3],"family":"earth"},	{"pos": [7,3],"family":"earth"},
-	{"pos": [8,3],"family":"earth"},	{"pos": [9,3],"family":"earth"},	{"pos": [10,3],"family":"earth"},
-	{"pos": [12,3],"family":"earth"},	
-	{"pos": [5,2],"family":"earth"},	{"pos": [6,2],"family":"earth"},	{"pos": [11,2],"family":"earth"},
+	{"pos": [4,3],"family":"grass"},	{"pos": [6,3],"family":"grass"},	{"pos": [7,3],"family":"grass"},
+	{"pos": [8,3],"family":"grass"},	{"pos": [9,3],"family":"grass"},	{"pos": [10,3],"family":"grass"},
+	{"pos": [12,3],"family":"grass"},	
+	{"pos": [5,2],"family":"grass"},	{"pos": [6,2],"family":"grass"},	{"pos": [11,2],"family":"grass"},
 
 	{"pos": [0,0],"family":"stone"},	{"pos": [16,0],"family":"stone"},
 	{"pos": [0,1],"family":"stone"},	{"pos": [16,1],"family":"stone"},
