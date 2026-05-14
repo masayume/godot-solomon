@@ -17,6 +17,7 @@ var scenes = {
 	"goblin": preload("res://scenes/m-Goblin.tscn"),
 	"nuel": preload("res://scenes/m-Nuel.tscn"),
 	"pannel": preload("res://scenes/m-Pannel.tscn"),
+	"salamander": preload("res://scenes/m-Salamander.tscn"),
 	"serpent": preload("res://scenes/m-Serpent.tscn"),
 	"spark": preload("res://scenes/m-Spark.tscn"),
 }

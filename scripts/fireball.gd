@@ -60,8 +60,5 @@ func _on_body_entered(body):
 		explode()
 
 func explode():
-	# Here you REUSE your fx system!
-	# Spawn a "poof" or "boom" at current position
-	# get_parent().spawn_fx("poof", global_position, ...)
 	get_parent().spawn_fx("boom", global_position, Vector2i(-1,-1), false)
 	queue_free()

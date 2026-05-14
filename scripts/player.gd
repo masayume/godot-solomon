@@ -135,12 +135,26 @@ func _physics_process(delta):
 		
 			# 2. Spawn the fireball entity
 			var fb = fireball_scene.instantiate()
-			fb.global_position = self.global_position
-			fb.direction = Vector2.RIGHT if sprite.flip_h == true else Vector2.LEFT
-			get_parent().add_child(fb)
-			fireball_pressed.emit(global_position, facing, crouching)
+#			fb.global_position = self.global_position
+#			fb.direction = Vector2.RIGHT if sprite.flip_h == true else Vector2.LEFT
+#			get_parent().add_child(fb)
 
-			print("fireball cast ")
+			# Determine direction based on player facing
+			# (Using 'facing' is more direct than checking sprite.flip_h)
+			fb.direction = Vector2(facing, 0) 
+	
+			# FIX: Set the initial rotation so the sprite faces the correct way immediately
+			fb.rotation = fb.direction.angle()
+	
+			# Add to scene tree before setting global_position to ensure proper coordinates
+			get_parent().add_child(fb)
+	
+			# FIX: Apply a spawn offset (adjust 32 and -10 to fit your player sprite)
+			var spawn_offset = Vector2(facing * 32, -10) 
+			fb.global_position = global_position + spawn_offset
+
+			fireball_pressed.emit(global_position, facing, crouching)
+			print("fireball cast toward: ", fb.direction)
 		else:
 			print("No fireballs left!")
 				
