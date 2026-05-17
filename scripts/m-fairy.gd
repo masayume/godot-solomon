@@ -1,7 +1,8 @@
 extends Monster
 class_name Fairy
 
-var direction := -1
+# var direction := -1
+var direction := 1
 
 var frames = []
 var anim_speed = 0.1
@@ -71,16 +72,17 @@ func behave(_delta):
 
 	sprite.flip_h = velocity.x < 0
 
-	# Apply gravity
-	if not is_on_floor():
-		velocity.y += gravity * _delta
+	# Check if the fairy just hit the floor
+	if is_on_floor():
+		# Define how high you want the bounce to be. 
+		# Negative values move UP in Godot's 2D coordinate system.
+		# You can also use a variable like GameConfig.monsterdata[family].bounce_force
+		var bounce_force = GameConfig.monsterdata[family].bounce_force 
+		velocity.y = bounce_force
 	else:
-		velocity.y = 0
+		# Apply gravity only when in the air
+		velocity.y += gravity * _delta
 		
-	# simple back-and-forth
-#	if is_on_wall():
-#		direction *= -1
-
 	move_and_slide()
 
 func animate(delta):
