@@ -6,8 +6,8 @@
 [sub_resource type="CircleShape2D" id="CircleShape2D_t7kie"]
 
 [sub_resource type="Curve" id="Curve_dseki"]
-_limits = [0.0, 2.0, 0.0, 0.962733]
-_data = [Vector2(0, 2), 0.0, 0.0, 0, 0, Vector2(0.962733, 0), 0.0, 0.0, 0, 0]
+_limits = [0.0, 8.0, 0.0, 0.962733]
+_data = [Vector2(0, 8), 0.0, 0.0, 0, 0, Vector2(0.962733, 0), 0.0, 0.0, 0, 0]
 point_count = 2
 
 [sub_resource type="Gradient" id="Gradient_js8gk"]
@@ -31,11 +31,12 @@ shape = SubResource("CircleShape2D_t7kie")
 
 [node name="CPUParticles2D" type="CPUParticles2D" parent="." unique_id=1817467379]
 z_index = 11
-amount = 20
-lifetime = 0.5
+scale = Vector2(2, 2)
+amount = 400
+lifetime = 2.19
 speed_scale = 1.2
 emission_shape = 1
-emission_sphere_radius = 5.0
+emission_sphere_radius = 9.93
 gravity = Vector2(0, 0)
 scale_amount_curve = SubResource("Curve_dseki")
 color = Color(1, 0.20784314, 0, 0.14509805)

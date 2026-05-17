@@ -7,6 +7,8 @@ extends Node2D
 @export var fx_scene: PackedScene      # Assign Fx.tscn to Level in the Inspector
 
 var scenes = {
+	"fairy": preload("res://scenes/m-Fairy.tscn"),
+
 	"blueflame": preload("res://scenes/m-Blueflame.tscn"),
 	"chimera": preload("res://scenes/m-Chimera.tscn"),
 	"demonhead": preload("res://scenes/m-Demonhead.tscn"),
@@ -542,6 +544,37 @@ func _spawn_level_content_hidden(data):
 	player = get_tree().get_first_node_in_group("playergroup")
 	player.visible = false
 	player.set_process_input(false)
+
+func spawn_fairy():
+	var instance = scenes["fairy"].instantiate()	
+	instance.family = "fairy"
+
+	instance.name = "MO_fairy"
+
+	instance.add_to_group("debug_collision")
+	instance.add_to_group("monstergroup")
+
+	# 2. Interaction Logic (The Sensor)
+	var area = Area2D.new()
+	area.name = "HitBox"
+
+	# Reset everything first to be safe
+	instance.collision_mask = 0
+	area.collision_layer = 0
+	area.collision_mask = 3
+
+	area.monitoring = false 
+	area.monitorable = true 	# can be seen by Player CollectionZone
+						
+	# Who am I? (Layer 3: Interactables)
+	area.set_collision_layer_value(4, true)      # Sensor is on Interactable layer
+
+	# Who am I looking for? (Layer 2: Player)
+	area.set_collision_mask_value(2, true)       # Sensor looks for the Player
+
+			# CONSOLIDATION: Force Layer 4 for Monsters
+	instance.collision_layer = 4
+	instance.collision_mask = 3 # Can see Walls (1) and Player (2)
 
 
 func _spawn_monsters(data):

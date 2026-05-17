@@ -323,6 +323,12 @@ func _on_interaction_detector_area_entered(area: Area2D):
 #	if item_info.has("action_type"):
 #		if item_info["action_type"] == "collect":
 #			area.get_parent().queue_free() # Remove the item node
+
+	# If the item collected is the gold-bell => spawn fairy
+	if item_type == "gold-bell":
+		var loader = get_tree().current_scene.find_child("Level", true, false)
+		print("collected gold-bell: spawning fairy")
+		loader.spawn_fairy()
 			
 	# If the item collected is the door => player exit
 	if item_type == "door":

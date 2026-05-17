@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://chmpw5lbu0yx4"]
+
+[ext_resource type="Script" uid="uid://c0bllfvqlorxm" path="res://scripts/m-fairy.gd" id="1_4nwuj"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_kqvck"]
+
+[node name="Fairy" type="CharacterBody2D" unique_id=1038700594]
+script = ExtResource("1_4nwuj")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=758850662]
+shape = SubResource("CapsuleShape2D_kqvck")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1159899421]
