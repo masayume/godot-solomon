@@ -47,6 +47,8 @@ var blocks := {} 	## blocks dictionary to check/update; Vector2i  →  Block nod
 var monsters := {} 	## monsters dictionary to check/update; Vector2i  →  Block node
 var current_level
 var player
+var doorx
+var doory
 
 var current_level_data: Dictionary
 
@@ -82,10 +84,10 @@ func center_level():
 #	print("LEVEL POS:", position)g
 
 
-func spawn_item(tile_x, tile_y):
-	var item = item_scene.instantiate()
-	item.position = Vector2(tile_x * tile_size, tile_y * tile_size)
-	call_deferred("add_child", item)
+#func spawn_item(tile_x, tile_y):
+#	var item = item_scene.instantiate()
+#	item.position = Vector2(tile_x * tile_size, tile_y * tile_size)
+#	call_deferred("add_child", item)
 
 
 func _on_player_spell(pos, dir, crouching):
@@ -303,6 +305,8 @@ func add_item(ix, iy, type, showing = false):
 	item.add_to_group("itemgroup")
 
 	if (item.family == "door"):
+		doorx = ix
+		doory = iy
 		item.add_to_group("doorgroup")
 
 	if (item.family == "key"):
@@ -575,6 +579,33 @@ func spawn_fairy():
 			# CONSOLIDATION: Force Layer 4 for Monsters
 	instance.collision_layer = 4
 	instance.collision_mask = 3 # Can see Walls (1) and Player (2)
+
+	# 3. Add the Receiver component
+	if not instance.has_node("Receiver"):
+		var receiver = Receiver.new()
+		receiver.name = "Receiver"
+		print("for ", instance.family, " added receiver for ",  GameConfig.monsterdata[instance.family] )
+		receiver.data = GameConfig.monsterdata[instance.family]
+		instance.add_child(receiver)
+
+	# IMPORTANT: Ensure the HitBox (Area2D) exists and is on Layer 4
+	var hitbox = instance.get_node_or_null("HitBox")
+	if hitbox:
+		hitbox.collision_layer = 4
+		hitbox.collision_mask = 0 # It just exists to be 'seen' by the player
+
+	print("fairy door coords: ", doorx, ", ", doory)
+
+	instance.position = GameConfig.grid_to_local(
+		doorx,
+		doory,
+		tile_size,
+		x_off,
+		y_off
+	)
+
+	add_child(instance)
+	instance.add_child(area)
 
 
 func _spawn_monsters(data):
