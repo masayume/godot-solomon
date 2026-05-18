@@ -29,7 +29,7 @@ func _ready():
 	hitbox = get_node_or_null("HitBox")
 	_setup_hitbox()
 	
-	print("Fairy layer:", collision_layer, " mask: ", collision_mask)
+#	print("Fairy layer:", collision_layer, " mask: ", collision_mask)
 	# Ghost HitBox
 	collision_layer = 4   # (or anything, not important)
 	collision_mask = 1    # must match Player layer	
@@ -50,20 +50,20 @@ func _physics_process(_delta):
 func _setup_hitbox():
 	if not hitbox: return
 	
-	# Ensure Hitbox is set to detect the Player (Layer 2)
-	hitbox.collision_layer = 4 # Hitbox needs to be found by fireballs...
-	hitbox.collision_mask = 2  # Monitor the Player's Layer
-	
+	# the hitbox is configured as an item layer so the Player's CollectionZone finds it
+	hitbox.collision_layer = 4 # Or whichever layer your items use (e.g. Layer 3 or 4)
+	hitbox.collision_mask = 0  # It doesn't need to monitor anything; the player monitors it
+
 #	if not hitbox.area_entered.is_connected(_on_hitbox_entered):
 #		hitbox.area_entered.connect(_on_hitbox_entered)
-	if not hitbox.body_entered.is_connected(_on_hitbox_body_entered):
-		hitbox.body_entered.connect(_on_hitbox_body_entered)
+#	if not hitbox.body_entered.is_connected(_on_hitbox_body_entered):
+#		hitbox.body_entered.connect(_on_hitbox_body_entered)
 
-func _on_hitbox_body_entered(body):
-	# If we hit the player's physical body
+#func _on_hitbox_body_entered(body):
+#	# If we hit the player's physical body
 #	print("Ghost hit body:", body)
-	if body.has_method("trigger_death_from_monster"):
-		body.trigger_death_from_monster()
+#	if body.has_method("trigger_death_from_monster"):
+#		body.trigger_death_from_monster()
 
 
 
