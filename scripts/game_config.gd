@@ -9,6 +9,7 @@ var fxdata = {}
 var playerdata = {}
 
 var score = 0
+var fairy = 0
 var current_level_id
 
 func _ready():

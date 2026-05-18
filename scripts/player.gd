@@ -7,6 +7,7 @@ extends CharacterBody2D
 @onready var sprite = $Sprite2D
 
 @onready var score_label: RichTextLabel = $"../../UI/Score"
+@onready var fairy_label: RichTextLabel = $"../../UI/Fairy"
 @onready var added_points_label: RichTextLabel = $"../../UI/PointsAdded"
 @onready var timer_label: RichTextLabel = $"../../UI/Timer"
 
@@ -329,7 +330,13 @@ func _on_interaction_detector_area_entered(area: Area2D):
 		var loader = get_tree().current_scene.find_child("Level", true, false)
 		print("collected gold-bell: spawning fairy")
 		loader.spawn_fairy()
-			
+
+	if item_type == "fairy":
+#		var loader = get_tree().current_scene.find_child("Level", true, false)
+		print("collected fairy: must increase fairy count")
+		GameConfig.fairy += 1
+		fairy_label.text = "[color=white]Fairy .. [/color] [color=white]" + str(GameConfig.fairy) + "[/color]"
+
 	# If the item collected is the door => player exit
 	if item_type == "door":
 		if self.has_flag("has_key"):
