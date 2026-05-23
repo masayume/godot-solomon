@@ -54,7 +54,7 @@ func _ready():
 	level = get_parent()
 	$CollectionZone.collision_mask = 12 
 	$CollectionZone.area_entered.connect(_on_interaction_detector_area_entered)
-	print("Player layer:", collision_layer, " mask: ", collision_mask)
+#	print("Player layer:", collision_layer, " mask: ", collision_mask)
 
 	set_collision_layer_value(2, true) # Mark player as Layer 2
 	set_collision_mask_value(1, true) 
@@ -155,7 +155,7 @@ func _physics_process(delta):
 			fb.global_position = global_position + spawn_offset
 
 			fireball_pressed.emit(global_position, facing, crouching)
-			print("fireball cast toward: ", fb.direction)
+#			print("fireball cast toward: ", fb.direction)
 		else:
 			print("No fireballs left!")
 				
@@ -174,7 +174,7 @@ func _physics_process(delta):
 		else:
 			change_state("cast")
 		
-		print("block spell cast ")
+#		print("block spell cast ")
 #		change_state("cast")
 		spell_pressed.emit(global_position, facing, crouching)
 		return # Exit early to start the lock immediately
@@ -268,13 +268,14 @@ func _input(event):
 ### MAIN_INTERACTION player interacts with items
 func _on_interaction_detector_area_entered(area: Area2D):
 	# The 'area' is the child of the Item. We want the Item itself.
+
 	###DEBUG player area interaction
-	print("DEBUG: Player Area hit SOMETHING: ", area.name, " (Parent: ", area.get_parent().family, ")")
+#	print("DEBUG: Player Area hit SOMETHING: ", area.name, " (Parent: ", area.get_parent().family, ")")
 
 	# Note: In Godot, the Layer is what the object "is,"
 	#       the Mask is what the object "looks for".
 	var target = area.get_parent() 
-	print("Area Entered! Touching: ", target.name, " (Group: ", target.get_groups(), ")")
+#	print("Area Entered! Touching: ", target.name, " (Group: ", target.get_groups(), ")")
 
 	# SYSTEM: Always look for a Receiver node
 	var receiver = target.get_node_or_null("Receiver")
@@ -328,19 +329,19 @@ func _on_interaction_detector_area_entered(area: Area2D):
 	# If the item collected is the gold-bell => spawn fairy
 	if item_type == "gold-bell":
 		var loader = get_tree().current_scene.find_child("Level", true, false)
-		print("collected gold-bell: spawning fairy")
+#		print("collected gold-bell: spawning fairy")
 		loader.spawn_fairy()
 
 	if item_type == "fairy":
 #		var loader = get_tree().current_scene.find_child("Level", true, false)
-		print("collected fairy: must increase fairy count")
+#		print("collected fairy: must increase fairy count")
 		GameConfig.fairy += 1
 		fairy_label.text = "[color=white]Fairy .. [/color] [color=white]" + str(GameConfig.fairy) + "[/color]"
 
 	# If the item collected is the door => player exit
 	if item_type == "door":
 		if self.has_flag("has_key"):
-			print("Access Granted!")
+#			print("Access Granted!")
 			# Trigger level load on the loader 
 			var loader = get_tree().current_scene.find_child("Level", true, false)
 			loader.stop_level_timer()
@@ -352,7 +353,7 @@ func _on_interaction_detector_area_entered(area: Area2D):
 
 	# If the item is the key
 	if item_type == "key":
-		print("key collected!")
+#		print("key collected!")
 		
 		# 0. Lock the player while collects key
 		is_collecting_key = true
@@ -414,12 +415,12 @@ func _on_interaction_detector_area_entered(area: Area2D):
 			
 	# If the item is a parchment
 	if item_type == "parchment":
-		print("parchment collected!")
+#		print("parchment collected!")
 		if scroll_ui: scroll_ui.add_capacity()
 
 	# If the item is a blue-lantern
 	if item_type == "blue-lantern":
-		print("blue-lantern collected!")
+#		print("blue-lantern collected!")
 		if scroll_ui: scroll_ui.fill_fireball()
 
 	if item_info.has("action_type"):
@@ -480,10 +481,10 @@ func trigger_death_from_monster():
 	await state_animation_finished
 
 	if GameManager.current_lives == 1: # has not removed life from count yet so it's 1 life lost already
-		print("last with monster: trigger game over !!")
+		print("last contact with monster: trigger game over !!")
 		GameManager.handle_game_over()
 	else:
-		print("contact with monster: trigger death scene !!")
+#		print("contact with monster: trigger death scene !!")
 		# 4. Handle the "Outro" or Restart
 		_handle_death_outro()
 
@@ -566,14 +567,6 @@ func set_flag(flag_name: String):
 func has_flag(flag_name: String) -> bool:
 	return flags.has(flag_name)
 
-#	if GameConfig.itemdata.get("is_interactable", false):
-	# Create the Receiver node dynamically
-#	var receiver = Receiver.new() 
-#	receiver.name = "Receiver"
-#	add_child(receiver)
-		
-	# Optionally pass data to the receiver so it knows what to do
-#	receiver.action_type = GameConfig.itemdata.get("action_type", "default")	
 
 func change_state(new_state):
 

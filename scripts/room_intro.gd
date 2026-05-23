@@ -90,10 +90,12 @@ func play_intro(data: Dictionary):
 	# 6. Finalize: Make everything else (blocks/monsters) 100% visible
 	_reveal_all_content()
 
+
 func _animate_door():
 	# get door node
 	door_node = loader.get_tree().get_first_node_in_group("doorgroup")
 	door_node.visible = true
+
 
 func _spawn_dimmed_content(data):
 	# Call loader functions with 0.5 opacity
@@ -274,8 +276,21 @@ func _animate_star_to_target(source_node: Node2D, dest_node: Node2D):
 
 
 func _reveal_all_content():
+	print("REVEAL ALL CONTENT !!")
 	# Make everything else full opacity and start physics
 	for node in loader.get_children():
+		if node.is_in_group("itemgroup"):
+			# Read the metadata safely. If the metadata key doesn't exist, it defaults to 'false'.
+			if node.has_meta("is_hidden_item") and node.get_meta("is_hidden_item") == true:
+				print(" * * * ITEM ", node.name, " is_hidden: ", node.get_meta("is_hidden_item"))
+				node.visible = false
+				node.modulate.a = 0.0 # Keep it completely invisible during gameplay
+				for child in node.get_children():
+					if child is Sprite2D or child is AnimatedSprite2D:
+						child.visible = false
+
+				continue # Skip to the next node so it doesn't hit the 'else' block
+
 		node.modulate.a = 1.0
 		node.visible = true
 	

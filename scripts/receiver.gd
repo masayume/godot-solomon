@@ -16,8 +16,9 @@ func _ready():
 	_log()
 
 func receive(action, source):
-	print(get_parent().name, "'s Receiver registered action '", action, "' from: ", source.name)	
-#	match GameConfig.itemdata.get("action_type"):
+
+#	print(get_parent().name, "'s Receiver registered action '", action, "' from: ", source.name)	
+
 	match data.get("action_type"):
 		"collect":
 			_handle_collection(source)

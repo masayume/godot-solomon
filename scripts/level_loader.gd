@@ -51,6 +51,7 @@ var doorx
 var doory
 
 var current_level_data: Dictionary
+var item_nodes := {} ## NEW: tracks instantiated item nodes; Vector2i -> Item node
 
 func _ready():
 	# Sets the engine's background clearing color to pure black
@@ -127,6 +128,24 @@ func create_or_destroy_block(pos, dir, crouching, is_player=false):
 						
 			block.queue_free()
 			blocks.erase(target)
+
+			# ---------------------------------------------------------
+			# NEW: Check if destroying this block revealed a hidden item
+			# ---------------------------------------------------------
+			if item_nodes.has(target):
+				var item_node = item_nodes[target]
+				
+				# Check if this node is flagged as a hidden item
+				if item_node.get_meta("is_hidden_item", false):
+					item_node.visible = true
+					item_node.set_meta("is_hidden_item", false) # No longer hidden
+					
+					# Re-enable the player collision mask safely
+					var area = item_node.get_node("Area2D")
+					area.call_deferred("set_collision_mask_value", 2, true)
+			# ---------------------------------------------------------
+
+
 		else:
 			# It's a stone block (not destructible)
 			# Do nothing here so it doesn't fall into the 'else' below
@@ -142,11 +161,11 @@ func create_or_destroy_block(pos, dir, crouching, is_player=false):
 	# CREATE BLOCK after playing fx "foop"
 	# 2. ONLY create a block if the target space is confirmed EMPTY
 	elif not blocks.has(target) and is_player:
-		# PLAY FOOP FX
-		# Calculate world position for the new block
-###TODO poof fx position is OK; foop position is at block_x-1...
+
+
+		# PLAY FOOP FX; Calculate world position for the new block
+
 		var spawn_pos = GameConfig.grid_to_local(target.x+1, target.y, tile_size, x_off, y_off)
-#		var spawn_pos = GameConfig.grid_to_local(target.x, target.y, tile_size, x_off, y_off)
 		
 		# Play Foop and wait for it to finish before adding the block
 		spawn_fx("foop", spawn_pos, target, true)
@@ -234,13 +253,18 @@ func toggle_room_activity(active: bool):
 	# Toggle monsters
 	get_tree().call_group("monstergroup", "set_physics_process", active)
 	
-	# Visual darkening of items and monsters
-
-#	var target_color = Color(1, 1, 1, 1) if active else Color(1.0, 1.0, 1.0, 0)
+	# Visual darkening or revealing of elements 
 	for item in get_tree().get_nodes_in_group("itemgroup"):
-		item.visible = active
+		# If the room is waking up, ONLY reveal items that aren't marked as secret hidden items
+		if active:
+			if not item.get_meta("is_hidden_item", false):
+				item.visible = active
+		else:
+			item.visible = false
+
 	for monster in get_tree().get_nodes_in_group("monstergroup"):
 		monster.visible = active
+		
 	for block in get_tree().get_nodes_in_group("blockgroup"):
 		block.visible = active
 
@@ -292,7 +316,7 @@ func add_block(bx, by, type, showing = false):
 	)	
 
 		
-func add_item(ix, iy, type, showing = false):
+func add_item(ix, iy, type, showing = false, is_hidden = false):
 	var item = item_scene.instantiate()
 
 	var item_x = ix
@@ -301,7 +325,10 @@ func add_item(ix, iy, type, showing = false):
 	item.family = type
 	item.name = "IT_" + str(item.family)
 	
-	item.add_to_group("debug_collision")
+	# Create a custom metadata property on the item node dynamically
+	item.set_meta("is_hidden_item", is_hidden)
+	
+#	item.add_to_group("debug_collision")
 	item.add_to_group("itemgroup")
 
 	if (item.family == "door"):
@@ -323,8 +350,13 @@ func add_item(ix, iy, type, showing = false):
 	area.set_collision_layer_value(3, true)      # Sensor is on Interactable layer
 
 	# Who am I looking for? (Layer 2: Player)
-	area.set_collision_mask_value(2, true)       # Sensor looks for the Player
+	# area.set_collision_mask_value(2, true)       # Sensor looks for the Player
 
+	if is_hidden:
+		area.set_collision_mask_value(2, false)  # Blind to the player
+	else:
+		area.set_collision_mask_value(2, true)   # Sensor looks for the Player
+		
 	###DEBUG item area layer check (interaction)
 #	print("DEBUG: ", item.name, " Area Layer: ", area.collision_layer)
 #	print("DEBUG: ", item.name, " Area Mask: ", area.collision_mask)
@@ -337,13 +369,16 @@ func add_item(ix, iy, type, showing = false):
 	item.add_child(receiver)
 
 	# Tell the item to refresh its debug info
-	if item.has_method("_update_debug_text"):
-		item._update_debug_text()
+#	if item.has_method("_update_debug_text"):
+#		item._update_debug_text()
 	
-	item.visible = showing
-	
+	item.visible = showing	
 	add_child(item)
 
+	# NEW: Store the item node in our dictionary by its grid position
+	var cell = Vector2i(ix, iy)
+	item_nodes[cell] = item
+	
 	item.position = GameConfig.grid_to_local(
 		item_x,        # grid column
 		item_y,        # grid row
@@ -469,6 +504,10 @@ func clear_current_level():
 
 	monsters.clear()
 	monsters = {}
+
+	item_nodes.clear()
+	item_nodes = {}
+
 	
 	for child in get_children(): 
 		if child.name != "Background":
@@ -531,11 +570,16 @@ func _spawn_level_content_hidden(data):
 	#################################
 	# 	4. Spawn Items (Hidden)		#
 	#################################
+	item_nodes.clear() # Reset on level load
 	if data.has("items"):
 		for i in data["items"]:
-			# Create a new block instance from scene
-			add_item(i["pos"][0], i["pos"][1], i["family"], false)
 
+			var is_secret = i.get("type") == "hidden"
+			
+			# Spawn the item. Your add_item function ALREADY correctly 
+			# registers this node into the item_nodes dictionary!
+			add_item(i["pos"][0], i["pos"][1], i["family"], false, is_secret)
+			
 	# 5. Spawn Player (Hidden + Input Disabled)
 	spawn_player(
 		player_start[0],   # grid X
