@@ -606,14 +606,25 @@ func spawn_fairy():
 	var area = Area2D.new()
 	area.name = "HitBox"
 
+	# ---  Give the HitBox an actual collision shape ---
+	var collision_shape = CollisionShape2D.new()
+	var box_shape = RectangleShape2D.new()
+
+	# Set the size of the hitbox. If your tiles are 64x64, 
+	# a 32x32 bounding box matches a standard collectible item size.
+	box_shape.size = Vector2(32, 32) 
+	collision_shape.shape = box_shape
+	area.add_child(collision_shape)
+	# -----------------------------------------------------
+		
 	# Reset everything first to be safe
 	instance.collision_mask = 0
 	area.collision_layer = 0
 	area.collision_mask = 3
 
-	area.monitoring = false 
-	area.monitorable = true 	# can be seen by Player CollectionZone
-						
+	area.set_deferred("monitoring", true)
+	area.set_deferred("monitorable", true) # can be seen by Player CollectionZone
+	
 	# Who am I? (Layer 3: Interactables)
 	area.set_collision_layer_value(4, true)      # Sensor is on Interactable layer
 
@@ -648,9 +659,13 @@ func spawn_fairy():
 		y_off
 	)
 
-	add_child(instance)
-	instance.add_child(area)
+	#	add_child(instance)
 
+	# Safely defer adding the entire fairy to the level tree 
+	# until the physics engine finishes flushing queries
+	call_deferred("add_child", instance)
+	instance.add_child(area)
+	
 
 func _spawn_monsters(data):
 	if data.has("monsters"):
@@ -714,9 +729,9 @@ func _spawn_monsters(data):
 			area.collision_layer = 0
 			area.collision_mask = 3
 
-			area.monitoring = false 
-			area.monitorable = true 	# can be seen by Player CollectionZone
-						
+			area.set_deferred("monitoring", true)
+			area.set_deferred("monitorable", true) # can be seen by Player CollectionZone
+
 			# Who am I? (Layer 3: Interactables)
 			area.set_collision_layer_value(4, true)      # Sensor is on Interactable layer
 

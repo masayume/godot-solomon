@@ -55,8 +55,8 @@ func _force_hitbox_setup():
 	hb.set_collision_layer_value(4, true) # Is a Monster
 	hb.set_collision_mask_value(2, true)  # LOOKS FOR PLAYER (Layer 2)
 	
-	hb.monitoring = true
-	hb.monitorable = true
+	hb.set_deferred("monitoring", true)
+	hb.set_deferred("monitorable", true)
 	
 	# Connect signal
 	if not hb.body_entered.is_connected(_on_hitbox_entered):
@@ -91,9 +91,9 @@ func _setup_hitbox():
 	hb.set_collision_layer_value(4, true)
 	# Hitbox MUST look for 'Player' (Layer 2)
 	hb.set_collision_mask_value(2, true)
-		
-	hb.monitoring = true
-	hb.monitorable = true # Player needs to see it too
+
+	hb.set_deferred("monitoring", true)
+	hb.set_deferred("monitorable", true)
 		
 	# Connect to body_entered because the Player is a CharacterBody2D
 	if not hb.body_entered.is_connected(_on_hitbox_entered):
