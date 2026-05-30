@@ -15,7 +15,7 @@ func _ready():
 #		get_parent().modulate = Color.GREEN # Turns the item green if it has a receiver
 	_log()
 
-func receive(action, source):
+func receive(_action, source):
 
 #	print(get_parent().name, "'s Receiver registered action '", action, "' from: ", source.name)	
 

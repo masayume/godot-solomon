@@ -23,6 +23,11 @@ func _ready():
 	# Ensure the Area2D is ALWAYS enabled for interactions
 	$Area2D.monitoring = true
 
+	# -------------------------------------------------------------
+	# Shrink the collection sensor slightly to prevent flush-edge 
+	# instant collection when standing in the adjacent tile!
+	# -------------------------------------------------------------
+	$Area2D.scale = Vector2(0.8, 0.8)
 	
 func _physics_process(delta):
 	

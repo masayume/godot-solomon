@@ -94,7 +94,7 @@ func center_level():
 func _on_player_spell(pos, dir, crouching):
 	create_or_destroy_block(pos, dir, crouching, true)
 
-func _on_player_fireball(pos, dir, crouching):
+func _on_player_fireball(_pos, _dir, _crouching):
 	return
 	
 func create_or_destroy_block(pos, dir, crouching, is_player=false):
@@ -125,24 +125,51 @@ func create_or_destroy_block(pos, dir, crouching, is_player=false):
 				if sfx:
 					player.audio_player.stream = sfx
 					player.audio_player.play() # Plays once when the state starts
-						
+
+			# Force the block to instantly disappear before queue_free 
+			# removes it at the end of the frame
+			block.hide()
 			block.queue_free()
 			blocks.erase(target)
 
 			# ---------------------------------------------------------
-			# NEW: Check if destroying this block revealed a hidden item
+			# Check if destroying this block revealed a hidden item
 			# ---------------------------------------------------------
 			if item_nodes.has(target):
 				var item_node = item_nodes[target]
 				
-				# Check if this node is flagged as a hidden item
-				if item_node.get_meta("is_hidden_item", false):
-					item_node.visible = true
-					item_node.set_meta("is_hidden_item", false) # No longer hidden
-					
-					# Re-enable the player collision mask safely
-					var area = item_node.get_node("Area2D")
-					area.call_deferred("set_collision_mask_value", 2, true)
+				# Ensure the item hasn't been collected and freed already
+				if is_instance_valid(item_node):
+					# Check if this node is flagged as a hidden item
+					if item_node.get_meta("is_hidden_item", false):
+
+						# 2. NEW: Brute force the Godot renderer
+						item_node.show() # Safer than visible = true
+						item_node.modulate.a = 1.0 # Force full opacity
+						item_node.z_index = 50 # Force it to draw over the background and grid
+						
+						# Explicitly force the child sprite to wake up
+						var sprite = item_node.get_node_or_null("Sprite2D")
+						if sprite:
+							sprite.show()
+							
+						item_node.set_meta("is_hidden_item", false) # No longer hidden
+						
+						# 3. Add a debug print just to prove it fired correctly
+						print("Item Revealed: ", item_node.name, " at ", item_node.global_position)
+						
+						# --- Re-enable the player collision mask SAFELY with a tiny delay ---
+						var area = item_node.get_node_or_null("Area2D")
+						if area:
+							get_tree().create_timer(0.15).timeout.connect(func():
+								if is_instance_valid(area):
+									area.set_collision_layer_value(3, true)
+									area.set_collision_mask_value(2, true)
+							)
+							
+				# The item was already collected. Clean up the dead reference!
+				else:
+					item_nodes.erase(target)					
 			# ---------------------------------------------------------
 
 
@@ -352,11 +379,14 @@ func add_item(ix, iy, type, showing = false, is_hidden = false):
 	# Who am I looking for? (Layer 2: Player)
 	# area.set_collision_mask_value(2, true)       # Sensor looks for the Player
 
+	# Disable both Layer AND Mask IF HIDDEN
 	if is_hidden:
-		area.set_collision_mask_value(2, false)  # Blind to the player
+		area.set_collision_layer_value(3, false) # HIDDEN from the player
+		area.set_collision_mask_value(2, false)  # BLIND to the player
 	else:
+		area.set_collision_layer_value(3, true)  # Sensor is on Interactable layer
 		area.set_collision_mask_value(2, true)   # Sensor looks for the Player
-		
+
 	###DEBUG item area layer check (interaction)
 #	print("DEBUG: ", item.name, " Area Layer: ", area.collision_layer)
 #	print("DEBUG: ", item.name, " Area Mask: ", area.collision_mask)

@@ -1,6 +1,6 @@
 {
   "id": 0,
-  "name": "test level",
+  "name": "TEST",
   "time_limit": 999,
 
   "tile_size": 64,
@@ -12,11 +12,11 @@
   "items": [
 	{"pos": [8,11],"family":"door"},	
 	{"pos": [5,9],"family":"key"},	
-	{"pos": [8,10],"family":"gold-bell"},	
+	{"pos": [8,12],"family":"gold-bell"},	
 	{"pos": [7,8],"family":"blue-lantern"},	
 	{"pos": [9,8],"family":"blue-lantern"},	
 	{"pos": [7,10],"family":"blue-lantern"},	
-	{"pos": [8,10],"family":"blue-lantern"},	
+
 	{"pos": [9,10],"family":"blue-lantern"},	
 	{"pos": [3,7],"family":"green-orb"},	
 	{"pos": [13,7],"family":"green-orb"},	
@@ -26,7 +26,8 @@
 	{"pos": [7,7],"family":"jewel200","type":"hidden"},	
 	{"pos": [8,7],"family":"jewel500","type":"hidden"},	
 	{"pos": [9,7],"family":"jewel200","type":"hidden"},	
-	{"pos": [8,12],"family":"blue-hourglass","type":"hidden"},	
+
+	{"pos": [8,10],"family":"blue-hourglass","type":"hidden"},	
 
 
   ],
