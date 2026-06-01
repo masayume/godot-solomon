@@ -61,4 +61,6 @@ func _on_body_entered(body):
 
 func explode():
 	get_parent().spawn_fx("boom", global_position, Vector2i(-1,-1), false)
+	
 	queue_free()
+	
