@@ -44,8 +44,17 @@ var time_accumulator = 0.0
 
 signal spell_pressed(position, direction, crouching)
 signal fireball_pressed(position, direction, crouching)
-
 signal state_animation_finished(state_name)
+
+#PATTERN-01: Dictionary of Callables (or dispatch table) - reference to functions
+var item_actions = {
+	"key": _handle_key_collection,
+	"gold-bell": _handle_gold_bell,
+	"door": _handle_door_interaction,
+	"fairy": _handle_fairy_collection,
+	"parchment": _handle_parchment_collection,
+	"blue-lantern": _handle_blue_lantern_collection
+}
 
 func _ready():
 	z_index = 10
@@ -287,7 +296,9 @@ func _on_interaction_detector_area_entered(area: Area2D):
 #		if target.is_in_group("monstergroup"):
 #			trigger_death_from_monster()
 
+#PATTERN-03: Dictionary of Callables - get the item type	
 	var item_type = target.family
+	
 	# 1. Safely get item info
 	if not GameConfig.itemdata.has(target.family):
 		print("ERROR: Item type ", target.family, " not found in config.")
@@ -326,17 +337,30 @@ func _on_interaction_detector_area_entered(area: Area2D):
 #		if item_info["action_type"] == "collect":
 #			area.get_parent().queue_free() # Remove the item node
 
-	# If the item collected is the gold-bell => spawn fairy
-	if item_type == "gold-bell":
-		var loader = get_tree().current_scene.find_child("Level", true, false)
-#		print("collected gold-bell: spawning fairy")
-		loader.spawn_fairy()
 
-	if item_type == "fairy":
+#PATTERN-04: Dictionary of Callables - call the functions
+	# If the item collected is the gold-bell => spawn fairy
+
+	if item_actions.has(item_type):
+	# We found a match! Proceed to execute the function.
+	# This is exactly the same as writing: _handle_key_collection(target)
+#		await item_actions[item_type].call(target) 
+		await item_actions[item_type].call() 
+
+##TODO: move the if code blocks to the functions referenced by item_actions
+
+##OLD
+#	if item_type == "gold-bell":
 #		var loader = get_tree().current_scene.find_child("Level", true, false)
-#		print("collected fairy: must increase fairy count")
-		GameConfig.fairy += 1
-		fairy_label.text = "[color=white]Fairy .. [/color] [color=white]" + str(GameConfig.fairy) + "[/color]"
+#		print("collected gold-bell: spawning fairy")
+#		loader.spawn_fairy()
+
+#	if item_type == "fairy":
+##		var loader = get_tree().current_scene.find_child("Level", true, false)
+##		print("collected fairy: must increase fairy count")
+#		GameConfig.fairy += 1
+#		fairy_label.text = "[color=white]Fairy .. [/color] [color=white]" + str(GameConfig.fairy) + "[/color]"
+##OLD
 
 	# If the item collected is the door => player exit
 	if item_type == "door":
@@ -656,7 +680,27 @@ func setup_animation(itemname):
 	frame_index = 0
 	sprite.frame = frames[0]
 	
-#func setup_animation():
-	# We use "idle" as the default starting state
-#	if not crouching:
-#		change_state("idle")
+#PATTERN-02: Dictionary of Callables - functions
+
+func _handle_key_collection():
+	return
+	
+func _handle_gold_bell():
+	var loader = get_tree().current_scene.find_child("Level", true, false)
+#	print("collected gold-bell: spawning fairy")
+	loader.spawn_fairy()
+	return
+
+func _handle_door_interaction():
+	return
+
+func _handle_fairy_collection():
+	GameConfig.fairy += 1
+	fairy_label.text = "[color=white]Fairy .. [/color] [color=white]" + str(GameConfig.fairy) + "[/color]"
+	return
+
+func _handle_parchment_collection():
+	return
+
+func _handle_blue_lantern_collection():
+	return

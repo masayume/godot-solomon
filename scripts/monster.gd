@@ -145,59 +145,6 @@ func take_damage():
 	queue_free.call_deferred()
 
 
-
-func _apply_pop_physics(grid_pos: Vector2i, item_type: String):
-	var loader = get_parent()
-	if not loader: return
-	
-	# 1. Wait 1 frame so call_deferred has finished adding the item to the tree
-	await get_tree().process_frame
-	
-	# 2. Look for the newly spawned item
-	var spawned_item: Node2D = null
-	for child in loader.get_children():
-		# Match visible items close to the monster's death global coordinates
-		if child.is_in_group("items") and child.visible:
-			if child.global_position.distance_to(global_position) < 96.0:
-				spawned_item = child
-				break
-				
-	if spawned_item == null:
-		return # Item wasn't found or already handled
-
-	# 3. Arcade Physics Parameters
-	# Start with an explosive push: up and slightly randomized left/right
-	var velocity = Vector2(
-		randf_range(-150.0, 150.0), 
-		randf_range(-300.0, -420.0) 
-	)
-	var gravity: float = 1200.0
-	
-	# Capture the starting altitude so it knows exactly where the ground layer floor is
-	var ground_y: float = spawned_item.global_position.y
-
-	# 4. Use a frame processing loop to manually update position safely over time
-	# This bypasses any engine level lockouts on standard properties
-	var tween = create_tween()
-	tween.tween_method(
-		func(elapsed_time: float):
-			# Ensure the item hasn't been collected or deleted during the animation arc
-			if is_instance_valid(spawned_item):
-				# Fetch delta approximation per call iteration
-				var frame_delta = 0.016 
-				
-				# Physics integration step
-				velocity.y += gravity * frame_delta
-				spawned_item.global_position += velocity * frame_delta
-				
-				# Land check: Stop falling once it lands back at floor height
-				if velocity.y > 0 and spawned_item.global_position.y >= ground_y:
-					spawned_item.global_position.y = ground_y
-					tween.kill() # Terminate physical calculations immediately upon landing
-	, 
-	0.0, 1.0, 1.5 # Run safely for up to 1.5 seconds maximum if it somehow misses the floor
-	)
-
 func apply_stats():
 
 	# --- common Sprite setup ---

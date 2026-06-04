@@ -22,7 +22,7 @@ func _ready():
 	# 2. FIX: The collision shape must ALWAYS be active for the item to land on blocks!
 	# player transparency done via masks in set_collidable() instead of disabling this.
 	collider.disabled = false
-	collider.scale = Vector2(1.0, 1.8)
+	collider.scale = Vector2(1.0, 2.8)
 
 	# Ensure the Area2D collection sensor is always active
 	$Area2D.monitoring = true
