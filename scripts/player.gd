@@ -773,44 +773,67 @@ func _handle_door_interaction(_target):
 		
 	return
 
+# "Collect" the fairy 
 func _handle_fairy_collection(_target):
 	GameConfig.fairy += 1
 	fairy_label.text = "[color=white]Fairy .. [/color] [color=white]" + str(GameConfig.fairy) + "[/color]"
 	return
 
+# Adds a fireball slot to the counter
 func _handle_parchment_collection(_target):
 	var scroll_ui = get_tree().root.find_child("FireballHBox", true, false)			
 	if scroll_ui: scroll_ui.add_capacity()
 
 	return
 
+# Adds a fireball to the counter
 func _handle_blue_lantern_collection(_target):
 	var scroll_ui = get_tree().root.find_child("FireballHBox", true, false)			
 
 	if scroll_ui: scroll_ui.fill_fireball()
 	return
-	
-func _handle_red_potion_collection(target):
+
+# Instantly destroy every generated enemy on the screen. 
+# Destroyed enemies will turn into treasure.
+func _handle_red_potion_collection(_target):
+	for monster in get_tree().get_nodes_in_group("monstergroup"):
+		if is_instance_valid(monster):
+			# Call the same method the fireball uses to damage monsters
+			if monster.has_method("take_damage"):
+				monster.take_damage()
+			# Fallback in case your monster script handles instant death via an explode method
+			elif monster.has_method("explode"):
+				monster.explode()
 	return
-		
-func _handle_blue_hourglass_collection(target):
+
+# Restore the timer to its original starting time. 
+# Helpful when collecting the full green time bonus bottle 
+func _handle_blue_hourglass_collection(_target):
 	return
-		
-func _handle_extra_life_collection(target):
+
+# Earn one extra life.
+func _handle_extra_life_collection(_target):
+	var hud = get_tree().get_first_node_in_group("hud_lives")
+	GameManager.current_lives += 1
+	hud.update_icons(GameManager.current_lives)
 	return
-		
-func _handle_red_hourglass_collection(target):
+
+func _handle_red_hourglass_collection(_target):
 	return
-		
-func _handle_time_potion1_collection(target):
+
+# 2x bonus time but 2x time speed
+func _handle_time_potion1_collection(_target):
 	return
-		
-func _handle_time_potion2_collection(target):
+
+# 5x bonus time but 5x time speed
+func _handle_time_potion2_collection(_target):
 	return
-		
-func _handle_red_orb_collection(target):
+
+# extend the range at which your fireballs can travel. +1 block
+func _handle_red_orb_collection(_target):
 	return
-		
-func _handle_green_orb_collection(target):
+
+# extend the range at which your fireballs can travel. +2 block
+func _handle_green_orb_collection(_target):
 	return
 		
