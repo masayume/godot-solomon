@@ -53,7 +53,16 @@ var item_actions = {
 	"door": _handle_door_interaction,
 	"fairy": _handle_fairy_collection,
 	"parchment": _handle_parchment_collection,
-	"blue-lantern": _handle_blue_lantern_collection
+	"blue-lantern": _handle_blue_lantern_collection,
+	"red-potion": _handle_red_potion_collection,
+	"blue-hourglass": _handle_blue_hourglass_collection,
+	"extra-life": _handle_extra_life_collection,
+	"red-hourglass": _handle_red_hourglass_collection,
+	"time-potion1": _handle_time_potion1_collection,
+	"time-potion2": _handle_time_potion2_collection,
+	"red-orb": _handle_red_orb_collection,
+	"green-orb": _handle_green_orb_collection
+
 }
 
 func _ready():
@@ -742,18 +751,15 @@ func _handle_key_collection(target):
 	# 3. NOW free the node
 	key_node.queue_free()
 
-	# Reference the scroll UI node
-	var scroll_ui = get_tree().root.find_child("FireballHBox", true, false)
-
 	return
 	
-func _handle_gold_bell(target):
+func _handle_gold_bell(_target):
 	var loader = get_tree().current_scene.find_child("Level", true, false)
 #	print("collected gold-bell: spawning fairy")
 	loader.spawn_fairy()
 	return
 
-func _handle_door_interaction(target):
+func _handle_door_interaction(_target):
 	if self.has_flag("has_key"):
 #		print("Access Granted!")
 		# Trigger level load on the loader 
@@ -767,19 +773,44 @@ func _handle_door_interaction(target):
 		
 	return
 
-func _handle_fairy_collection(target):
+func _handle_fairy_collection(_target):
 	GameConfig.fairy += 1
 	fairy_label.text = "[color=white]Fairy .. [/color] [color=white]" + str(GameConfig.fairy) + "[/color]"
 	return
 
-func _handle_parchment_collection(target):
+func _handle_parchment_collection(_target):
 	var scroll_ui = get_tree().root.find_child("FireballHBox", true, false)			
 	if scroll_ui: scroll_ui.add_capacity()
 
 	return
 
-func _handle_blue_lantern_collection(target):
+func _handle_blue_lantern_collection(_target):
 	var scroll_ui = get_tree().root.find_child("FireballHBox", true, false)			
 
 	if scroll_ui: scroll_ui.fill_fireball()
 	return
+	
+func _handle_red_potion_collection(target):
+	return
+		
+func _handle_blue_hourglass_collection(target):
+	return
+		
+func _handle_extra_life_collection(target):
+	return
+		
+func _handle_red_hourglass_collection(target):
+	return
+		
+func _handle_time_potion1_collection(target):
+	return
+		
+func _handle_time_potion2_collection(target):
+	return
+		
+func _handle_red_orb_collection(target):
+	return
+		
+func _handle_green_orb_collection(target):
+	return
+		
