@@ -344,12 +344,11 @@ func _on_interaction_detector_area_entered(area: Area2D):
 	if item_actions.has(item_type):
 	# We found a match! Proceed to execute the function.
 	# This is exactly the same as writing: _handle_key_collection(target)
-#		await item_actions[item_type].call(target) 
-		await item_actions[item_type].call() 
+		await item_actions[item_type].call(target) 
 
 ##TODO: move the if code blocks to the functions referenced by item_actions
 
-##OLD
+##OLD 2DEL
 #	if item_type == "gold-bell":
 #		var loader = get_tree().current_scene.find_child("Level", true, false)
 #		print("collected gold-bell: spawning fairy")
@@ -360,92 +359,92 @@ func _on_interaction_detector_area_entered(area: Area2D):
 ##		print("collected fairy: must increase fairy count")
 #		GameConfig.fairy += 1
 #		fairy_label.text = "[color=white]Fairy .. [/color] [color=white]" + str(GameConfig.fairy) + "[/color]"
-##OLD
 
-	# If the item collected is the door => player exit
-	if item_type == "door":
-		if self.has_flag("has_key"):
-#			print("Access Granted!")
-			# Trigger level load on the loader 
-			var loader = get_tree().current_scene.find_child("Level", true, false)
-			loader.stop_level_timer()
-			loader.toggle_monsters(false)
-			loader.start_level_transition()
-		else:
-			print("The door is locked. You need the key flag!")
-			# Optional: Play a "locked" sound or animation	
+#	# If the item collected is the door => player exit
+#	if item_type == "door":
+#		if self.has_flag("has_key"):
+##			print("Access Granted!")
+#			# Trigger level load on the loader 
+#			var loader = get_tree().current_scene.find_child("Level", true, false)
+#			loader.stop_level_timer()
+#			loader.toggle_monsters(false)
+#			loader.start_level_transition()
+#		else:
+#			print("The door is locked. You need the key flag!")
+#			# Optional: Play a "locked" sound or animation	
 
-	# If the item is the key
-	if item_type == "key":
-#		print("key collected!")
+#	# If the item is the key
+#	if item_type == "key":
+##		print("key collected!")
+#		
+#		# 0. Lock the player while collects key
+#		is_collecting_key = true
+#		change_state("idle")
 		
-		# 0. Lock the player while collects key
-		is_collecting_key = true
-		change_state("idle")
-		
-		# 1. Freeze the player to prevent movement during the animation
-		self.set_physics_process(false)
-		self.set_process_input(false)
-
+#		# 1. Freeze the player to prevent movement during the animation
+#		self.set_physics_process(false)
+#		self.set_process_input(false)
 	
-		# 2. Identify nodes for the animation
-		var key_node = get_tree().get_first_node_in_group("keygroup")
-		# The loader is the parent of the key_node (Item)
-		var loader = key_node.get_parent() 
-		var door_node = loader.get_tree().get_first_node_in_group("doorgroup")
+#		# 2. Identify nodes for the animation
+#		var key_node = get_tree().get_first_node_in_group("keygroup")
+#		# The loader is the parent of the key_node (Item)
+#		var loader = key_node.get_parent() 
+#		var door_node = loader.get_tree().get_first_node_in_group("doorgroup")
 	
-		# 3. Create the intro manager to run the tween
-		# GameIntro needs the loader reference passed in _init
-		var intro_manager = RoomIntro.new(level_loader)
+#		# 3. Create the intro manager to run the tween
+#		# GameIntro needs the loader reference passed in _init
+#		var intro_manager = RoomIntro.new(level_loader)
 
-		intro_manager._twirl_item(key_node, "key")
-		key_node.visible = false
-		# 4. play the key collected sample
-		# Handle Sound Playback
-		if GameConfig.itemdata["key"].has("sound"):
-			loader.toggle_monsters(false)
-			var sfx = load(GameConfig.itemdata["key"].sound)
-			if sfx:
-				audio_player.stream = sfx
-				audio_player.play() # Plays once when the state starts
-				await audio_player.finished
+#		intro_manager._twirl_item(key_node, "key")
+#		key_node.visible = false
+#		# 4. play the key collected sample
+#		# Handle Sound Playback
+#		if GameConfig.itemdata["key"].has("sound"):
+#			loader.toggle_monsters(false)
+#			var sfx = load(GameConfig.itemdata["key"].sound)
+#			if sfx:
+#				audio_player.stream = sfx
+#				audio_player.play() # Plays once when the state starts
+#				await audio_player.finished
 
-		if GameConfig.itemdata["key"].has("introsound"):
-			var sfx2 = load(GameConfig.itemdata["key"].introsound)
-			if sfx2:
-				audio_player.stream = sfx2
-				audio_player.play() # Plays once when the state starts
+#		if GameConfig.itemdata["key"].has("introsound"):
+#			var sfx2 = load(GameConfig.itemdata["key"].introsound)
+#			if sfx2:
+#				audio_player.stream = sfx2
+#				audio_player.play() # Plays once when the state starts
 					
-		# 5. Run the animation and wait for it to finish
-		# Using the function you already defined in game_intro.gd 
+#		# 5. Run the animation and wait for it to finish
+#		# Using the function you already defined in game_intro.gd 
 		
-		# 1. Process logic (flags/score) - Key becomes invisible here
-		receiver.receive("collect", self)
+#		# 1. Process logic (flags/score) - Key becomes invisible here
+#		receiver.receive("collect", self)
 		
-		await intro_manager._animate_star_to_target(key_node, door_node)
+#		await intro_manager._animate_star_to_target(key_node, door_node)
 
-		# 6. Unfreeze the player & monsters
-		self.set_physics_process(true)
-		self.set_process_input(true)
-		loader.toggle_monsters(true)
+#		# 6. Unfreeze the player & monsters
+#		self.set_physics_process(true)
+#		self.set_process_input(true)
+#		loader.toggle_monsters(true)
 
-		is_collecting_key = false
+#		is_collecting_key = false
 
-		# 3. NOW free the node
-		key_node.queue_free()
+#		# 3. NOW free the node
+#		key_node.queue_free()
 
-	# Reference the scroll UI node
-	var scroll_ui = get_tree().root.find_child("FireballHBox", true, false)
+#	# Reference the scroll UI node
+#	var scroll_ui = get_tree().root.find_child("FireballHBox", true, false)
 			
-	# If the item is a parchment
-	if item_type == "parchment":
-#		print("parchment collected!")
-		if scroll_ui: scroll_ui.add_capacity()
+#	# If the item is a parchment
+#	if item_type == "parchment":
+##		print("parchment collected!")
+#		if scroll_ui: scroll_ui.add_capacity()
 
-	# If the item is a blue-lantern
-	if item_type == "blue-lantern":
-#		print("blue-lantern collected!")
-		if scroll_ui: scroll_ui.fill_fireball()
+#	# If the item is a blue-lantern
+#	if item_type == "blue-lantern":
+##		print("blue-lantern collected!")
+#		if scroll_ui: scroll_ui.fill_fireball()
+
+##OLD 2DEL
 
 	if item_info.has("action_type"):
 		if item_info["action_type"] == "collect":
@@ -679,28 +678,108 @@ func setup_animation(itemname):
 
 	frame_index = 0
 	sprite.frame = frames[0]
+
+
 	
 #PATTERN-02: Dictionary of Callables - functions
 
-func _handle_key_collection():
+func _handle_key_collection(target):
+
+	var receiver = target.get_node_or_null("Receiver")
+
+	# 0. Lock the player while collects key
+	is_collecting_key = true
+	change_state("idle")
+		
+	# 1. Freeze the player to prevent movement during the animation
+	self.set_physics_process(false)
+	self.set_process_input(false)
+
+	
+	# 2. Identify nodes for the animation
+	var key_node = get_tree().get_first_node_in_group("keygroup")
+	# The loader is the parent of the key_node (Item)
+	var loader = key_node.get_parent() 
+	var door_node = loader.get_tree().get_first_node_in_group("doorgroup")
+	
+	# 3. Create the intro manager to run the tween
+	# GameIntro needs the loader reference passed in _init
+	var intro_manager = RoomIntro.new(level_loader)
+
+	intro_manager._twirl_item(key_node, "key")
+	key_node.visible = false
+	# 4. play the key collected sample
+	# Handle Sound Playback
+	if GameConfig.itemdata["key"].has("sound"):
+		loader.toggle_monsters(false)
+		var sfx = load(GameConfig.itemdata["key"].sound)
+		if sfx:
+			audio_player.stream = sfx
+			audio_player.play() # Plays once when the state starts
+			await audio_player.finished
+
+	if GameConfig.itemdata["key"].has("introsound"):
+		var sfx2 = load(GameConfig.itemdata["key"].introsound)
+		if sfx2:
+			audio_player.stream = sfx2
+			audio_player.play() # Plays once when the state starts
+					
+	# 5. Run the animation and wait for it to finish
+	# Using the function you already defined in game_intro.gd 
+		
+	# 1. Process logic (flags/score) - Key becomes invisible here
+	receiver.receive("collect", self)
+		
+	await intro_manager._animate_star_to_target(key_node, door_node)
+
+	# 6. Unfreeze the player & monsters
+	self.set_physics_process(true)
+	self.set_process_input(true)
+	loader.toggle_monsters(true)
+
+	is_collecting_key = false
+
+	# 3. NOW free the node
+	key_node.queue_free()
+
+	# Reference the scroll UI node
+	var scroll_ui = get_tree().root.find_child("FireballHBox", true, false)
+
 	return
 	
-func _handle_gold_bell():
+func _handle_gold_bell(target):
 	var loader = get_tree().current_scene.find_child("Level", true, false)
 #	print("collected gold-bell: spawning fairy")
 	loader.spawn_fairy()
 	return
 
-func _handle_door_interaction():
+func _handle_door_interaction(target):
+	if self.has_flag("has_key"):
+#		print("Access Granted!")
+		# Trigger level load on the loader 
+		var loader = get_tree().current_scene.find_child("Level", true, false)
+		loader.stop_level_timer()
+		loader.toggle_monsters(false)
+		loader.start_level_transition()
+	else:
+		print("The door is locked. You need the key flag!")
+		# Optional: Play a "locked" sound or animation	
+		
 	return
 
-func _handle_fairy_collection():
+func _handle_fairy_collection(target):
 	GameConfig.fairy += 1
 	fairy_label.text = "[color=white]Fairy .. [/color] [color=white]" + str(GameConfig.fairy) + "[/color]"
 	return
 
-func _handle_parchment_collection():
+func _handle_parchment_collection(target):
+	var scroll_ui = get_tree().root.find_child("FireballHBox", true, false)			
+	if scroll_ui: scroll_ui.add_capacity()
+
 	return
 
-func _handle_blue_lantern_collection():
+func _handle_blue_lantern_collection(target):
+	var scroll_ui = get_tree().root.find_child("FireballHBox", true, false)			
+
+	if scroll_ui: scroll_ui.fill_fireball()
 	return
