@@ -810,6 +810,8 @@ func _handle_red_potion_collection(_target):
 # Restore the timer to its original starting time. 
 # Helpful when collecting the full green time bonus bottle 
 func _handle_blue_hourglass_collection(_target):
+	var loader = get_tree().current_scene.find_child("Level", true, false)
+	loader.current_bonus = GameConfig.gamedata.game.room_bonus
 	return
 
 # Earn one extra life.
@@ -820,6 +822,8 @@ func _handle_extra_life_collection(_target):
 	return
 
 func _handle_red_hourglass_collection(_target):
+	var loader = get_tree().current_scene.find_child("Level", true, false)
+	loader.current_bonus = GameConfig.gamedata.game.room_bonus / 2
 	return
 
 # 2x bonus time but 2x time speed
