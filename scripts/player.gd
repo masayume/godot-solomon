@@ -53,7 +53,8 @@ var item_actions = {
 	"door": _handle_door_interaction,
 	"fairy": _handle_fairy_collection,
 	"parchment": _handle_parchment_collection,
-	"blue-lantern": _handle_blue_lantern_collection,
+	"scroll": _handle_parchment_collection,
+	"fire-potion": _handle_fire_potion_collection,
 	"red-potion": _handle_red_potion_collection,
 	"blue-hourglass": _handle_blue_hourglass_collection,
 	"extra-life": _handle_extra_life_collection,
@@ -787,7 +788,7 @@ func _handle_parchment_collection(_target):
 	return
 
 # Adds a fireball to the counter
-func _handle_blue_lantern_collection(_target):
+func _handle_fire_potion_collection(_target):
 	var scroll_ui = get_tree().root.find_child("FireballHBox", true, false)			
 
 	if scroll_ui: scroll_ui.fill_fireball()

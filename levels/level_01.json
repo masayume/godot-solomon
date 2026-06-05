@@ -13,8 +13,8 @@
 	{"pos": [8,11],"family":"door"},	
 	{"pos": [11,3],"family":"key"},	
 	{"pos": [8,8],"family":"gold-bell"},	
-	{"pos": [7,8],"family":"blue-lantern"},	
-	{"pos": [9,8],"family":"blue-lantern"},	
+	{"pos": [7,8],"family":"fire-potion"},	
+	{"pos": [9,8],"family":"fire-potion"},	
 	{"pos": [3,7],"family":"green-orb"},	
 	{"pos": [13,7],"family":"green-orb"},	
 
