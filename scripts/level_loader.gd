@@ -342,7 +342,7 @@ func add_block(bx, by, type, showing = false):
 		y_off           # vertical centering offset
 	)	
 
-		
+
 func add_item(ix, iy, type, showing = false, is_hidden = false):
 	var item = item_scene.instantiate()
 
@@ -493,7 +493,15 @@ func start_level_transition():
 	#GameConfig.gamedata.sequence.initial_level
 	
 	# GameConfig.score += current_bonus # Global score tracking
-	var tween = player._update_score_with_effect(current_bonus)
+	# 1. Decrease by 10 points
+	var bonus_multiplier = 1
+
+	if player.has_flag("time2x"):
+		bonus_multiplier = 2
+	elif player.has_flag("time5x"):
+		bonus_multiplier =  5	
+	
+	var tween = player._update_score_with_effect(current_bonus * bonus_multiplier)
 	
 	# blank in bonus value
 	
@@ -828,8 +836,16 @@ func start_level_timer():
 	_update_timer_display()
 
 func _on_bonus_tick():
+
 	# 1. Decrease by 10 points
-	current_bonus -= 10
+	var decrease_amount = 10
+
+	if player.has_flag("time2x"):
+		decrease_amount = 10 * 2
+	elif player.has_flag("time5x"):
+		decrease_amount = 10 * 5
+
+	current_bonus -= decrease_amount
 	
 	# 2. Check for "Hurry Up" threshold (2000)
 	var hurry_threshold = GameConfig.gamedata.game.get("hurry_up", 2000)
