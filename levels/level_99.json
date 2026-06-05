@@ -11,7 +11,7 @@
 
   "items": [
 
-	{"pos": [7,10],"family":"time-potion2"},
+	{"pos": [7,10],"family":"red-potion"},
 
 	{"pos": [8,11],"family":"door"},	
 	{"pos": [5,9],"family":"key"},	

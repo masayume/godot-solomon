@@ -799,8 +799,9 @@ func _handle_fire_potion_collection(_target):
 func _handle_red_potion_collection(_target):
 	for monster in get_tree().get_nodes_in_group("monstergroup"):
 		if is_instance_valid(monster):
-			# Call the same method the fireball uses to damage monsters
-			if monster.has_method("take_damage"):
+			
+			# Call the same method the fireball uses to damage monsters			
+			if monster.has_method("take_damage") and not GameConfig.monsterdata[monster.family].get("red_potion_immunity"):
 				monster.take_damage()
 			# Fallback in case your monster script handles instant death via an explode method
 			elif monster.has_method("explode"):
