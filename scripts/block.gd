@@ -12,6 +12,8 @@ var anim_speed = 0.1
 var frame_index = 0
 var time_accumulator = 0.0
 
+var is_spawning = true
+
 func _ready():
 	z_index = 10
 	set_texture()
@@ -19,6 +21,9 @@ func _ready():
 	set_collidable()
 	setup_animation()
 	
+	if family == "demonshield":
+		_start_demonshield_spawner()
+
 func set_texture():
 	var path = GameConfig.blockdata[family].get("sprite")
 	sprite.texture = load(path)
@@ -42,7 +47,8 @@ func set_random_variant():
 		var x = tile_index * tile_size
 		sprite.region_enabled = true
 		sprite.region_rect = Rect2(x, 0, tile_size, tile_size)
-		
+
+
 
 func set_collidable():
 	
@@ -88,3 +94,55 @@ func animate(delta):
 			frame_index = 0
 
 		sprite.frame = frames[frame_index]	
+
+func _start_demonshield_spawner():
+	# 1. Get configuration from GameConfig (with safety fallback)
+	var config = GameConfig.blockdata.get("demonshield", {})
+	var spawn_rate = config.get("spawn_rate", 10.0)
+	var monster_type = config.get("monster_type", "demonhead")
+	
+	# 2. Get reference to level_loader
+	var loader = get_tree().get_first_node_in_group("level_loader")
+		
+	# 3. Start the spawning loop
+	while is_spawning and is_inside_tree():
+		# Wait for the configured time
+		await get_tree().create_timer(spawn_rate).timeout
+		
+		if not is_spawning or not is_inside_tree():
+			break
+		
+		_spawn_monster_from_block(monster_type, loader)
+
+func _spawn_monster_from_block(monster_type: String, loader):
+
+	# 1. Get the monster scene (adapt this to match how your loader stores scenes)
+	var monster_scene = null
+	if loader and loader.scenes["demonhead"]:
+		monster_scene = loader.scenes["demonhead"]
+
+	if not monster_scene:
+		push_error("Block: Could not find monster scene for '%s'" % monster_type)
+		return
+
+	# 2. Instantiate the monster
+	var new_monster = monster_scene.instantiate()
+	
+	# 3. CRITICAL: Set the family so monster.gd's _ready() applies stats correctly
+	new_monster.family = monster_type
+	
+	# 4. Set position to the shield's position (slightly elevated so it doesn't clip the floor)
+	new_monster.global_position = global_position + Vector2(0, -32)
+	
+	# 5. Add to the scene tree. 
+	# We add it to the block's parent (the level container), NOT as a child of the block.
+	# This keeps the scene hierarchy clean and prevents physics issues.
+	get_parent().add_child.call_deferred(new_monster)
+	
+	print("Demonshield spawned a ", monster_type, " at ", new_monster.global_position)
+
+# --- NEW: Cleanup ---
+func _exit_tree():
+	# This is automatically called when the block is queue_free()'d or the level changes.
+	# It safely breaks the 'while' loop in _start_demonshield_spawner.
+	is_spawning = false
