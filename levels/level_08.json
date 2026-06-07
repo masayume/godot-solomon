@@ -1,7 +1,7 @@
 {
   "id": 8,
   "name": "Room 1-8",
-  "time_limit": 999,
+  "time_limit": 10000,
 
   "tile_size": 64,
   "block_width": 15,

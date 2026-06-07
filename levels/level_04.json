@@ -1,7 +1,7 @@
 {
   "id": 4,
   "name": "Key Stage 1-4",
-  "time_limit": 999,
+  "time_limit": 10000,
 
   "tile_size": 64,
   "block_width": 15,

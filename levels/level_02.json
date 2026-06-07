@@ -1,7 +1,7 @@
 {
   "id": 2,
   "name": "Room 2-1",
-  "time_limit": 999,
+  "time_limit": 10000,
 
   "tile_size": 64,
   "block_width": 15,
@@ -22,10 +22,6 @@
 
   ],
 
-  "monsters": [
-	{"pos": [2,11],"family":"demonhead","direction":"right"},	
-	{"pos": [4,11],"family":"demonhead","direction":"right"},	
-  ],
 
   "blocks": [
 
