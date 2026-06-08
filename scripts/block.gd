@@ -22,7 +22,7 @@ func _ready():
 	setup_animation()
 	
 	if family == "demonshield":
-		_start_demonshield_spawner()
+		_block_monster_spawner("demonhead")
 
 func set_texture():
 	var path = GameConfig.blockdata[family].get("sprite")
@@ -95,24 +95,26 @@ func animate(delta):
 
 		sprite.frame = frames[frame_index]	
 
-func _start_demonshield_spawner():
+func _block_monster_spawner(monster):
 	# 1. Get configuration from GameConfig (with safety fallback)
 	var config = GameConfig.blockdata.get("demonshield", {})
 	var spawn_rate = config.get("spawn_rate", 10.0)
-	var monster_type = config.get("monster_type", "demonhead")
+	var monster_type = config.get("monster_type", monster)
 	
 	# 2. Get reference to level_loader
 	var loader = get_tree().get_first_node_in_group("level_loader")
 		
 	# 3. Start the spawning loop
 	while is_spawning and is_inside_tree():
+
 		# Wait for the configured time
 		await get_tree().create_timer(spawn_rate).timeout
+
+		_spawn_monster_from_block(monster_type, loader)
 		
 		if not is_spawning or not is_inside_tree():
 			break
 		
-		_spawn_monster_from_block(monster_type, loader)
 
 func _spawn_monster_from_block(monster_type: String, loader):
 
@@ -127,6 +129,7 @@ func _spawn_monster_from_block(monster_type: String, loader):
 
 	# 2. Instantiate the monster
 	var new_monster = monster_scene.instantiate()
+	new_monster.add_to_group("monstergroup")
 	
 	# 3. CRITICAL: Set the family so monster.gd's _ready() applies stats correctly
 	new_monster.family = monster_type
