@@ -181,6 +181,44 @@ func set_random_variant():
 	sprite.region_enabled = true
 	sprite.region_rect = Rect2(x, 0, tile_size, tile_size)
 
+func _manage_lifetime():
+	# 1. Check if this monster has a lifetime defined in GameConfig
+	if not stats.has("lifetime") or stats.has("fade_duration"):
+		return
+		
+	var lifetime = stats.lifetime
+	var fade_duration = stats.fade_duration
+	
+	# Wait for the monster's full lifetime
+	await get_tree().create_timer(lifetime).timeout
+	
+	# Safety check: ensure the monster hasn't already been destroyed (e.g., by a fireball)
+	if not is_inside_tree():
+		return
+
+	# 2. Immediately disable the hitbox so the player can no longer be hurt by it
+	var hb = get_node_or_null("HitBox")
+	if hb:
+		hb.monitoring = false
+		hb.monitorable = false
+		hb.set_collision_layer_value(4, false) # Remove from Monster layer
+		hb.set_collision_mask_value(2, false)  # Stop looking for Player
+
+	# 3. Start the disappearance tween (fade out over 3 seconds)
+	var tween = create_tween()
+	
+	# Fade the entire monster node (affects all children like Sprite2D)
+	tween.tween_property(self, "modulate:a", 0.0, fade_duration)
+	
+	# Explicitly fade the sprite as well to ensure it works perfectly
+	if has_node("Sprite2D"):
+		tween.parallel().tween_property($Sprite2D, "modulate:a", 0.0, fade_duration)
+
+	# 4. Wait for the fade to finish, then flush (destroy) the monster
+	await tween.finished
+	queue_free()
+
+
 func _on_body_entered(body):
 	# We use the Interactor node already attached to the Player
 	# instead of creating a new one with .new() every time.
