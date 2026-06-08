@@ -24,6 +24,8 @@ var scenes = {
 	"spark": preload("res://scenes/m-Spark.tscn"),
 }
 
+signal level_started
+
 @onready var level_label: Label = $"../UI/LevelInfo"
 @onready var intro_room_label: Label = $"../UI/IntroRoomLabel"
 # @onready var timer_label: RichTextLabel = $"../UI/Timer"

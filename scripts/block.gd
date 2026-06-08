@@ -20,9 +20,19 @@ func _ready():
 	set_random_variant()
 	set_collidable()
 	setup_animation()
-	
+
+	# Check if the loader has the signal (prevents errors if not set up yet)
 	if family == "demonshield":
-		_block_monster_spawner("demonhead")
+		var loader = get_tree().get_first_node_in_group("level_loader")
+		if loader and loader.has_signal("level_started"):
+			# Connect to the signal. The spawner will ONLY start when this is emitted.
+			loader.level_started.connect(_block_monster_spawner.bind("demonhead"))
+			print("Demonshield waiting for level to start...")
+		else:
+			# FALLBACK: If the signal doesn't exist yet, wait a few seconds as a safety net
+			# so it doesn't spawn during the black screen. Adjust 3.0 to match your intro length.
+			await get_tree().create_timer(3.0).timeout
+			_block_monster_spawner("demonhead")
 
 func set_texture():
 	var path = GameConfig.blockdata[family].get("sprite")
@@ -107,11 +117,13 @@ func _block_monster_spawner(monster):
 	# 3. Start the spawning loop
 	while is_spawning and is_inside_tree():
 
-		# Wait for the configured time
+		# 1. SPAWN FIRST (happens immediately when the level starts)
+		_spawn_monster_from_block(monster_type, loader)
+
+		# 2. THEN WAIT for the configured time before the next iteration
 		await get_tree().create_timer(spawn_rate).timeout
 
-		_spawn_monster_from_block(monster_type, loader)
-		
+		# 3. Safety check to break the loop if the block is destroyed
 		if not is_spawning or not is_inside_tree():
 			break
 		

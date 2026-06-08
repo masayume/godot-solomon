@@ -294,6 +294,7 @@ func _reveal_all_content():
 		node.modulate.a = 1.0
 		node.visible = true
 	
+	loader.level_started.emit()
 	loader.get_tree().call_group("monstergroup", "set_physics_process", true)
 	var player = loader.get_tree().get_first_node_in_group("playergroup")
 	if player: player.set_process_input(true)
