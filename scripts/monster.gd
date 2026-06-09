@@ -32,6 +32,8 @@ func _ready():
 	_force_hitbox_setup()
 	apply_stats()
 
+	# --- NEW: Start the lifetime countdown in the background ---
+	_manage_lifetime()
 
 func _force_hitbox_setup():
 	# If HitBox is missing from the .tscn (common in inherited scenes), CREATE IT
@@ -183,12 +185,13 @@ func set_random_variant():
 
 func _manage_lifetime():
 	# 1. Check if this monster has a lifetime defined in GameConfig
-	if not stats.has("lifetime") or stats.has("fade_duration"):
+	if not stats.has("lifetime"):
 		return
-		
+
 	var lifetime = stats.lifetime
-	var fade_duration = stats.fade_duration
-	
+	# Use .get() with a fallback of 3.0 seconds in case fade_duration is missing from config
+	var fade_duration = stats.get("fade_duration", 3.0)
+				
 	# Wait for the monster's full lifetime
 	await get_tree().create_timer(lifetime).timeout
 	
@@ -197,6 +200,7 @@ func _manage_lifetime():
 		return
 
 	# 2. Immediately disable the hitbox so the player can no longer be hurt by it
+	print("demonhead disabled hitbox")
 	var hb = get_node_or_null("HitBox")
 	if hb:
 		hb.monitoring = false
@@ -207,9 +211,26 @@ func _manage_lifetime():
 	# 3. Start the disappearance tween (fade out over 3 seconds)
 	var tween = create_tween()
 	
-	# Fade the entire monster node (affects all children like Sprite2D)
-	tween.tween_property(self, "modulate:a", 0.0, fade_duration)
+	# 3a. Main Node Fade: Slowly reduce alpha to 0 over fade_duration seconds
+	tween.tween_property(self, "modulate:a", 0.0, fade_duration).set_ease(Tween.EASE_IN_OUT)	
+
+	# 3b. Blink Effect: Create a separate tween for the color pulse
+	var blink_tween = create_tween()
+	blink_tween.set_loops(6) # Repeat the blink 6 times
 	
+	# Blink to "invisible" (black/transparent)
+	blink_tween.tween_property(self, "modulate:r", 0.0, 0.1)
+	blink_tween.tween_property(self, "modulate:g", 0.0, 0.1)
+	blink_tween.tween_property(self, "modulate:b", 0.0, 0.1)
+	
+	# Blink back to White
+	blink_tween.tween_property(self, "modulate:r", 1.0, 0.1)
+	blink_tween.tween_property(self, "modulate:g", 1.0, 0.1)
+	blink_tween.tween_property(self, "modulate:b", 1.0, 0.1)
+
+	# Clean up: Stop the blink when the main fade finishes
+	tween.tween_callback(func(): blink_tween.kill())
+		
 	# Explicitly fade the sprite as well to ensure it works perfectly
 	if has_node("Sprite2D"):
 		tween.parallel().tween_property($Sprite2D, "modulate:a", 0.0, fade_duration)
