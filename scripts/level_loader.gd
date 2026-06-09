@@ -605,7 +605,7 @@ func _spawn_level_content_hidden(data):
 	# 3. Spawn Monsters (Hidden + Physics Disabled) #
 	#################################################
 	if data.has("monsters"):
-		_spawn_monsters(data) # Refactor your m loop into this
+		_spawn_all_monsters(data) # Refactor your m loop into this
 	
 	#################################
 	# 	4. Spawn Items (Hidden)		#
@@ -706,118 +706,117 @@ func spawn_fairy():
 	call_deferred("add_child", instance)
 	instance.add_child(area)
 	
+func add_monster(monster_data): # i.e. monster_data: { "pos": [12.0, 5.0], "family": "blueflame" }
 
-func _spawn_monsters(data):
+	# Create a new monster instance from scene		
+	var instance = scenes[monster_data["family"]].instantiate()
+	instance.family = monster_data["family"]
+
+	if instance.family == "spark":
+		var start_surface = monster_data["attached"]
+		print("spark attached to ", start_surface) 
+		instance.current_surface = start_surface 
+		# Adjust position to be flush with the block edge
+		var spawn_pos = GameConfig.grid_to_local(monster_data["pos"][0], monster_data["pos"][1], tile_size, x_off, y_off)
+
+		match start_surface:
+			"bottom": spawn_pos.y += (tile_size / 2) - 1 
+			"top":    spawn_pos.y -= (tile_size / 2) - 1
+			"left":   spawn_pos.x -= (tile_size / 2) - 1
+			"right":  spawn_pos.x += (tile_size / 2) - 1
+
+		instance.position = spawn_pos
+
+	#SIGNAL-ghost-3 Connect the signal from Ghost			
+	#LAMBDA for wall impact to pass 'false' for the 'crouching' parameter
+	# Only connect if the specific monster has the signal defined
+	if instance.has_signal("wall_impact"):
+		instance.wall_impact.connect(
+			func(pos, dir): create_or_destroy_block(pos, dir, false)
+		)
+				
+	if monster_data.has("direction"):
+		var dir = monster_data["direction"]
+		if dir == "up":
+			instance.rotation_degrees = -90
+			print(instance.family, " UP")
+		elif dir == "down":
+			instance.rotation_degrees = 90
+			print(instance.family, " DOWN")
+		elif dir == "left":
+	#		monster.rotation_degrees = 180		
+			instance.scale.x = -1
+			print(instance.family, " LEFT")
+
+	instance.name = "MO_" + str(instance.family)
+
+	instance.add_to_group("debug_collision")
+	instance.add_to_group("monstergroup")
+
+	if instance.family == "ghost" or instance.family == "spark" or instance.family == "dragon" :
+		debug_monster(instance)
+
+	# 2. Interaction Logic (The Sensor)
+	var area = Area2D.new()
+	area.name = "HitBox"
+
+	# Reset everything first to be safe
+	instance.collision_mask = 0
+	area.collision_layer = 0
+	area.collision_mask = 3
+
+	area.set_deferred("monitoring", true)
+	area.set_deferred("monitorable", true) # can be seen by Player CollectionZone
+
+	# Who am I? (Layer 3: Interactables)
+	area.set_collision_layer_value(4, true)      # Sensor is on Interactable layer
+
+	# Who am I looking for? (Layer 2: Player)
+	area.set_collision_mask_value(2, true)       # Sensor looks for the Player
+
+	# CONSOLIDATION: Force Layer 4 for Monsters
+	instance.collision_layer = 4
+	instance.collision_mask = 3 # Can see Walls (1) and Player (2)
+
+	# 3. Add the Receiver component
+	if not instance.has_node("Receiver"):
+		var receiver = Receiver.new()
+		receiver.name = "Receiver"
+		print("for ", instance.family, " added receiver for ",  GameConfig.monsterdata[instance.family] )
+		receiver.data = GameConfig.monsterdata[instance.family]
+		instance.add_child(receiver)
+
+	# IMPORTANT: Ensure the HitBox (Area2D) exists and is on Layer 4
+	var hitbox = instance.get_node_or_null("HitBox")
+	if hitbox:
+		hitbox.collision_layer = 4
+		hitbox.collision_mask = 0 # It just exists to be 'seen' by the player
+		
+	# 2. Fix the collision mask at runtime just to be sure
+
+	add_child(instance)
+	instance.add_child(area)
+						
+	if instance.family != "spark":
+		instance.position = GameConfig.grid_to_local(
+			monster_data["pos"][0],
+			monster_data["pos"][1],
+			tile_size,
+			x_off,
+			y_off
+		)
+
+	if GameConfig.gamedata.game.collider_debug:
+		_debug_node_shapes(instance, Color(1, 0, 0, 0.7)) # Red
+				
+	return instance
+
+func _spawn_all_monsters(data):
 	if data.has("monsters"):
 		for m in data["monsters"]:
-			# Create a new monster instance from scene		
-			var instance = scenes[m["family"]].instantiate()
-			instance.family = m["family"]
 
-			if instance.family == "spark":
-#				var start_surface = GameConfig.monsterdata.spark.get("attached", "bottom")
-				var start_surface = m["attached"]
-				print("spark attached to ", start_surface) 
-				instance.current_surface = start_surface 
-				# Adjust position to be flush with the block edge
-				var spawn_pos = GameConfig.grid_to_local(m["pos"][0], m["pos"][1], tile_size, x_off, y_off)
+			var instance = add_monster(m)
 
-				match start_surface:
-					"bottom": spawn_pos.y += (tile_size / 2) - 1 
-					"top":    spawn_pos.y -= (tile_size / 2) - 1
-					"left":   spawn_pos.x -= (tile_size / 2) - 1
-					"right":  spawn_pos.x += (tile_size / 2) - 1
-
-				instance.position = spawn_pos
-
-			#SIGNAL-ghost-3 Connect the signal from Ghost			
-			#LAMBDA for wall impact to pass 'false' for the 'crouching' parameter
-			# Only connect if the specific monster has the signal defined
-			if instance.has_signal("wall_impact"):
-				instance.wall_impact.connect(
-					func(pos, dir): create_or_destroy_block(pos, dir, false)
-				)
-				
-			if m.has("direction"):
-				var dir = m["direction"]
-				if dir == "up":
-					instance.rotation_degrees = -90
-					print(instance.family, " UP")
-				elif dir == "down":
-					instance.rotation_degrees = 90
-					print(instance.family, " DOWN")
-				elif dir == "left":
-			#		monster.rotation_degrees = 180		
-					instance.scale.x = -1
-					print(instance.family, " LEFT")
-
-			instance.name = "MO_" + str(instance.family)
-
-			instance.add_to_group("debug_collision")
-			instance.add_to_group("monstergroup")
-
-			if instance.family == "ghost" or instance.family == "spark" or instance.family == "dragon" :
-				debug_monster(instance)
-
-			# 2. Interaction Logic (The Sensor)
-#			var area = instance.add_node("Area2D")
-			var area = Area2D.new()
-			area.name = "HitBox"
-
-			# Reset everything first to be safe
-			instance.collision_mask = 0
-			area.collision_layer = 0
-			area.collision_mask = 3
-
-			area.set_deferred("monitoring", true)
-			area.set_deferred("monitorable", true) # can be seen by Player CollectionZone
-
-			# Who am I? (Layer 3: Interactables)
-			area.set_collision_layer_value(4, true)      # Sensor is on Interactable layer
-
-			# Who am I looking for? (Layer 2: Player)
-			area.set_collision_mask_value(2, true)       # Sensor looks for the Player
-
-			# CONSOLIDATION: Force Layer 4 for Monsters
-			instance.collision_layer = 4
-			instance.collision_mask = 3 # Can see Walls (1) and Player (2)
-
-			# 3. Add the Receiver component
-			if not instance.has_node("Receiver"):
-				var receiver = Receiver.new()
-				receiver.name = "Receiver"
-				print("for ", instance.family, " added receiver for ",  GameConfig.monsterdata[instance.family] )
-				receiver.data = GameConfig.monsterdata[instance.family]
-				instance.add_child(receiver)
-
-			# IMPORTANT: Ensure the HitBox (Area2D) exists and is on Layer 4
-			var hitbox = instance.get_node_or_null("HitBox")
-			if hitbox:
-				hitbox.collision_layer = 4
-				hitbox.collision_mask = 0 # It just exists to be 'seen' by the player
-		
-			# 2. Fix the collision mask at runtime just to be sure
-#			instance.collision_mask |= 2 # Adds 'Layer 2' to the monster's vision
-
-#			var receiver = Receiver.new() 
-#			receiver.name = "Receiver"
-#			area.add_child(receiver)
-
-			add_child(instance)
-			instance.add_child(area)
-						
-			if instance.family != "spark":
-				instance.position = GameConfig.grid_to_local(
-					m["pos"][0],
-					m["pos"][1],
-					tile_size,
-					x_off,
-					y_off
-				)
-
-			if GameConfig.gamedata.game.collider_debug:
-				_debug_node_shapes(instance, Color(1, 0, 0, 0.7)) # Red
-			
 			instance.visible = false
 			instance.set_physics_process(false) 
 

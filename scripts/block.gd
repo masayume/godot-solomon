@@ -130,6 +130,16 @@ func _block_monster_spawner(monster):
 
 func _spawn_monster_from_block(monster_type: String, loader):
 
+	var pos=Vector2i(global_position.x, global_position.y)
+	var cell = loader.Grid.world_to_grid(pos, loader.x_off, loader.y_off, tile_size)
+
+	var monster_data = { "pos": cell, "family": monster_type }
+	if loader:
+		loader.add_monster(monster_data) # i.e. monster_data: { "pos": [12.0, 5.0], "family": "blueflame" }
+
+
+func _spawn_monster_from_block2DEL(monster_type: String, loader):
+
 	# 1. Get the monster scene (adapt this to match how your loader stores scenes)
 	var monster_scene = null
 	if loader and loader.scenes["demonhead"]:
