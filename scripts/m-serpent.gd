@@ -11,8 +11,6 @@ func _ready():
 	family = "serpent"
 	add_to_group("monsters") 
 	super._ready()
-	
-	setup_animation()
 
 	hitbox = get_node_or_null("HitBox")
 	_setup_hitbox()
@@ -22,8 +20,6 @@ func _ready():
 	collision_layer = 4   # (or anything, not important)
 	collision_mask = 1    # must match Player layer	
 
-func _process(delta):
-	animate(delta)
 
 func _physics_process(_delta):
 
@@ -68,23 +64,3 @@ func behave(_delta):
 #		direction *= -1
 
 	move_and_slide()
-
-func animate(delta):
-	time_accumulator += delta
-
-	if time_accumulator >= anim_speed:
-		time_accumulator -= anim_speed
-
-		frame_index += 1
-		if frame_index >= frames.size():
-			frame_index = 0
-
-		sprite.frame = frames[frame_index]
-			
-func setup_animation():
-	frames = GameConfig.monsterdata[family].frames
-	anim_speed = GameConfig.monsterdata[family].anim_speed
-
-	frame_index = 0
-	sprite.frame = frames[0]
-	

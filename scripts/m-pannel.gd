@@ -17,7 +17,6 @@ func _ready():
 	family = "pannel"
 	add_to_group("monsters") 
 	super._ready() # This triggers Monster._ready() which calls change_state(family)
-#	setup_animation()
 
 	hitbox = get_node_or_null("HitBox")
 	_setup_hitbox()

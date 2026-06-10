@@ -12,8 +12,6 @@ func _ready():
 	add_to_group("monsters") 
 	super._ready()
 	
-	setup_animation()
-
 	hitbox = get_node_or_null("HitBox")
 	_setup_hitbox()
 	
@@ -68,23 +66,3 @@ func behave(_delta):
 #		direction *= -1
 
 	move_and_slide()
-
-func animate(delta):
-	time_accumulator += delta
-
-	if time_accumulator >= anim_speed:
-		time_accumulator -= anim_speed
-
-		frame_index += 1
-		if frame_index >= frames.size():
-			frame_index = 0
-
-		sprite.frame = frames[frame_index]
-			
-func setup_animation():
-	frames = GameConfig.monsterdata[family].frames
-	anim_speed = GameConfig.monsterdata[family].anim_speed
-
-	frame_index = 0
-	sprite.frame = frames[0]
-	
