@@ -4,11 +4,6 @@ class_name Pannel
 var direction := -1
 var shoot_direction := Vector2.RIGHT # Fireball shooting direction
 
-var frames = []
-var anim_speed = 0.1
-var frame_index = 0
-var time_accumulator = 0.0
-
 var gravity = GameConfig.monsterdata.pannel.gravity
 
 var hitbox: Area2D 
@@ -21,13 +16,12 @@ var shoot_cooldown: float = 5.0 # Default, can be overridden by config or level 
 func _ready():
 	family = "pannel"
 	add_to_group("monsters") 
-	super._ready()
-	setup_animation()
+	super._ready() # This triggers Monster._ready() which calls change_state(family)
+#	setup_animation()
 
 	hitbox = get_node_or_null("HitBox")
 	_setup_hitbox()
 	
-#	print("Pannel layer:", collision_layer, " mask: ", collision_mask)
 	# Pannel HitBox
 	collision_layer = 4   # (or anything, not important)
 	collision_mask = 1    # must match Player layer	
@@ -50,7 +44,9 @@ func _init_shoot_direction():
 		shoot_direction = Vector2.RIGHT
 		
 func _process(delta):
-	animate(delta)
+	# IMPORTANT: Calls Monster._process() to run animate(delta)
+#	animate(delta)
+	super._process(delta)
 
 	# Handle Shooting Timer
 	if shoot_timer > 0:
@@ -60,9 +56,7 @@ func _process(delta):
 		shoot_timer = shoot_cooldown
 		
 func _physics_process(_delta):
-
-	velocity.x = direction * GameConfig.monsterdata.pannel.speed
-
+	# behave() now handles velocity, gravity, wall bouncing, and move_and_slide()
 	behave(_delta) # includes move_and_slide()
 
 	if is_on_wall():
@@ -107,7 +101,10 @@ func _on_hitbox_body_entered(body):
 		body.trigger_death_from_monster()
 
 func behave(_delta):
-	velocity.x = direction * GameConfig.monsterdata[family].speed
+	# Use state-specific speed if defined in config, otherwise fallback to default family speed
+	var current_speed = GameConfig.monsterdata[current_state].get("speed", stats.get("speed", 0))
+	velocity.x = direction * current_speed
+#	velocity.x = direction * GameConfig.monsterdata[family].speed
 
 	sprite.flip_h = velocity.x < 0
 
@@ -122,23 +119,4 @@ func behave(_delta):
 #		direction *= -1
 
 	move_and_slide()
-
-func animate(delta):
-	time_accumulator += delta
-
-	if time_accumulator >= anim_speed:
-		time_accumulator -= anim_speed
-
-		frame_index += 1
-		if frame_index >= frames.size():
-			frame_index = 0
-
-		sprite.frame = frames[frame_index]
-			
-func setup_animation():
-	frames = GameConfig.monsterdata[family].frames
-	anim_speed = GameConfig.monsterdata[family].anim_speed
-
-	frame_index = 0
-	sprite.frame = frames[0]
 	

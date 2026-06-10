@@ -3,11 +3,6 @@ class_name Dragon
 
 var direction := -1
 
-var frames = []
-var anim_speed = 0.1
-var frame_index = 0
-var time_accumulator = 0.0
-
 var gravity = GameConfig.monsterdata.dragon.gravity
 
 var hitbox: Area2D 

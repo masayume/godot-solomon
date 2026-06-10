@@ -2,12 +2,9 @@ extends Monster
 class_name Ghost
 
 var direction := -1
+var gravity = GameConfig.monsterdata.ghost.gravity
 
-var frames = []
-var anim_speed = 0.1
-var frame_index = 0
 var bob_time := 0.0
-var time_accumulator = 0.0
 var trail: Line2D
 var max_points: int = 77
 @export var eye_offset: Vector2 = Vector2(25, -22)
@@ -19,13 +16,10 @@ signal wall_impact(pos: Vector2, dir: int)
 func _ready():
 	family = "ghost"
 	add_to_group("monsters") 
-	super._ready()
+	super._ready() # Calls Monster._ready() which triggers change_state(family)
 	
 	# ghost opacity 80%
-	#sprite.modulate = Color(1, 1, 1, 0.8)
 	sprite.modulate.a = 0.7 + (sin(bob_time * 5.0) * 0.1)
-	
-	setup_animation()
 
 	setup_trail()
 
@@ -89,33 +83,25 @@ func _physics_process(_delta):
 		
 	behave(_delta) # includes move_and_slide()
 
-	if is_on_wall():
-		#SIGNAL-ghost-2 Emit the signal instead of calling a parent method directly
-		wall_impact.emit(global_position, direction)
-#		print("Ghost hit wall at: [x,y]")
-
-#		var impact_pos = global_position
-#		var level_loader = get_parent()
-		
-#		if level_loader and level_loader.has_method("create_or_destroy_block"):
-			# 3. Call the logic. 
-			# We pass: position, current direction, and false (ghosts don't crouch)
-#			level_loader.create_or_destroy_block(impact_pos, direction, false)
-
-		direction *= -1
-		
-#		for i in get_slide_collision_count():
-#			var collision = get_slide_collision(i)
-#			var collider = collision.get_collider()
-#
-#			# Check if the collider is a Block (You can check its group or name)
-#			if collider.is_in_group("debug_collision"): # Your loader adds blocks to this group [cite: 8]
-#				notify_level_loader_of_impact(collider)
 
 func behave(_delta):
-	velocity.x = direction * GameConfig.monsterdata[family].speed
-
+	var state_data = GameConfig.monsterdata.get(current_state, stats)
+	var current_speed = state_data.get("speed", stats.get("speed", 0))
+	
+	velocity.x = direction * current_speed
 	sprite.flip_h = velocity.x < 0
+
+	# Apply gravity
+	if not is_on_floor():
+		velocity.y += gravity * _delta
+	else:
+		velocity.y = 0
+		
+	# simple back-and-forth
+	if is_on_wall():
+		direction *= -1
+		
+	move_and_slide()
 	
 	# Horizontal movement
 	
@@ -124,28 +110,6 @@ func behave(_delta):
 
 	velocity.y = sin(bob_time * 2.0) * 10.0
 
-	move_and_slide()
-
-
-func animate(delta):
-	time_accumulator += delta
-
-	if time_accumulator >= anim_speed:
-		time_accumulator -= anim_speed
-
-		frame_index += 1
-		if frame_index >= frames.size():
-			frame_index = 0
-
-		sprite.frame = frames[frame_index]
-			
-func setup_animation():
-	frames = GameConfig.monsterdata[family].frames
-	anim_speed = GameConfig.monsterdata[family].anim_speed
-
-	frame_index = 0
-	sprite.frame = frames[0]
-	
 
 func setup_trail():
 	trail = Line2D.new()

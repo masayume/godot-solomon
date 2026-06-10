@@ -4,11 +4,6 @@ class_name Fairy
 # var direction := -1
 var direction := 1
 
-var frames = []
-var anim_speed = 0.1
-var frame_index = 0
-var time_accumulator = 0.0
-
 var gravity = GameConfig.monsterdata.fairy.gravity
 
 var hitbox: Area2D 
@@ -18,8 +13,6 @@ func _ready():
 	family = "fairy"
 	add_to_group("monsters") 
 	super._ready()
-	
-	setup_animation()
 
 	# Force visibility of collision for this specific instance
 	# if you want to be 100% sure during debug
@@ -34,17 +27,10 @@ func _ready():
 	collision_layer = 4   # (or anything, not important)
 	collision_mask = 1    # must match Player layer	
 		
-func _process(delta):
-	animate(delta)
 
 func _physics_process(_delta):
 
-	velocity.x = direction * GameConfig.monsterdata.fairy.speed
-
 	behave(_delta) # includes move_and_slide()
-
-	if is_on_wall():
-		direction *= -1
 
 
 func _setup_hitbox():
@@ -54,53 +40,25 @@ func _setup_hitbox():
 	hitbox.collision_layer = 4 # Or whichever layer your items use (e.g. Layer 3 or 4)
 	hitbox.collision_mask = 0  # It doesn't need to monitor anything; the player monitors it
 
-#	if not hitbox.area_entered.is_connected(_on_hitbox_entered):
-#		hitbox.area_entered.connect(_on_hitbox_entered)
-#	if not hitbox.body_entered.is_connected(_on_hitbox_body_entered):
-#		hitbox.body_entered.connect(_on_hitbox_body_entered)
-
-#func _on_hitbox_body_entered(body):
-#	# If we hit the player's physical body
-#	print("Ghost hit body:", body)
-#	if body.has_method("trigger_death_from_monster"):
-#		body.trigger_death_from_monster()
 
 
 
 func behave(_delta):
-	velocity.x = direction * GameConfig.monsterdata[family].speed
-
+	# Use state-specific speed if defined in config, otherwise fallback to default family speed
+	var state_data = GameConfig.monsterdata.get(current_state, stats)
+	var current_speed = state_data.get("speed", stats.get("speed", 0))
+		
+	velocity.x = direction * current_speed
 	sprite.flip_h = velocity.x < 0
 
-	# Check if the fairy just hit the floor
-	if is_on_floor():
-		# Define how high you want the bounce to be. 
-		# Negative values move UP in Godot's 2D coordinate system.
-		# You can also use a variable like GameConfig.monsterdata[family].bounce_force
-		var bounce_force = GameConfig.monsterdata[family].bounce_force 
-		velocity.y = bounce_force
-	else:
-		# Apply gravity only when in the air
+	# Apply gravity
+	if not is_on_floor():
 		velocity.y += gravity * _delta
+	else:
+		velocity.y = 0
+		
+	# simple back-and-forth
+	if is_on_wall():
+		direction *= -1
 		
 	move_and_slide()
-
-func animate(delta):
-	time_accumulator += delta
-
-	if time_accumulator >= anim_speed:
-		time_accumulator -= anim_speed
-
-		frame_index += 1
-		if frame_index >= frames.size():
-			frame_index = 0
-
-		sprite.frame = frames[frame_index]
-			
-func setup_animation():
-	frames = GameConfig.monsterdata[family].frames
-	anim_speed = GameConfig.monsterdata[family].anim_speed
-
-	frame_index = 0
-	sprite.frame = frames[0]
-	

@@ -3,11 +3,6 @@ class_name Blueflame
 
 var direction := -1
 
-var frames = []
-var anim_speed = 0.1
-var frame_index = 0
-var time_accumulator = 0.0
-
 var gravity = GameConfig.monsterdata.blueflame.gravity
 
 var hitbox: Area2D 
@@ -18,8 +13,6 @@ func _ready():
 	add_to_group("monsters") 
 	super._ready()
 	
-	setup_animation()
-
 	# Force visibility of collision for this specific instance
 	# if you want to be 100% sure during debug
 	if get_node_or_null("CollisionShape2D"):
@@ -29,21 +22,14 @@ func _ready():
 	_setup_hitbox()
 	
 	print("Blueflame layer:", collision_layer, " mask: ", collision_mask)
-	# Ghost HitBox
+
+	#  HitBox
 	collision_layer = 4   # (or anything, not important)
 	collision_mask = 1    # must match Player layer	
-		
-func _process(delta):
-	animate(delta)
 
 func _physics_process(_delta):
-
-	velocity.x = direction * GameConfig.monsterdata.blueflame.speed
-
+	# behave() now handles velocity, gravity, wall bouncing, and move_and_slide()    
 	behave(_delta) # includes move_and_slide()
-
-	if is_on_wall():
-		direction *= -1
 
 
 func _setup_hitbox():
@@ -67,8 +53,11 @@ func _on_hitbox_body_entered(body):
 
 
 func behave(_delta):
-	velocity.x = direction * GameConfig.monsterdata[family].speed
-
+	# Use state-specific speed if defined in config, otherwise fallback to default family speed
+	var state_data = GameConfig.monsterdata.get(current_state, stats)
+	var current_speed = state_data.get("speed", stats.get("speed", 0))
+		
+	velocity.x = direction * current_speed
 	sprite.flip_h = velocity.x < 0
 
 	# Apply gravity
@@ -78,27 +67,9 @@ func behave(_delta):
 		velocity.y = 0
 		
 	# simple back-and-forth
-#	if is_on_wall():
-#		direction *= -1
-
+	if is_on_wall():
+		direction *= -1
+		
 	move_and_slide()
 
-func animate(delta):
-	time_accumulator += delta
-
-	if time_accumulator >= anim_speed:
-		time_accumulator -= anim_speed
-
-		frame_index += 1
-		if frame_index >= frames.size():
-			frame_index = 0
-
-		sprite.frame = frames[frame_index]
-			
-func setup_animation():
-	frames = GameConfig.monsterdata[family].frames
-	anim_speed = GameConfig.monsterdata[family].anim_speed
-
-	frame_index = 0
-	sprite.frame = frames[0]
 	

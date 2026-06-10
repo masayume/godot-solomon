@@ -35,10 +35,13 @@
   ],
 
   "monsters": [
+
 	{"pos": [12,11],"family":"ghost", "direction":"right"},
-	{"pos": [8,4],"family":"goblin"},
 
 	{"pos": [4,8],"family":"spark","attached":"left"},
+
+	{"pos": [8,4],"family":"goblin"},
+
 	{"pos": [4,5],"family":"blueflame"},	{"pos": [12,5],"family":"blueflame"},
 
   ],

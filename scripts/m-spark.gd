@@ -3,11 +3,6 @@ class_name Spark
 
 var direction := -1
 
-var frames = []
-var anim_speed = 0.1
-var frame_index = 0
-var time_accumulator = 0.0
-
 var current_surface: String = "bottom"
 
 var gravity = GameConfig.monsterdata.spark.gravity
@@ -30,8 +25,6 @@ func _ready():
 	z_index = 30
 	# Initial rotation based on the starting surface
 	rotation = surface_normals[current_surface].angle() + PI/2
-		
-	setup_animation()
 
 	# Force visibility of collision for this specific instance
 	# if you want to be 100% sure during debug
@@ -63,9 +56,6 @@ func _on_hitbox_body_entered(body):
 #	print("Ghost hit body:", body)
 	if body.has_method("trigger_death_from_monster"):
 		body.trigger_death_from_monster()
-		
-func _process(delta):
-	animate(delta)
 
 func _physics_process(_delta):
 	behave(_delta) # includes move_and_slide()
@@ -105,26 +95,6 @@ func behave(_delta):
 		var snap_down = -surface_normals[current_surface] * 10.0
 		global_position += snap_forward + snap_down
 
-
-func animate(delta):
-	time_accumulator += delta
-
-	if time_accumulator >= anim_speed:
-		time_accumulator -= anim_speed
-
-		frame_index += 1
-		if frame_index >= frames.size():
-			frame_index = 0
-
-		sprite.frame = frames[frame_index]
-			
-func setup_animation():
-	frames = GameConfig.monsterdata[family].frames
-	anim_speed = GameConfig.monsterdata[family].anim_speed
-
-	frame_index = 0
-	sprite.frame = frames[0]
-	
 func _update_current_surface():
 	# Use the current rotation (snapped to 90 deg) to find the new surface
 	var angle = int(round(rad_to_deg(rotation))) % 360

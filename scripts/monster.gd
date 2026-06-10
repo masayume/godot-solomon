@@ -11,15 +11,23 @@ class_name Monster
 
 var stats = {}
 
+# ==========================================
+# --- ANIMATION STATE MACHINE VARIABLES ---
+# ==========================================
+var current_state: String = ""
+var frames: Array = []
+var anim_speed: float = 0.1
+var frame_index: int = 0
+var time_accumulator: float = 0.0
+signal state_animation_finished(state_name)
+
 func _ready():
 	z_index = 20
 	add_to_group("monstergroup")
 	
 	set_collision_layer_value(4, true)  # Monster Layer (Box 4)
 	set_collision_mask_value(1, true)   # Only see Walls (Box 1)
-		
-	set_texture()
-	set_random_variant()
+
 	set_collidable()
 
 	if not GameConfig.monsterdata.has(family):
@@ -28,12 +36,106 @@ func _ready():
 
 	stats = GameConfig.monsterdata[family]
 
+	change_state(family)
+
 	_ensure_receiver_setup()
 	_force_hitbox_setup()
-	apply_stats()
 
 	# --- NEW: Start the lifetime countdown in the background ---
 	_manage_lifetime()
+
+func _process(delta):
+	# The parent class now handles animation ticking for ALL monsters
+	animate(delta)
+
+# ==========================================
+# --- ANIMATION STATE MACHINE LOGIC ---
+# ==========================================
+func change_state(new_state: String):
+	if current_state == new_state:
+		return
+		
+	if not GameConfig.monsterdata.has(new_state):
+		push_error("CONFIG ERROR: State '%s' not found in GameConfig.monsterdata!" % new_state)
+		return
+		
+	current_state = new_state
+	var data = GameConfig.monsterdata[current_state] 
+	
+	# 1. Load Texture safely and check for failures
+	if data.has("sprite"):
+		var new_texture = load(data.sprite)
+		if new_texture == null:
+			push_error("FAILED TO LOAD SPRITE: '%s' for monster '%s'. Check the path and capitalization in monster.cfg!" % [data.sprite, family])
+		else:
+			sprite.texture = new_texture
+
+	# 2. Setup Frames
+	if data.has("hframes"):
+		sprite.hframes = data.hframes
+	else:
+		sprite.hframes = 1
+
+	# FORCE disable region to prevent old slicing code from hiding the sprite
+	sprite.region_enabled = false
+	sprite.region_rect = Rect2(0, 0, 0, 0)
+
+	# Ensure frames is actually an Array (ConfigFile can sometimes be tricky)
+	# Safely pull frames and speed, providing fallbacks if missing in config
+	var raw_frames = data.get("frames", [0])
+	if typeof(raw_frames) != TYPE_ARRAY:
+		push_error("CONFIG ERROR: 'frames' must be an Array (e.g., [0,1,2]) in state '%s'" % new_state)
+		frames = [0]
+	else:
+		frames = raw_frames
+
+	anim_speed = data.get("anim_speed", 0.1) 
+
+	# Reset animation tracking
+	frame_index = 0
+	time_accumulator = 0.0
+
+	if frames.size() > 0:
+		sprite.frame = frames[0]
+	else:
+		push_error("CONFIG ERROR: 'frames' array is empty in state '%s'!" % new_state)
+		sprite.frame = 0
+
+	# Success message to confirm it worked
+	print("✅ DEBUG: Successfully changed %s to state '%s'. Texture: %s" % [family, current_state, sprite.texture.resource_path if sprite.texture else "NULL"])
+			
+func animate(delta):
+	# If there's only one frame, just ensure it's set and exit
+	if frames.size() <= 1:
+		if frames.size() == 1:
+			sprite.frame = frames[0]
+		return	
+
+	time_accumulator += delta
+
+	if time_accumulator >= anim_speed:
+		time_accumulator -= anim_speed
+
+		# Check if we are at the last frame
+		if frame_index >= frames.size() - 1:
+			# Emit signal for any state finishing its last frame
+			state_animation_finished.emit(current_state)
+			
+			var data = GameConfig.monsterdata[current_state]
+			
+			# Manage loop=false animations
+			if data.get("loop", true) == false:
+				# If it's a temporary state (like shooting), automatically return to the default state (family)
+				if current_state != family:
+					change_state(family)
+				return
+				
+			frame_index = 0
+		else:
+			frame_index += 1
+		
+		sprite.frame = frames[frame_index]
+
 
 func _force_hitbox_setup():
 	# If HitBox is missing from the .tscn (common in inherited scenes), CREATE IT
@@ -147,41 +249,10 @@ func take_damage():
 	queue_free.call_deferred()
 
 
-func apply_stats():
-
-	# --- common Sprite setup ---
-	if stats.has("sprite"):
-		$Sprite2D.texture = load(stats["sprite"])
-#		print(stats)
-
-	sprite.hframes = stats.get("hframes", 1)
-	sprite.vframes = 1
-	sprite.region_enabled = false
-	
-#	sprite.hframes = GameConfig.monsterdata[family].hframes
-#	sprite.vframes = 1
-
-	set_texture()
-
-
-		
 func _physics_process(_delta: float):
 	# Let children define behavior
 	pass	
 	
-func set_texture():
-#	var path = "res://sprites/monsters/%s.png" % family
-	var path = GameConfig.monsterdata[family].sprite
-	sprite.texture = load(path)
-	# 🔥 FORCE RESET EVERYTHING RELATED TO REGION/SLICING
-	sprite.region_enabled = false
-	sprite.region_rect = Rect2(0, 0, 0, 0)
-	
-func set_random_variant():
-	var tile_index = randi() % variants
-	var x = tile_index * tile_size
-	sprite.region_enabled = true
-	sprite.region_rect = Rect2(x, 0, tile_size, tile_size)
 
 func _manage_lifetime():
 	# 1. Check if this monster has a lifetime defined in GameConfig
