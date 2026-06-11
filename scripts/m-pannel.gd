@@ -36,7 +36,14 @@ func _init_shoot_direction():
 	# Check if the specific instance has a 'shoot_dir' property set by the LevelLoader
 	# If not, default to RIGHT or based on initial movement direction
 	if has_meta("shoot_direction"):
-		shoot_direction = get_meta("shoot_direction")
+		if get_meta("shoot_direction") == "up":
+			shoot_direction = Vector2.UP
+		elif get_meta("shoot_direction") == "down":	
+			shoot_direction = Vector2.DOWN
+		elif get_meta("shoot_direction") == "left":	
+			shoot_direction = Vector2.LEFT
+		else:
+			shoot_direction = Vector2.RIGHT			
 	else:
 		# Default behavior: if moving left, shoot left? Or always right? 
 		# Let's default to RIGHT unless specified otherwise in level JSON as "direction"
@@ -64,13 +71,20 @@ func _physics_process(_delta):
 func _attempt_shoot():
 	
 	print("Pannel attempt shoot to ", shoot_direction)
-	
 	if not fireball_scene:
 		return
+
+	change_state("pannel_shoot")
 		
 	var fb = fireball_scene.instantiate()
+
+	# 1. Calculate a spawn offset based on the shooting direction
+	# This pushes the fireball 24 pixels out of the monster's center, 
+	# preventing it from spawning inside the monster and hitting itself.
+	var spawn_offset = shoot_direction * 24.0 
+
 	# Spawn at center of monster
-	fb.global_position = global_position
+	fb.global_position = global_position + spawn_offset
 	
 	# Set direction
 	fb.direction = shoot_direction

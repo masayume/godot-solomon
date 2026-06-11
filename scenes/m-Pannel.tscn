@@ -1,12 +1,14 @@
 [gd_scene format=3 uid="uid://dyv02kip40fs5"]
 
 [ext_resource type="Script" uid="uid://d5e42rkpqsxg" path="res://scripts/m-pannel.gd" id="1_h4vo1"]
+[ext_resource type="PackedScene" uid="uid://dv5huh2s3f0bf" path="res://scenes/p-Fireball.tscn" id="2_kwkmy"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_jafc3"]
 
 [node name="Pannel" type="CharacterBody2D" unique_id=2120521109]
 collision_layer = 2
 script = ExtResource("1_h4vo1")
+fireball_scene = ExtResource("2_kwkmy")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1805975093]
 shape = SubResource("RectangleShape2D_jafc3")

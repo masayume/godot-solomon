@@ -735,8 +735,9 @@ func add_monster(monster_data): # i.e. monster_data: { "pos": [12.0, 5.0], "fami
 			func(pos, dir): create_or_destroy_block(pos, dir, false)
 		)
 				
-	if monster_data.has("direction"):
-		var dir = monster_data["direction"]
+	if monster_data.has("shoot_direction"):
+		var dir = monster_data["shoot_direction"]
+		instance.set_meta("shoot_direction", dir)
 		if dir == "up":
 			instance.rotation_degrees = -90
 			print(instance.family, " UP")
