@@ -34,6 +34,19 @@
 
   ],
 
+  "suspended_in_gaffa": [
+	{"pos": [14,4],"family":"salamander"},
+	{"pos": [14,12],"family":"earthmage"},
+	{"pos": [14,8],"family":"nuel"},
+	{"pos": [14,6],"family":"pannel"},
+	{"pos": [14,4],"family":"chimera"},
+	{"pos": [14,3],"family":"dragon"},
+	{"pos": [14,2],"family":"serpent"},
+
+	{"pos": [14,10],"family":"gargoyle"},
+	
+  ],
+	
   "monsters": [
 
 	{"pos": [12,11],"family":"ghost", "direction":"right"},
@@ -44,6 +57,8 @@
 
 	{"pos": [4,5],"family":"blueflame"},	{"pos": [12,5],"family":"blueflame"},
 
+
+	
   ],
 
   "blocks": [

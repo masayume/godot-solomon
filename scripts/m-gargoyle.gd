@@ -2,8 +2,8 @@ extends Monster
 class_name Gargoyle
 
 var direction := -1
-
-var gravity = GameConfig.monsterdata.gargoyle.gravity
+# var gravity = GameConfig.monsterdata.gargoyle.gravity
+var gravity: float = 980.0
 
 var hitbox: Area2D 
 
@@ -14,7 +14,10 @@ func _ready():
 	
 	hitbox = get_node_or_null("HitBox")
 	_setup_hitbox()
-	
+
+	# 3. SAFELY get gravity from the loaded stats, falling back to the default if missing
+	gravity = stats.get("gravity", gravity)
+		
 	print("Gargoyle layer:", collision_layer, " mask: ", collision_mask)
 	# Ghost HitBox
 	collision_layer = 4   # (or anything, not important)
