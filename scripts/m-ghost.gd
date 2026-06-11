@@ -3,11 +3,13 @@ class_name Ghost
 
 var direction := -1
 var gravity = GameConfig.monsterdata.ghost.gravity
+# var gravity: float = 980.0
 
 var bob_time := 0.0
 var trail: Line2D
 var max_points: int = 77
 @export var eye_offset: Vector2 = Vector2(25, -22)
+
 var hitbox: Area2D 
 
 #SIGNAL-ghost-1 Define the signal with parameters able to destroy a block when hit
@@ -16,25 +18,53 @@ signal wall_impact(pos: Vector2, dir: int)
 func _ready():
 	family = "ghost"
 	add_to_group("monsters") 
-	super._ready() # Calls Monster._ready() which triggers change_state(family)
+	super._ready()
 	
+
 	# ghost opacity 80%
 	sprite.modulate.a = 0.7 + (sin(bob_time * 5.0) * 0.1)
-
 	setup_trail()
-
-	# Force visibility of collision for this specific instance
-	# if you want to be 100% sure during debug
-	if get_node_or_null("CollisionShape2D"):
-		get_node("CollisionShape2D").visible = true
 
 	hitbox = get_node_or_null("HitBox")
 	_setup_hitbox()
 
+	# 3. SAFELY get gravity from the loaded stats, falling back to the default if missing
+	gravity = stats.get("gravity", gravity)
+		
 	print("Ghost layer:", collision_layer, " mask: ", collision_mask)
 	# Ghost HitBox
 	collision_layer = 4   # (or anything, not important)
 	collision_mask = 1    # must match Player layer	
+
+
+func _physics_process(_delta):
+
+	var current_offset = eye_offset
+	if $Sprite2D.flip_h:
+		current_offset.x *= -1
+	var eye_global_pos = global_position + current_offset
+	
+	trail.add_point(eye_global_pos)
+	
+	if trail.get_point_count() > max_points:
+		trail.remove_point(0)
+		
+	bob_time += _delta
+
+	velocity.x = direction * GameConfig.monsterdata.ghost.speed
+
+	# 4. Dynamically update the trail based on movement
+	if sprite.material is ShaderMaterial:
+		# Length increases with speed; flip direction based on 'direction' variable 
+		var movement_factor = abs(velocity.x) / 1000.0 
+		var trail_offset = movement_factor * -direction # Trail stays behind movement
+		sprite.material.set_shader_parameter("trail_length", trail_offset)
+	
+
+	behave(_delta) # includes move_and_slide()
+
+	if is_on_wall():
+		direction *= -1
 
 func _setup_hitbox():
 	if not hitbox: return
@@ -54,41 +84,9 @@ func _on_hitbox_body_entered(body):
 	if body.has_method("trigger_death_from_monster"):
 		body.trigger_death_from_monster()
 
-
-func _process(delta):
-	animate(delta)
-#	var current_pos = global_position 
-
-	var current_offset = eye_offset
-	if $Sprite2D.flip_h:
-		current_offset.x *= -1
-	var eye_global_pos = global_position + current_offset
-	
-	trail.add_point(eye_global_pos)
-	
-	if trail.get_point_count() > max_points:
-		trail.remove_point(0)
-				
-func _physics_process(_delta):
-
-	bob_time += _delta
-#	velocity.x = direction * GameConfig.monsterdata.ghost.speed
-
-	# 4. Dynamically update the trail based on movement
-	if sprite.material is ShaderMaterial:
-		# Length increases with speed; flip direction based on 'direction' variable 
-		var movement_factor = abs(velocity.x) / 1000.0 
-		var trail_offset = movement_factor * -direction # Trail stays behind movement
-		sprite.material.set_shader_parameter("trail_length", trail_offset)
-		
-	behave(_delta) # includes move_and_slide()
-
-
 func behave(_delta):
-	var state_data = GameConfig.monsterdata.get(current_state, stats)
-	var current_speed = state_data.get("speed", stats.get("speed", 0))
-	
-	velocity.x = direction * current_speed
+	velocity.x = direction * GameConfig.monsterdata[family].speed
+
 	sprite.flip_h = velocity.x < 0
 
 	# Apply gravity
@@ -98,18 +96,12 @@ func behave(_delta):
 		velocity.y = 0
 		
 	# simple back-and-forth
-	if is_on_wall():
-		direction *= -1
-		
+#	if is_on_wall():
+#		direction *= -1
+
 	move_and_slide()
-	
-	# Horizontal movement
-	
-	# Vertical Bobbing
-	# Adjust 2.0 for speed and 10.0 for height/intensity
 
 	velocity.y = sin(bob_time * 2.0) * 10.0
-
 
 func setup_trail():
 	trail = Line2D.new()

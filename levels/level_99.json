@@ -43,7 +43,6 @@
 	{"pos": [14,3],"family":"dragon"},
 	{"pos": [14,2],"family":"serpent"},
 
-	{"pos": [14,10],"family":"gargoyle"},
 	
   ],
 	
@@ -57,6 +56,7 @@
 
 	{"pos": [4,5],"family":"blueflame"},	{"pos": [12,5],"family":"blueflame"},
 
+	{"pos": [14,10],"family":"gargoyle"},
 
 	
   ],
