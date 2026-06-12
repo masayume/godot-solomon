@@ -2,7 +2,12 @@ extends Area2D
 
 @export var speed: float = 300.0
 var direction = Vector2.RIGHT # Initial direction
-var is_crawling: bool = false # NEW: Track if we've touched a surface yet
+
+# Track if it touched a surface yet
+var is_crawling: bool = false 
+
+# NEW: If true, it flies straight and ignores crawling logic
+var is_monster_projectile: bool = false 
 
 @onready var ray_front = $RayFront
 @onready var ray_down = $RayDown
@@ -19,25 +24,26 @@ func _physics_process(delta):
 	# 1. Move the fireball
 	position += direction * speed * delta
 	
-# 2. SURFACE DETECTION
+	# 2. SURFACE DETECTION (ONLY for player fireballs)
+	if not is_monster_projectile:
 	# If we aren't crawling yet, look for the first wall
-	if not is_crawling:
-		if ray_front.is_colliding():
-			is_crawling = true
-			_align_to_surface(ray_front.get_collision_normal())
-	else:
-		# EDGE FOLLOWING LOGIC (Only runs once we are on a surface)
-		if ray_front.is_colliding():
+		if not is_crawling:
+			if ray_front.is_colliding():
+				is_crawling = true
+				_align_to_surface(ray_front.get_collision_normal())
+		else:
+			# EDGE FOLLOWING LOGIC (Only runs once we are on a surface)
+			if ray_front.is_colliding():
 			# Case A: Hit a wall in front -> Rotate UP
-			_align_to_surface(ray_front.get_collision_normal())
+				_align_to_surface(ray_front.get_collision_normal())
 			
-		elif not ray_down.is_colliding():
-			# Case B: Lost the floor -> Rotate DOWN around the corner
-			# We rotate clockwise to "wrap" around the tile
-			direction = Vector2(-direction.y, direction.x) 
-			rotation = direction.angle()
-			# Snap position slightly forward so ray_down hits the side of the new tile
-			position += direction * 5
+			elif not ray_down.is_colliding():
+				# Case B: Lost the floor -> Rotate DOWN around the corner
+				# We rotate clockwise to "wrap" around the tile
+				direction = Vector2(-direction.y, direction.x) 
+				rotation = direction.angle()
+				# Snap position slightly forward so ray_down hits the side of the new tile
+				position += direction * 5
 			
 func _align_to_surface(normal: Vector2):
 	# Align movement direction parallel to the surface normal

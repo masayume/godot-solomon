@@ -12,6 +12,7 @@ var hitbox: Area2D
 @export var fireball_scene: PackedScene
 var shoot_timer: float = 0.0
 var shoot_cooldown: float = 5.0 # Default, can be overridden by config or level data
+var level_started := false  # Monster holds fire
 
 func _ready():
 	family = "pannel"
@@ -32,6 +33,15 @@ func _ready():
 	if GameConfig.monsterdata.has(family) and GameConfig.monsterdata[family].has("cooldown"):
 		shoot_cooldown = GameConfig.monsterdata[family].cooldown
 
+	# Waits for level_started before shooting
+#	var loader = get_tree().get_first_node_in_group("loader") # or however you reference it
+	# AFTER — walk up to the level root which owns the signal
+	var loader = get_parent()  # fireballs are added to get_parent(), so it's the level node
+	if loader and loader.has_signal("level_started"):
+		loader.level_started.connect(func():
+			level_started = true
+			shoot_timer = shoot_cooldown  # start a fresh cooldown from level start
+		)
 func _init_shoot_direction():
 	# Check if the specific instance has a 'shoot_dir' property set by the LevelLoader
 	# If not, default to RIGHT or based on initial movement direction
@@ -50,10 +60,13 @@ func _init_shoot_direction():
 		shoot_direction = Vector2.RIGHT
 		
 func _process(delta):
+
 	# IMPORTANT: Calls Monster._process() to run animate(delta)
-#	animate(delta)
 	super._process(delta)
 
+	if not level_started:  # Guards to hold fire
+		return
+		
 	# Handle Shooting Timer
 	if shoot_timer > 0:
 		shoot_timer -= delta
@@ -77,19 +90,55 @@ func _attempt_shoot():
 	change_state("pannel_shoot")
 		
 	var fb = fireball_scene.instantiate()
-
-	# 1. Calculate a spawn offset based on the shooting direction
-	# This pushes the fireball 24 pixels out of the monster's center, 
-	# preventing it from spawning inside the monster and hitting itself.
-	var spawn_offset = shoot_direction * 24.0 
-
-	# Spawn at center of monster
-	fb.global_position = global_position + spawn_offset
 	
-	# Set direction
+	# disable raycast to fly straight
+	fb.is_monster_projectile = true
+	
+	# ==========================================
+	# 🔍 DEBUG VISUALIZATION
+	# ==========================================
+#	var debug_marker = ColorRect.new()
+#	debug_marker.color = Color.RED
+#	debug_marker.size = Vector2(12, 12)
+#	debug_marker.position = Vector2(-6, -6) # Centers the 12x12 square on the exact point
+#	get_parent().add_child(debug_marker)
+	
+
+	# 1. Define a consistent margin distance (e.g., 24 pixels)
+	var spawn_distance = 32.0
+	
+	# Fine-tune per direction if sprite pivot isn't centered
+	const SPAWN_OFFSETS := {
+		Vector2.RIGHT: Vector2(-60, 10),
+		Vector2.LEFT:  Vector2(-70, 10),
+		Vector2.UP:    Vector2(-52, 0),   # tweak Y if still off
+		Vector2.DOWN:  Vector2(-62, 0),   # tweak Y if still off
+	}
+
+	# 2. Calculate the offset. 
+	# Since shoot_direction is a normalized Vector2 (length of 1), 
+	# multiplying it by the distance gives the exact world-space offset.
+	# Example: Vector2.LEFT * 24.0 = Vector2(-24, 0)
+	var spawn_offset = shoot_direction * spawn_distance
+	# 3. Apply the offset to the monster's global position
+	# fb.global_position = sprite.global_position + spawn_offset
+	fb.global_position = sprite.global_position + spawn_offset + SPAWN_OFFSETS[shoot_direction]
+
+	# Move the debug marker to the EXACT same spot
+#	debug_marker.global_position = fb.global_position
+
+	
+	# 4. Set direction and rotation
 	fb.direction = shoot_direction
 	fb.rotation = shoot_direction.angle()
-	
+
+	# 5. DEBUG: Print the exact math to the console
+	print("🔍 DEBUG MATH:")
+	print("   Monster global_position: ", global_position)
+	print("   Shoot direction:         ", shoot_direction)
+	print("   Calculated offset:       ", spawn_offset)
+	print("   Fireball global_position:", fb.global_position)
+		
 	# Add to parent (Level) so it doesn't move with the monster if the monster moves
 	get_parent().add_child(fb)
 	

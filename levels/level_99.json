@@ -55,9 +55,10 @@
 
 	{"pos": [4,5],"family":"blueflame"},	{"pos": [12,5],"family":"blueflame"},
 
-	{"pos": [1,12],"family":"pannel", "shoot_direction":"down"},
+	{"pos": [1,2],"family":"pannel"},
+	{"pos": [2,12],"family":"pannel", "shoot_direction":"down"},
 	{"pos": [14,1],"family":"pannel", "shoot_direction":"up"},
-	{"pos": [15,12],"family":"pannel", "shoot_direction":"left"},
+	{"pos": [15,11],"family":"pannel", "shoot_direction":"left"},
 
 	
   ],
