@@ -32,6 +32,8 @@ func _physics_process(_delta):
 
 	behave(_delta) # includes move_and_slide()
 
+	if is_on_wall():
+		direction *= -1
 
 func _setup_hitbox():
 	if not hitbox: return
@@ -44,11 +46,8 @@ func _setup_hitbox():
 
 
 func behave(_delta):
-	# Use state-specific speed if defined in config, otherwise fallback to default family speed
-	var state_data = GameConfig.monsterdata.get(current_state, stats)
-	var current_speed = state_data.get("speed", stats.get("speed", 0))
+	velocity.x = direction * GameConfig.monsterdata[family].speed
 		
-	velocity.x = direction * current_speed
 	sprite.flip_h = velocity.x < 0
 
 	# Apply gravity
@@ -56,9 +55,17 @@ func behave(_delta):
 		velocity.y += gravity * _delta
 	else:
 		velocity.y = 0
-		
+
+	# Check if the fairy just hit the floor
+	if is_on_floor():
+		# Define how high you want the bounce to be. 
+		# Negative values move UP in Godot's 2D coordinate system.
+		# You can also use a variable like GameConfig.monsterdata[family].bounce_force
+		var bounce_force = GameConfig.monsterdata[family].bounce_force 
+		velocity.y = bounce_force
+				
 	# simple back-and-forth
-	if is_on_wall():
-		direction *= -1
+#	if is_on_wall():
+#		direction *= -1
 		
 	move_and_slide()
