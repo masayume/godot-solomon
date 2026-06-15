@@ -1,5 +1,7 @@
 extends Area2D
 
+var loader : Node = null
+
 @export var speed: float = 300.0
 var direction = Vector2.RIGHT # Initial direction
 
@@ -63,12 +65,30 @@ func _on_area_entered(area):
 
 func _on_body_entered(body):
 
-	print("fireball hits: ", body)
+###DEBUG_3l instance name, class, groups (is_in_group)
+	print("fireball hits: ", body.name, " type: ", body.get_class())
+	print("body groups: ", body.get_groups())  # <-- ADD THIS LINE
+	print("is in 'blocks' group: ", body.is_in_group("blockgroup"))
+	
+#	print("fireball hits: ", body)
 	if body.has_method("trigger_death_from_monster"):
 		body.trigger_death_from_monster()	
 
+	# ── block hit ─────────────────────────────────────────────────────────
+	if body.is_in_group("blockgroup"):
+		print("block hit by fireball")
+		var family = body.get("family")
+		if family and GameConfig.blockdata.has(family):
+			if GameConfig.blockdata[family]["destructible"]:
+				# Tell the level loader to remove it
+				if loader:
+					loader.remove_block_node(body)
+				explode()
+			# else: indestructible — fireball bounces/crawls, don't explode
+		return
+
 	# If we hit something we can't climb (like a solid door)
-	if not body.is_in_group("blocks"):
+	if not body.is_in_group("blockgroup"):
 		explode()
 
 func explode():

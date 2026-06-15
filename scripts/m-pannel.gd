@@ -8,6 +8,7 @@ var gravity = GameConfig.monsterdata.pannel.gravity
 
 var hitbox: Area2D 
 
+
 # Fireball Logic
 @export var fireball_scene: PackedScene
 var shoot_timer: float = 0.0
@@ -42,6 +43,7 @@ func _ready():
 			level_started = true
 			shoot_timer = shoot_cooldown  # start a fresh cooldown from level start
 		)
+		
 func _init_shoot_direction():
 	# Check if the specific instance has a 'shoot_dir' property set by the LevelLoader
 	# If not, default to RIGHT or based on initial movement direction
@@ -93,6 +95,12 @@ func _attempt_shoot():
 	
 	# disable raycast to fly straight
 	fb.is_monster_projectile = true
+
+	# Find the loader and pass it to the fireball before adding to scene
+	var loader = get_tree().get_first_node_in_group("level_loader")
+	fb.loader = loader
+#	get_parent().add_child(fb)
+
 	
 	# ==========================================
 	# 🔍 DEBUG VISUALIZATION
