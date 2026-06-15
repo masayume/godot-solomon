@@ -192,10 +192,17 @@ func _physics_process(delta):
 			change_state("crouchcast")
 		else:
 			change_state("cast")
-		
-#		print("block spell cast ")
-#		change_state("cast")
-		spell_pressed.emit(global_position, facing, crouching)
+
+		# Snap global_position to the nearest grid cell center before emitting.
+		# This eliminates all floor() sensitivity to sub-pixel position and jump height.
+		var half   : float = tile_size / 2.0
+		var snap_x : float = floor((global_position.x - tile_size) / tile_size) * tile_size
+		var snap_y : float = round((global_position.y) / tile_size) * tile_size
+		var snapped_pos    := Vector2(snap_x, snap_y)
+
+		# signal for level_loader.gd: create_or_destroy_block() function
+		spell_pressed.emit(snapped_pos, facing, crouching)
+
 		return # Exit early to start the lock immediately
 
 	if crouching: velocity.x = 0

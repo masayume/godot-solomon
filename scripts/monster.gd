@@ -101,8 +101,9 @@ func change_state(new_state: String):
 		push_error("CONFIG ERROR: 'frames' array is empty in state '%s'!" % new_state)
 		sprite.frame = 0
 
+#DEBUG
 	# Success message to confirm it worked
-	print("✅ DEBUG: Successfully changed %s to state '%s'. Texture: %s" % [family, current_state, sprite.texture.resource_path if sprite.texture else "NULL"])
+#	print("✅ DEBUG: Successfully changed %s to state '%s'. Texture: %s" % [family, current_state, sprite.texture.resource_path if sprite.texture else "NULL"])
 			
 func animate(delta):
 	# If there's only one frame, just ensure it's set and exit

@@ -83,7 +83,7 @@ func _physics_process(_delta):
 
 func _attempt_shoot():
 	
-	print("Pannel attempt shoot to ", shoot_direction)
+#	print("Pannel attempt shoot to ", shoot_direction)
 	if not fireball_scene:
 		return
 
@@ -133,11 +133,11 @@ func _attempt_shoot():
 	fb.rotation = shoot_direction.angle()
 
 	# 5. DEBUG: Print the exact math to the console
-	print("🔍 DEBUG MATH:")
-	print("   Monster global_position: ", global_position)
-	print("   Shoot direction:         ", shoot_direction)
-	print("   Calculated offset:       ", spawn_offset)
-	print("   Fireball global_position:", fb.global_position)
+#	print("🔍 DEBUG MATH:")
+#	print("   Monster global_position: ", global_position)
+#	print("   Shoot direction:         ", shoot_direction)
+#	print("   Calculated offset:       ", spawn_offset)
+#	print("   Fireball global_position:", fb.global_position)
 		
 	# Add to parent (Level) so it doesn't move with the monster if the monster moves
 	get_parent().add_child(fb)

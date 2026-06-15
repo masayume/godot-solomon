@@ -131,7 +131,7 @@ func _block_monster_spawner(monster):
 func _spawn_monster_from_block(monster_type: String, loader):
 
 	var pos=Vector2i(int(global_position.x), int(global_position.y))
-	var cell = loader.Grid.world_to_grid(pos, loader.x_off, loader.y_off, tile_size)
+	var cell = GameConfig.world_to_grid(pos, loader.x_off, loader.y_off, tile_size)
 
 	var monster_data = { "pos": cell, "family": monster_type }
 	if loader:

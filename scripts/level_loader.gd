@@ -40,8 +40,6 @@ var room_outro: RoomOutro
 
 @onready var bg = $"Background"
 
-const Grid = preload("res://scripts/grid.gd")
-
 var tile_size
 var x_off: float
 var y_off: float
@@ -104,8 +102,25 @@ func create_or_destroy_block(pos, dir, crouching, is_player=false):
 ###DEBUG
 #	print("create/destroy block at: " + str(pos) + " " + str(dir))
 # 	var destructible = config.get_value("block_" + block.block_type, "destructible", false)
+
+	var half_tile = tile_size / 2.0
+		
+	# 1. Find which cell the player is in
+#	var cell = GameConfig.world_to_grid(pos, x_off, y_off, tile_size)
+
+	# Use round() not floor() — snaps to nearest cell symmetrically.
+	# floor() is biased: it shifts left for right-casting and right for left-casting.
+	var cell_x = int(round((pos.x - x_off - half_tile) / tile_size)) + 1
+	var cell_y = int(round(-(pos.y + y_off + half_tile) / tile_size)) + 1
+	var cell = Vector2i(cell_x, cell_y)
 	
-	var cell = Grid.world_to_grid(pos, x_off, y_off, tile_size)
+	# 2. Snap: re-derive the exact center of that cell in world space.
+	#    This eliminates all sub-pixel drift and jump-height sensitivity.
+#	var snapped = GameConfig.grid_to_local(cell.x, cell.y, tile_size, x_off, y_off)
+
+	# 3. Re-convert from the snapped center — now guaranteed to be exact
+#	cell = GameConfig.world_to_grid(snapped, x_off, y_off, tile_size)
+
 	if crouching:
 		cell.y -= 1
 	var target = Vector2i(cell.x + dir, cell.y)
@@ -174,7 +189,6 @@ func create_or_destroy_block(pos, dir, crouching, is_player=false):
 					item_nodes.erase(target)					
 			# ---------------------------------------------------------
 
-
 		else:
 			# It's a stone block (not destructible)
 			# Do nothing here so it doesn't fall into the 'else' below
@@ -191,13 +205,13 @@ func create_or_destroy_block(pos, dir, crouching, is_player=false):
 	# 2. ONLY create a block if the target space is confirmed EMPTY
 	elif not blocks.has(target) and is_player:
 
-
 		# PLAY FOOP FX; Calculate world position for the new block
 
-		var spawn_pos = GameConfig.grid_to_local(target.x+1, target.y, tile_size, x_off, y_off)
+		var spawn_pos = GameConfig.grid_to_local(target.x, target.y, tile_size, x_off, y_off)
 		
 		# Play Foop and wait for it to finish before adding the block
 		spawn_fx("foop", spawn_pos, target, true)
+
 
 ###TODO "tween" to these effects so they also scale or fade out while the frames are playing
 
@@ -300,7 +314,7 @@ func toggle_room_activity(active: bool):
 
 func remove_block_at_pos(world_pos: Vector2):
 	# Convert the world position to grid coordinates 
-	var grid_pos = Grid.world_to_grid(world_pos, x_off, y_off, tile_size)
+	var grid_pos = GameConfig.world_to_grid(world_pos, x_off, y_off, tile_size)
 	var cell = Vector2i(grid_pos.x, grid_pos.y)
 	
 	if blocks.has(cell):
@@ -309,7 +323,7 @@ func remove_block_at_pos(world_pos: Vector2):
 
 func spawn_block_at_world_pos(world_pos: Vector2, type: String):
 	# Convert world position to grid and use the existing add_block logic 
-	var grid_pos = Grid.world_to_grid(world_pos, x_off, y_off, tile_size)
+	var grid_pos = GameConfig.world_to_grid(world_pos, x_off, y_off, tile_size)
 	add_block(grid_pos.x, grid_pos.y, type, true)
 
 func replace_block(world_pos: Vector2, new_family: String):

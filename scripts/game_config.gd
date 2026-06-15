@@ -110,6 +110,12 @@ func grid_to_local(tile_x: int, tile_y: int, tile_size: int, x_off: float, y_off
 
 	return Vector2(world_x, world_y)
 
+func world_to_gridNEW(world_pos: Vector2, x_off: float, y_off: float, tile_size: int) -> Vector2i:
+	var half_tile = tile_size / 2.0
+	var gx = int(round((world_pos.x - x_off - half_tile) / tile_size)) + 1
+	var gy = int(round(-(world_pos.y + y_off + half_tile) / tile_size)) + 1
+	return Vector2i(gx, gy)
+	
 func world_to_grid(world_pos: Vector2, x_off: float, y_off: float, tile_size: int) -> Vector2i:
 
 	var local_x = world_pos.x - x_off
