@@ -83,16 +83,22 @@ func _on_body_entered(body):
 				# Tell the level loader to remove it
 				if loader:
 					loader.remove_block_node(body)
-				explode()
+#				explode(body.global_position)
+				# Offset toward the block from the fireball's current position
+				var contact_pos = global_position + (body.global_position - global_position) * 0.5
+				explode(contact_pos)
+				return
 			# else: indestructible — fireball bounces/crawls, don't explode
-		return
+			else:
+				explode(global_position)	
 
 	# If we hit something we can't climb (like a solid door)
 	if not body.is_in_group("blockgroup"):
 		explode()
 
-func explode():
-	get_parent().spawn_fx("boom", global_position, Vector2i(-1,-1), false)
+func explode(explosion_pos: Vector2 = global_position):
+	var local_pos = get_parent().to_local(explosion_pos)
+	get_parent().spawn_fx("boom", local_pos, Vector2i(-1,-1), false)
 	
 	queue_free()
 	
