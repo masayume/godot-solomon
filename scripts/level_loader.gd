@@ -201,8 +201,9 @@ func create_or_destroy_block(pos, dir, crouching, is_player=false):
 
 		# PLAY FOOP FX; Calculate world position for the new block
 
-		# cell
-		var spawn_pos = GameConfig.grid_to_local(cell[0], cell[1], tile_size, x_off, y_off)
+#2DEL	var spawn_pos = GameConfig.grid_to_local(cell[0], cell[1], tile_size, x_off, y_off)
+		# AFTER — spawns foop at target cell where the block will appear
+		var spawn_pos = GameConfig.grid_to_local(target[0], target[1], tile_size, x_off, y_off)
 		
 		# Play Foop and wait for it to finish before adding the block
 		spawn_fx("foop", spawn_pos, target, true)
@@ -214,7 +215,8 @@ func create_or_destroy_block(pos, dir, crouching, is_player=false):
 func spawn_fx(fx_type: String, world_pos: Vector2, grid_pos: Vector2i, should_spawn_block: bool):
 	var fx = fx_scene.instantiate()
 	add_child(fx)
-	fx.global_position = world_pos
+#	fx.global_position = world_pos
+	fx.position = world_pos
 	
 	# NOTE !
 	# fx.gd _on_timer_timeout_ only emits that signal if it's a "one-shot" effect that deletes itself.
