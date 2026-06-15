@@ -104,30 +104,11 @@ func create_or_destroy_block(pos, dir, crouching, is_player=false):
 		
 	# 1. Find which cell the player is in
 #	var cell = GameConfig.world_to_grid(pos, x_off, y_off, tile_size)
-
-	# Offset pos upward by half a tile so we get the cell the player's body
-	# occupies, not the floor cell their feet are touching
-#	var body_pos = Vector2(pos.x, pos.y - half_tile)
 	
-	# Use round() not floor() — snaps to nearest cell symmetrically.
-	# floor() is biased: it shifts left for right-casting and right for left-casting.
-#	var cell_x = int(round((pos.x - x_off - half_tile) / tile_size)) + 1
-#	var cell_y = int(round(-(pos.y + y_off + half_tile) / tile_size)) + 1
 	var cell_x = int(round((pos.x - x_off - half_tile) / tile_size)) + 1
 	var cell_y = int(-floor((pos.y + y_off + half_tile) / tile_size)) + 1  # floor for Y
 
 	var cell = Vector2i(cell_x, cell_y)
-
-	
-#	print("[CAST] cell=", cell, " target=", Vector2i(cell.x + dir, cell.y), " blocks.has=", blocks.has(Vector2i(cell.x + dir, cell.y)))
-
-
-	# 2. Snap: re-derive the exact center of that cell in world space.
-	#    This eliminates all sub-pixel drift and jump-height sensitivity.
-#	var snapped = GameConfig.grid_to_local(cell.x, cell.y, tile_size, x_off, y_off)
-
-	# 3. Re-convert from the snapped center — now guaranteed to be exact
-#	cell = GameConfig.world_to_grid(snapped, x_off, y_off, tile_size)
 
 	if crouching:
 		cell.y -= 1
@@ -147,7 +128,7 @@ func create_or_destroy_block(pos, dir, crouching, is_player=false):
 		# Only destroy if the config says it is destructible
 		if GameConfig.blockdata[block.family]["destructible"]:
 
-			# Play Poof (Destruction)
+			# Play "Poof" (Destruction)
 			spawn_fx("poof", block.global_position, target, false)
 
 			if GameConfig.blockdata["earth"].has("sound"):
@@ -220,7 +201,8 @@ func create_or_destroy_block(pos, dir, crouching, is_player=false):
 
 		# PLAY FOOP FX; Calculate world position for the new block
 
-		var spawn_pos = GameConfig.grid_to_local(target.x, target.y, tile_size, x_off, y_off)
+		# cell
+		var spawn_pos = GameConfig.grid_to_local(cell[0], cell[1], tile_size, x_off, y_off)
 		
 		# Play Foop and wait for it to finish before adding the block
 		spawn_fx("foop", spawn_pos, target, true)
