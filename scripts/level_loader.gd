@@ -129,7 +129,7 @@ func create_or_destroy_block(pos, dir, crouching, is_player=false):
 		if GameConfig.blockdata[block.family]["destructible"]:
 
 			# Play "Poof" (Destruction)
-			spawn_fx("poof", block.global_position, target, false)
+			spawn_fx("poof",  to_local(block.global_position), target, false)
 
 			if GameConfig.blockdata["earth"].has("sound"):
 				var sfx = load(GameConfig.blockdata["earth"].get("sound"))
