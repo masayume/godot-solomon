@@ -15,7 +15,7 @@ var is_monster_projectile: bool = false
 func _ready():
 	# Connect to detect monsters
 	
-	collision_mask = 1 | 4 # Look for Layer 1 (World) and 3 (Monsters)
+	collision_mask = 1 | 2 | 4 # Look for Layer 1 (World) Layer 2 (Player) and 3 (Monsters)
 	
 	area_entered.connect(_on_area_entered)
 	body_entered.connect(_on_body_entered)
@@ -55,12 +55,18 @@ func _on_area_entered(area):
 	# Check if the area itself or its parent is a monster
 	if not target.is_in_group("monsters"):
 		target = area.get_parent()
+#		print("Hit by fireball: ", target)
 		
 	if target.is_in_group("monsters") and target.has_method("take_damage"):
 		target.take_damage()
 		explode()
 
 func _on_body_entered(body):
+
+	print("fireball hits: ", body)
+	if body.has_method("trigger_death_from_monster"):
+		body.trigger_death_from_monster()	
+
 	# If we hit something we can't climb (like a solid door)
 	if not body.is_in_group("blocks"):
 		explode()

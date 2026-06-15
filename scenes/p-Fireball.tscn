@@ -15,6 +15,7 @@ colors = PackedColorArray(0.93307036, 0.3543185, 0.1327681, 1, 0.827451, 0, 0, 0
 
 [node name="Fireball" type="Area2D" unique_id=1296215137]
 z_index = 11
+collision_mask = 3
 script = ExtResource("1_hmjjh")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1437223554]
