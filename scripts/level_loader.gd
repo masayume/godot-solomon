@@ -99,21 +99,29 @@ func _on_player_fireball(_pos, _dir, _crouching):
 	
 func create_or_destroy_block(pos, dir, crouching, is_player=false):
 
-###DEBUG
-#	print("create/destroy block at: " + str(pos) + " " + str(dir))
-# 	var destructible = config.get_value("block_" + block.block_type, "destructible", false)
-
+#	print("[CAST] pos=", pos, " dir=", dir, " crouching=", crouching)
 	var half_tile = tile_size / 2.0
 		
 	# 1. Find which cell the player is in
 #	var cell = GameConfig.world_to_grid(pos, x_off, y_off, tile_size)
 
+	# Offset pos upward by half a tile so we get the cell the player's body
+	# occupies, not the floor cell their feet are touching
+#	var body_pos = Vector2(pos.x, pos.y - half_tile)
+	
 	# Use round() not floor() — snaps to nearest cell symmetrically.
 	# floor() is biased: it shifts left for right-casting and right for left-casting.
+#	var cell_x = int(round((pos.x - x_off - half_tile) / tile_size)) + 1
+#	var cell_y = int(round(-(pos.y + y_off + half_tile) / tile_size)) + 1
 	var cell_x = int(round((pos.x - x_off - half_tile) / tile_size)) + 1
-	var cell_y = int(round(-(pos.y + y_off + half_tile) / tile_size)) + 1
+	var cell_y = int(-floor((pos.y + y_off + half_tile) / tile_size)) + 1  # floor for Y
+
 	var cell = Vector2i(cell_x, cell_y)
+
 	
+#	print("[CAST] cell=", cell, " target=", Vector2i(cell.x + dir, cell.y), " blocks.has=", blocks.has(Vector2i(cell.x + dir, cell.y)))
+
+
 	# 2. Snap: re-derive the exact center of that cell in world space.
 	#    This eliminates all sub-pixel drift and jump-height sensitivity.
 #	var snapped = GameConfig.grid_to_local(cell.x, cell.y, tile_size, x_off, y_off)
@@ -123,7 +131,12 @@ func create_or_destroy_block(pos, dir, crouching, is_player=false):
 
 	if crouching:
 		cell.y -= 1
+
 	var target = Vector2i(cell.x + dir, cell.y)
+
+###DEBUG_2l
+#	print("[CAST] pos=", pos, " cell=", cell, " target=", target, " has=", blocks.has(target))
+#	print("[CAST] pos=", pos, " x_off=", x_off, " y_off=", y_off, " tile_size=", tile_size, " cell=", cell, " target=", target)
 	
 	### DESTROY BLOCK playing fx "poof"
 	
@@ -285,9 +298,15 @@ func load_level(id: int):
 	
 	# 1. Initialize value from game.cfg
 	current_bonus = GameConfig.gamedata.game.room_bonus
-	
-	# Start Gameplay
-#	get_tree().call_group("monstergroup", "set_physics_process", true)
+
+#	print("[GRID ORIGIN] LevelRoot.pos=", get_parent().position, 
+#	  " x_off=", x_off, " y_off=", y_off, 
+#	  " ts=", tile_size,
+#	  " cell(1,1)=", GameConfig.grid_to_local(1, 1, tile_size, x_off, y_off))
+
+#	for cell in blocks:
+#		print("[BLOCK] ", cell, " = ", blocks[cell].family)
+
 
 func toggle_monsters(active: bool):
 		get_tree().call_group("monstergroup", "set_physics_process", active)
@@ -311,8 +330,15 @@ func toggle_room_activity(active: bool):
 	for block in get_tree().get_nodes_in_group("blockgroup"):
 		block.visible = active
 
-
 func remove_block_at_pos(world_pos: Vector2):
+	# Find the block by node reference, not by coordinate conversion
+	for cell in blocks:
+		if blocks[cell] == world_pos:  # world_pos is actually the block node here
+			blocks[cell].queue_free()
+			blocks.erase(cell)
+			return
+
+func remove_block_at_posOLD(world_pos: Vector2):
 	# Convert the world position to grid coordinates 
 	var grid_pos = GameConfig.world_to_grid(world_pos, x_off, y_off, tile_size)
 	var cell = Vector2i(grid_pos.x, grid_pos.y)
@@ -331,6 +357,21 @@ func replace_block(world_pos: Vector2, new_family: String):
 	remove_block_at_pos(world_pos)
 	spawn_block_at_world_pos(world_pos, new_family)
 
+func remove_block_node(block_node: Node) -> void:
+	for cell in blocks:
+		if blocks[cell] == block_node:
+			block_node.queue_free()
+			blocks.erase(cell)
+			return
+
+func replace_block_node(block_node: Node, new_family: String) -> void:
+	for cell in blocks:
+		if blocks[cell] == block_node:
+			block_node.queue_free()
+			blocks.erase(cell)
+			add_block(cell.x, cell.y, new_family, true)
+			return
+			
 
 func add_block(bx, by, type, showing = false):
 	var block = block_scene.instantiate()

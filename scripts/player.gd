@@ -196,11 +196,16 @@ func _physics_process(delta):
 		# Snap global_position to the nearest grid cell center before emitting.
 		# This eliminates all floor() sensitivity to sub-pixel position and jump height.
 		var half   : float = tile_size / 2.0
-		var snap_x : float = floor((global_position.x - tile_size) / tile_size) * tile_size
-		var snap_y : float = round((global_position.y) / tile_size) * tile_size
-		var snapped_pos    := Vector2(snap_x, snap_y)
 
-		# signal for level_loader.gd: create_or_destroy_block() function
+#		var snap_x : float = floor((global_position.x - tile_size) / tile_size) * tile_size
+#		# AFTER — shift up by quarter tile to avoid sitting on cell boundary
+#		var snap_y : float = floor((global_position.y - tile_size * 0.5) / tile_size) * tile_size
+
+		var snap_x : float = floor((global_position.x - tile_size) / tile_size) * tile_size
+#		var snap_y : float = floor(global_position.y / tile_size) * tile_size  # floor, not round
+
+
+		var snapped_pos := Vector2(snap_x, global_position.y)
 		spell_pressed.emit(snapped_pos, facing, crouching)
 
 		return # Exit early to start the lock immediately
@@ -226,6 +231,27 @@ func check_block_destruction():
 			handle_head_bump(block)
 
 func handle_head_bump(block):
+	if is_hit:
+		return
+	is_hit = true
+	change_state("hit")
+
+	if not block or not block.get("family"):
+		return
+
+	var type = block.family
+
+	if type == "earth":
+		level_loader.replace_block_node(block, "earthcrush")
+		_play_secondary_sfx(type)
+	elif type == "earthcrush":
+		level_loader.remove_block_node(block)
+		_play_secondary_sfx(type)
+
+	await get_tree().create_timer(0.12).timeout
+	is_hit = false
+
+func handle_head_bumpOLD(block):
 
 	if is_hit: 
 		return # Don't trigger multiple times per jump
