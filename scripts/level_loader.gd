@@ -322,14 +322,6 @@ func remove_block_at_pos(world_pos: Vector2):
 			blocks.erase(cell)
 			return
 
-func remove_block_at_posOLD(world_pos: Vector2):
-	# Convert the world position to grid coordinates 
-	var grid_pos = GameConfig.world_to_grid(world_pos, x_off, y_off, tile_size)
-	var cell = Vector2i(grid_pos.x, grid_pos.y)
-	
-	if blocks.has(cell):
-		blocks[cell].queue_free()
-		blocks.erase(cell)
 
 func spawn_block_at_world_pos(world_pos: Vector2, type: String):
 	# Convert world position to grid and use the existing add_block logic 
@@ -650,14 +642,31 @@ func _spawn_level_content_hidden(data):
 	# 	4. Spawn Items (Hidden)		#
 	#################################
 	item_nodes.clear() # Reset on level load
-	if data.has("items"):
-		for i in data["items"]:
 
-			var is_secret = i.get("type") == "hidden"
+	var items_to_spawn : Array
+
+	print("[DATA]: ", data)
+	
+	if data.has("items_configs") and data["items_configs"].size() > 0:
+		var config_index : int = randi() % data["items_configs"].size()
+		print("[BONUS] picked item config ", config_index)
+		items_to_spawn = data["items_configs"][config_index]
+		
+	else:
+		items_to_spawn = data.get("items", [])	
+		print("[BONUS] normal items ")
+
+#	if data.has("items"):
+	if items_to_spawn:
+#		for i in data["items"]:
+		for i in items_to_spawn:
+
+			# var is_secret = i.get("type") == "hidden"
+			var is_hidden : bool = i.get("type", "") == "hidden"
 			
 			# Spawn the item. Your add_item function ALREADY correctly 
 			# registers this node into the item_nodes dictionary!
-			add_item(i["pos"][0], i["pos"][1], i["family"], false, is_secret)
+			add_item(i["pos"][0], i["pos"][1], i["family"], false, is_hidden)
 			
 	# 5. Spawn Player (Hidden + Input Disabled)
 	spawn_player(
