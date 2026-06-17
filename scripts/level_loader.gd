@@ -129,7 +129,7 @@ func create_or_destroy_block(pos, dir, crouching, is_player=false):
 		if GameConfig.blockdata[block.family]["destructible"]:
 
 			# Play "Poof" (Destruction)
-			spawn_fx("poof",  to_local(block.global_position), target, false)
+			spawn_fx("poof",  block.global_position, target, false)
 
 			if GameConfig.blockdata["earth"].has("sound"):
 				var sfx = load(GameConfig.blockdata["earth"].get("sound"))
@@ -201,13 +201,13 @@ func create_or_destroy_block(pos, dir, crouching, is_player=false):
 
 		# PLAY FOOP FX; Calculate world position for the new block
 
-#2DEL	var spawn_pos = GameConfig.grid_to_local(cell[0], cell[1], tile_size, x_off, y_off)
 		# AFTER — spawns foop at target cell where the block will appear
-		var spawn_pos = GameConfig.grid_to_local(target[0], target[1], tile_size, x_off, y_off)
-		
-		# Play Foop and wait for it to finish before adding the block
-		spawn_fx("foop", spawn_pos, target, true)
+		# grid_to_local returns LOCAL coordinates. We must convert them to GLOBAL for spawn_fx.
+		var local_pos = GameConfig.grid_to_local(target[0], target[1], tile_size, x_off, y_off)
+		var global_pos = to_global(local_pos) 
 
+		# Play Foop and wait for it to finish before adding the block
+		spawn_fx("foop", global_pos, target, true)
 
 ###TODO "tween" to these effects so they also scale or fade out while the frames are playing
 
@@ -215,8 +215,20 @@ func create_or_destroy_block(pos, dir, crouching, is_player=false):
 func spawn_fx(fx_type: String, world_pos: Vector2, grid_pos: Vector2i, should_spawn_block: bool):
 	var fx = fx_scene.instantiate()
 	add_child(fx)
-#	fx.global_position = world_pos
-	fx.position = world_pos
+
+	# ==========================================
+	# 🔧 FORCE VISUAL CENTERING FOR ALL FX
+	# ==========================================
+	var fx_sprite = fx.get_node_or_null("Sprite2D")
+	if fx_sprite:
+		# Ensure the sprite draws from its center, not its top-left corner
+		fx_sprite.centered = true 
+		# Reset any accidental local offsets
+		fx_sprite.position = Vector2.ZERO 
+		fx_sprite.offset = Vector2.ZERO
+	# ==========================================
+
+	fx.global_position = world_pos
 	
 	# NOTE !
 	# fx.gd _on_timer_timeout_ only emits that signal if it's a "one-shot" effect that deletes itself.
