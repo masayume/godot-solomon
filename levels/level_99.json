@@ -61,10 +61,18 @@
 
 	{"pos": [15,11],"family":"pannel", "shoot_direction":"left"},
 
+	{"pos": [13,10],"family":"gargoyle"},
+
 	
   ],
 
   "blocks": [
+
+	{"pos": [10,9],"family":"earth"},	
+
+	{"pos": [12,9],"family":"earth"},	
+	{"pos": [13,9],"family":"earth"},	
+
 
 	{"pos": [11,5],"family":"grass"},	
 

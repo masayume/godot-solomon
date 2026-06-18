@@ -8,6 +8,10 @@ class_name Monster
 
 @onready var sprite: Sprite2D = $Sprite2D
 @onready var collider = $CollisionShape2D
+@export var avoid_ledges: bool = true
+@export var ledge_check_distance: float = 28.0   # how far ahead/below to probe, in pixels
+
+var is_falling_to_death: bool = false
 
 var stats = {}
 
@@ -331,3 +335,41 @@ func set_collidable():
 	
 	# print(data)
 	collider.disabled = !collidable
+
+## Returns true if there is no ground within ledge_check_distance below the point
+## `ahead_offset` pixels in front of the monster, in the direction it's facing.
+func is_ledge_ahead(ahead_offset: float, dir: int) -> bool:
+	var space_state = get_world_2d().direct_space_state
+	var origin = global_position + Vector2(ahead_offset * dir, 0)
+	var query = PhysicsRayQueryParameters2D.create(
+		origin,
+		origin + Vector2(0, ledge_check_distance)
+	)
+	query.collision_mask = 1  # world/blocks layer
+	query.exclude = [self]
+	var result = space_state.intersect_ray(query)
+	return result.is_empty()   # empty = no ground found = ledge
+
+
+## Call this from take_damage(), block-destroyed signals, or anywhere the floor
+## disappears out from under a monster mid-walk.
+func start_fall_death():
+	if is_falling_to_death:
+		return
+	is_falling_to_death = true
+
+	# Disable the hazard hitbox immediately — a falling monster shouldn't hurt the player
+	var hb = get_node_or_null("HitBox")
+	if hb:
+		hb.monitoring = false
+		hb.monitorable = false
+
+	set_collision_mask_value(1, true)   # still collides with floor below, to detect landing
+	collision_layer = 0                  # stop being a target
+
+	# little white star burst
+	var loader = get_parent()
+	if loader and loader.has_method("spawn_fx"):
+		loader.spawn_fx("star_death", global_position, Vector2i(-1,-1), false)
+
+	queue_free.call_deferred()

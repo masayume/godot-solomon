@@ -5,6 +5,9 @@ var direction := -1
 var gravity = GameConfig.monsterdata.gargoyle.gravity
 # var gravity: float = 980.0
 
+var fall_start_y: float = 0.0
+var was_on_floor: bool = true
+
 var hitbox: Area2D 
 
 func _ready():
@@ -25,6 +28,14 @@ func _ready():
 
 
 func _physics_process(_delta):
+	if not is_falling_to_death:
+		if was_on_floor and not is_on_floor():
+			fall_start_y = global_position.y   # mark where the fall began
+		was_on_floor = is_on_floor()
+
+		if not is_on_floor() and global_position.y - fall_start_y > tile_size * 1.5:
+			start_fall_death()
+			return
 
 	velocity.x = direction * GameConfig.monsterdata.gargoyle.speed
 
@@ -53,7 +64,6 @@ func _on_hitbox_body_entered(body):
 
 func behave(_delta):
 	velocity.x = direction * GameConfig.monsterdata[family].speed
-
 	sprite.flip_h = velocity.x < 0
 
 	# Apply gravity
@@ -67,3 +77,7 @@ func behave(_delta):
 #		direction *= -1
 
 	move_and_slide()
+
+	# Turn around at walls OR ledges — never walk off an edge during normal patrol
+	if is_on_wall() or (avoid_ledges and is_on_floor() and is_ledge_ahead(20.0, direction)):
+		direction *= -1
