@@ -22,6 +22,17 @@ func _ready():
 	area_entered.connect(_on_area_entered)
 	body_entered.connect(_on_body_entered)
 
+	# Flip sprite to match travel direction for monster projectiles
+#	if is_monster_projectile:
+#		$Sprite2D.flip_h = direction.x < 0
+
+	# Rotate to travel direction, then unflip — rotation handles orientation,
+	# flip_h is redundant and causes the mirrored look
+	var spr = get_node_or_null("Sprite2D") or get_node_or_null("AnimatedSprite2D")
+#	if spr:
+#		spr.flip_h = false  # never flip — rotation alone is enough for 4 directions
+
+		
 func _physics_process(delta):
 	# 1. Move the fireball
 	position += direction * speed * delta

@@ -13,3 +13,5 @@ script = ExtResource("1_5sjxv")
 shape = SubResource("RectangleShape2D_iiuvy")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1812998505]
+
+[node name="RayCast4Player" type="RayCast2D" parent="." unique_id=2055202442]

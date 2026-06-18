@@ -10,6 +10,11 @@ var was_on_floor: bool = true
 
 var hitbox: Area2D 
 
+# RayCast2D to search for Player
+@onready var player_sight: RayCast2D = get_node_or_null("RayCast4Player")
+var shoot_cooldown: float = 0.0
+const SHOOT_COOLDOWN_TIME := 1.5
+
 func _ready():
 	family = "gargoyle"
 	add_to_group("monsters") 
@@ -21,10 +26,14 @@ func _ready():
 	# 3. SAFELY get gravity from the loaded stats, falling back to the default if missing
 	gravity = stats.get("gravity", gravity)
 		
-	print("Gargoyle layer:", collision_layer, " mask: ", collision_mask)
+#	print("Gargoyle layer:", collision_layer, " mask: ", collision_mask)
 	# Ghost HitBox
 	collision_layer = 4   # (or anything, not important)
 	collision_mask = 1    # must match Player layer	
+
+	if player_sight:
+		player_sight.collision_mask = 2 | 1   # see Player (2) and Walls (1, to block sight)
+		player_sight.enabled = true
 
 
 func _physics_process(_delta):
@@ -43,6 +52,69 @@ func _physics_process(_delta):
 
 	if is_on_wall():
 		direction *= -1
+
+	_check_player_sight(_delta)
+
+
+func _check_player_sight(delta):
+	if shoot_cooldown > 0.0:
+		shoot_cooldown -= delta
+		return
+
+	if not player_sight:
+		return
+
+	# Point the ray in the direction the Gargoyle is facing
+	player_sight.target_position = Vector2(400 * direction, 0)
+	player_sight.force_raycast_update()
+
+	if player_sight.is_colliding():
+		var target = player_sight.get_collider()
+		if target.has_method("trigger_death_from_monster"):
+			_shoot_fireball()
+			shoot_cooldown = SHOOT_COOLDOWN_TIME
+
+
+func _shoot_fireball():
+	var fb_scene = load("res://scenes/p-Fireball.tscn")  # adjust path to match your project
+	var fb = fb_scene.instantiate()
+
+	fb.is_monster_projectile = true
+	fb.direction = Vector2(direction, 0)
+#	fb.collision_mask = 1 | 2   # world + player, not other monsters
+
+	var loader = get_tree().get_first_node_in_group("level_loader")
+	fb.loader = loader
+#	var spawn_distance = 60.0  # increase clearance
+#	fb.global_position = global_position + Vector2(direction * spawn_distance, -4)
+
+	# Compute spawn in local space, then convert to world space
+#	var local_spawn = global_position + Vector2(direction * 60.0, -4)
+#	fb.global_position = get_parent().to_global(local_spawn)
+	fb.global_position = global_position + Vector2(direction * 60.0, -4)
+	
+#	print("global_position (Gargoyle): ", global_position)
+#	print("[SHOOT] direction=", direction, " spawn=", fb.global_position)
+	get_parent().add_child(fb)
+
+	# Fix: set the collision mask after add_child so it runs after _ready():
+	# _ready() fires when the fireball is added to the scene via get_parent().add_child(fb), 
+	# which happens after fb.collision_mask = 1 | 2 is set. So _ready() overwrites it back
+	# to 1 | 2 | 4, re-enabling monster detection.
+	fb.collision_mask = 1 | 2
+
+#	for child in fb.get_children():
+#		print("[FIREBALL CHILD] ", child.name, " type: ", child.get_class())
+	
+	var spr = fb.get_node_or_null("Sprite2D") 
+	if spr:
+		spr.flip_h = direction < 0  # flip when moving left
+	
+	# Prevent immediate self-collision on the frame it spawns
+	fb.set_deferred("monitoring", false)
+	await get_tree().physics_frame
+	fb.set_deferred("monitoring", true)
+	
 
 func _setup_hitbox():
 	if not hitbox: return
