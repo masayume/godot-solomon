@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://dx2me7q6kw67a" path="res://scripts/m-earthmage.gd" id="1_sliis"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_xu73x"]
+size = Vector2(44, 50)
 
 [node name="Earthmage" type="CharacterBody2D" unique_id=1641962141]
 collision_layer = 2

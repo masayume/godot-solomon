@@ -5,6 +5,9 @@ var direction := -1
 var gravity = GameConfig.monsterdata.goblin.gravity
 # var gravity: float = 980.0
 
+var fall_start_y: float = 0.0
+var was_on_floor: bool = true
+
 var hitbox: Area2D 
 
 func _ready():
@@ -16,9 +19,9 @@ func _ready():
 	_setup_hitbox()
 
 	# 3. SAFELY get gravity from the loaded stats, falling back to the default if missing
-	gravity = stats.get("gravity", gravity)
+#	gravity = stats.get("gravity", gravity)
 		
-	print("Goblin layer:", collision_layer, " mask: ", collision_mask)
+#	print("Goblin layer:", collision_layer, " mask: ", collision_mask)
 	# Ghost HitBox
 	collision_layer = 4   # (or anything, not important)
 	collision_mask = 1    # must match Player layer	
@@ -67,3 +70,7 @@ func behave(_delta):
 #		direction *= -1
 
 	move_and_slide()
+	
+	# Turn around at walls OR ledges - never walk off an edge during normal patrol
+	if is_on_wall() or (avoid_ledges and is_on_floor() and is_ledge_ahead(20.0, direction)):
+		direction *= -1

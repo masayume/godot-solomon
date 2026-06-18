@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://bta2viecvtc8q" path="res://scripts/m-salamander.gd" id="1_jt156"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_eu5gc"]
+size = Vector2(44, 50)
 
 [node name="m-Salamander" type="CharacterBody2D" unique_id=1769808244]
 script = ExtResource("1_jt156")

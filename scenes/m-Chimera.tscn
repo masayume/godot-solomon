@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://cbfboyd4msnoi" path="res://scripts/m-chimera.gd" id="1_f4rpt"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ub4nf"]
+size = Vector2(44, 50)
 
 [node name="Chimera" type="CharacterBody2D" unique_id=2088462776]
 collision_layer = 2

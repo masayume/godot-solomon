@@ -78,6 +78,6 @@ func behave(_delta):
 
 	move_and_slide()
 
-	# Turn around at walls OR ledges — never walk off an edge during normal patrol
+	# Turn around at walls OR ledges - never walk off an edge during normal patrol
 	if is_on_wall() or (avoid_ledges and is_on_floor() and is_ledge_ahead(20.0, direction)):
 		direction *= -1
