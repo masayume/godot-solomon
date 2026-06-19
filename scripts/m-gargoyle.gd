@@ -50,8 +50,8 @@ func _physics_process(_delta):
 
 	behave(_delta) # includes move_and_slide()
 
-	if is_on_wall():
-		direction *= -1
+#	if is_on_wall():
+#		direction *= -1
 
 	_check_player_sight(_delta)
 

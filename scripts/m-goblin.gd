@@ -3,6 +3,7 @@ class_name Goblin
 
 var direction := -1
 var gravity = GameConfig.monsterdata.goblin.gravity
+
 # var gravity: float = 980.0
 
 var fall_start_y: float = 0.0
@@ -29,12 +30,22 @@ func _ready():
 
 func _physics_process(_delta):
 
-	velocity.x = direction * GameConfig.monsterdata.goblin.speed
+	if not is_falling_to_death:
+		if was_on_floor and not is_on_floor():
+			fall_start_y = global_position.y   # mark where the fall began
+		was_on_floor = is_on_floor()
 
+		if not is_on_floor() and global_position.y - fall_start_y > tile_size * 1.5:
+			start_fall_death()
+			return
+
+	velocity.x = direction * GameConfig.monsterdata.goblin.speed
+			
 	behave(_delta) # includes move_and_slide()
 
-	if is_on_wall():
-		direction *= -1
+#2DEL (redundant)
+#	if is_on_wall():
+#		direction *= -1
 
 func _setup_hitbox():
 	if not hitbox: return
@@ -72,5 +83,11 @@ func behave(_delta):
 	move_and_slide()
 	
 	# Turn around at walls OR ledges - never walk off an edge during normal patrol
-	if is_on_wall() or (avoid_ledges and is_on_floor() and is_ledge_ahead(20.0, direction)):
+#	if is_on_wall() or (avoid_ledges and is_on_floor() and is_ledge_ahead(20.0, direction)):
+#		direction *= -1
+
+	var wall = is_on_wall()
+	var ledge = avoid_ledges and is_on_floor() and is_ledge_ahead(20.0, direction)
+
+	if wall or ledge:
 		direction *= -1
