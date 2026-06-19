@@ -36,7 +36,7 @@ func _ready():
 
 	# Waits for level_started before shooting
 #	var loader = get_tree().get_first_node_in_group("loader") # or however you reference it
-	# AFTER — walk up to the level root which owns the signal
+	# AFTER - walk up to the level root which owns the signal
 	var loader = get_parent()  # fireballs are added to get_parent(), so it's the level node
 	if loader and loader.has_signal("level_started"):
 		loader.level_started.connect(func():

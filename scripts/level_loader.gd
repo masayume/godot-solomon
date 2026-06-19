@@ -201,7 +201,7 @@ func create_or_destroy_block(pos, dir, crouching, is_player=false):
 
 		# PLAY FOOP FX; Calculate world position for the new block
 
-		# AFTER — spawns foop at target cell where the block will appear
+		# AFTER - spawns foop at target cell where the block will appear
 		# grid_to_local returns LOCAL coordinates. We must convert them to GLOBAL for spawn_fx.
 		var local_pos = GameConfig.grid_to_local(target[0], target[1], tile_size, x_off, y_off)
 		var global_pos = to_global(local_pos) 

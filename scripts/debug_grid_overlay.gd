@@ -1,6 +1,6 @@
 ## debug_grid_overlay.gd
 ## Node2D, child of Level (LevelLoader), z_index = 1000, Process Mode = Inherit
-## Position = (0, 0) — do not set any position offset on this node.
+## Position = (0, 0) - do not set any position offset on this node.
 ##
 ## Scene tree:
 ##   LevelRoot
@@ -33,7 +33,7 @@ var _target_cell := Vector2i(-1, -1)
 func _ready() -> void:
 	_font   = ThemeDB.fallback_font
 	_loader = get_parent()   # direct parent = LevelLoader
-	# No position fix — _cell_rect handles coordinate spaces via to_global/to_local
+	# No position fix - _cell_rect handles coordinate spaces via to_global/to_local
 
 func _process(_dt: float) -> void:
 	if _loader == null:

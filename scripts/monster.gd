@@ -364,7 +364,7 @@ func start_fall_death():
 		return
 	is_falling_to_death = true
 
-	# Disable the hazard hitbox immediately — a falling monster shouldn't hurt the player
+	# Disable the hazard hitbox immediately - a falling monster shouldn't hurt the player
 	var hb = get_node_or_null("HitBox")
 	if hb:
 		hb.monitoring = false

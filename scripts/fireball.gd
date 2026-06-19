@@ -14,6 +14,9 @@ var is_monster_projectile: bool = false
 @onready var ray_front = $RayFront
 @onready var ray_down = $RayDown
 
+@onready var sprite: Sprite2D = $Sprite2D
+var _burn_tween: Tween
+
 func _ready():
 	# Connect to detect monsters
 	
@@ -22,16 +25,20 @@ func _ready():
 	area_entered.connect(_on_area_entered)
 	body_entered.connect(_on_body_entered)
 
-	# Flip sprite to match travel direction for monster projectiles
-#	if is_monster_projectile:
-#		$Sprite2D.flip_h = direction.x < 0
+	_start_burn_effect()
 
-	# Rotate to travel direction, then unflip — rotation handles orientation,
-	# flip_h is redundant and causes the mirrored look
-	var spr = get_node_or_null("Sprite2D") or get_node_or_null("AnimatedSprite2D")
-#	if spr:
-#		spr.flip_h = false  # never flip — rotation alone is enough for 4 directions
+func _start_burn_effect():
+	_burn_tween = create_tween()
+	_burn_tween.set_loops()  # infinite loop
 
+	# Random scale flicker every 120 ms - feels like an unstable flame 
+	_burn_tween.tween_method(_apply_random_scale, 0.0, 1.0, 0.120)
+	_burn_tween.tween_callback(func(): pass)  # placeholder to keep the loop ticking
+
+func _apply_random_scale(_t: float):
+	var s = randf_range(0.75, 1.25)
+	sprite.scale = Vector2(s, s)
+	
 		
 func _physics_process(delta):
 	# 1. Move the fireball
@@ -99,7 +106,7 @@ func _on_body_entered(body):
 				var contact_pos = global_position + (body.global_position - global_position) * 0.5
 				explode(contact_pos)
 				return
-			# else: indestructible — fireball bounces/crawls, don't explode
+			# else: indestructible - fireball bounces/crawls, don't explode
 			else:
 				explode(global_position)	
 
