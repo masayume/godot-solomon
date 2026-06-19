@@ -328,11 +328,10 @@ func toggle_room_activity(active: bool):
 
 func remove_block_at_pos(world_pos: Vector2):
 	# Find the block by node reference, not by coordinate conversion
-	for cell in blocks:
-		if blocks[cell] == world_pos:  # world_pos is actually the block node here
-			blocks[cell].queue_free()
-			blocks.erase(cell)
-			return
+	var cell = GameConfig.world_to_grid(world_pos, x_off, y_off, tile_size)
+	if blocks.has(cell):
+		blocks[cell].queue_free()
+		blocks.erase(cell)
 
 
 func spawn_block_at_world_pos(world_pos: Vector2, type: String):
@@ -341,9 +340,11 @@ func spawn_block_at_world_pos(world_pos: Vector2, type: String):
 	add_block(grid_pos.x, grid_pos.y, type, true)
 
 func replace_block(world_pos: Vector2, new_family: String):
-	# Remove the old one and spawn the new one at the same spot
-	remove_block_at_pos(world_pos)
-	spawn_block_at_world_pos(world_pos, new_family)
+	var cell = GameConfig.world_to_grid(world_pos, x_off, y_off, tile_size)
+	if blocks.has(cell):
+		blocks[cell].queue_free()
+		blocks.erase(cell)
+	add_block(cell.x, cell.y, new_family, true)
 
 func remove_block_node(block_node: Node) -> void:
 	for cell in blocks:
