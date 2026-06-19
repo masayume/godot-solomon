@@ -29,12 +29,16 @@
   ],
 
   "monsters": [
-	{"pos": [6,4],"family":"spark","attached":"bottom"},	
-	{"pos": [12,4],"family":"spark","attached":"bottom"},	
-	{"pos": [9,6],"family":"spark","attached":"bottom"},
-	{"pos": [9,10],"family":"spark","attached":"bottom"},
-	{"pos": [7,8],"family":"spark","attached":"bottom"},
-	{"pos": [11,8],"family":"spark","attached":"bottom"},
+
+	{"pos": [8,10],"family":"spark","attached":"bottom"},
+	{"pos": [8,6],"family":"spark","attached":"bottom"},
+	
+	{"pos": [6,8],"family":"spark","attached":"bottom"},
+	{"pos": [10,8],"family":"spark","attached":"bottom"},
+
+	{"pos": [5,4],"family":"spark","attached":"bottom"},	
+	{"pos": [11,4],"family":"spark","attached":"bottom"},	
+	
 	{"pos": [2,10],"family":"dragon","attached":"bottom"},
 	{"pos": [14,10],"family":"dragon","attached":"bottom"},
 
@@ -42,27 +46,30 @@
 
   "blocks": [
 
-		{"pos": [4,10],"family": "shield"	},
-		{"pos": [12,10],"family": "shield"	},
+		{ "pos": [8,5], "family": "stone"	},
+		{ "pos": [8,9], "family": "stone"	},
+		{ "pos": [6,7], "family": "stone"	},
+		{ "pos": [10,7], "family": "stone"	},
+
+		{ "pos": [5,3], "family": "earth"	},
+		{ "pos": [11,3], "family": "earth"	},
+
+		{ "pos": [4,10],"family": "shield"	},
+		{ "pos": [12,10],"family": "shield"	},
+
 	
 		{ "pos": [2,5], "family": "stone"	},
 		{ "pos": [3,5], "family": "stone"	},
 		{ "pos": [4,5], "family": "stone"	},
 		{ "pos": [1,5], "family": "stone"	},
-		{ "pos": [8,5], "family": "stone"	},
 		{ "pos": [12,5], "family": "stone"	},
 		{ "pos": [13,5], "family": "stone"	},
 		{ "pos": [14,5], "family": "stone"	},
 		{ "pos": [15,5], "family": "stone"	},
-		{ "pos": [10,7], "family": "stone"	},
-		{ "pos": [6,7], "family": "stone"	},
-		{ "pos": [8,9], "family": "stone"	},
 		{ "pos": [1,9], "family": "stone"	},
 		{ "pos": [2,9], "family": "stone"	},
 		{ "pos": [15,9], "family": "stone"	},
 		{ "pos": [14,9], "family": "stone"	},
-		{ "pos": [5,3], "family": "earth"	},
-		{ "pos": [11,3], "family": "earth"	},
 		
 		{"pos": [0,0],"family":"stone"},	{"pos": [16,0],"family":"stone"},
 		{"pos": [0,1],"family":"stone"},	{"pos": [16,1],"family":"stone"},

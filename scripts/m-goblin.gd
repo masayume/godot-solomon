@@ -4,8 +4,6 @@ class_name Goblin
 var direction := -1
 var gravity = GameConfig.monsterdata.goblin.gravity
 
-# var gravity: float = 980.0
-
 var fall_start_y: float = 0.0
 var was_on_floor: bool = true
 
