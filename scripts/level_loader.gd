@@ -99,7 +99,7 @@ func _on_player_fireball(_pos, _dir, _crouching):
 	
 func create_or_destroy_block(pos, dir, crouching, is_player=false):
 
-#	print("[CAST] pos=", pos, " dir=", dir, " crouching=", crouching)
+	print("[CAST] pos=", pos, " dir=", dir, " crouching=", crouching)
 	var half_tile = tile_size / 2.0
 		
 	# 1. Find which cell the player is in
@@ -792,6 +792,7 @@ func add_monster(monster_data): # i.e. monster_data: { "pos": [12.0, 5.0], "fami
 	#LAMBDA for wall impact to pass 'false' for the 'crouching' parameter
 	# Only connect if the specific monster has the signal defined
 	if instance.has_signal("wall_impact"):
+		print("Ghost signal connected")
 		instance.wall_impact.connect(
 			func(pos, dir): create_or_destroy_block(pos, dir, false)
 		)

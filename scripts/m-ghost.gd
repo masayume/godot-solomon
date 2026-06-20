@@ -20,7 +20,6 @@ func _ready():
 	add_to_group("monsters") 
 	super._ready()
 	
-
 	# ghost opacity 80%
 	sprite.modulate.a = 0.7 + (sin(bob_time * 5.0) * 0.1)
 	setup_trail()
@@ -64,6 +63,11 @@ func _physics_process(_delta):
 	behave(_delta) # includes move_and_slide()
 
 	if is_on_wall():
+		#SIGNAL-ghost-2 emits defined signal when it hits the wall
+		# shift the Ghost's reported position forward by half a tile (in its direction of travel) 
+		# before emitting, so it samples from inside the block it's touching rather than from its center
+		var probe_pos = global_position + Vector2(direction * tile_size * 0.5, 0)
+		wall_impact.emit(probe_pos, direction)
 		direction *= -1
 
 func _setup_hitbox():
