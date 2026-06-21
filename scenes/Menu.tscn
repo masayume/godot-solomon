@@ -1,0 +1,28 @@
+[gd_scene format=3 uid="uid://c5qu51qstq1w8"]
+
+[ext_resource type="Script" uid="uid://b80umu2sbupru" path="res://scripts/menu.gd" id="1_xdvgc"]
+[ext_resource type="Texture2D" uid="uid://bs7o88by3wlq0" path="res://resources/backgrounds/Lemegeton-title.png" id="2_upctu"]
+[ext_resource type="FontFile" uid="uid://bhbeh5aarkk70" path="res://resources/fonts/solomons-key.ttf" id="3_11y2r"]
+
+[node name="Menu" type="Control" unique_id=899282154]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_xdvgc")
+
+[node name="BackgroundSprite" type="Sprite2D" parent="." unique_id=1561922208]
+texture = ExtResource("2_upctu")
+
+[node name="StartButton" type="Button" parent="." unique_id=1185655930]
+layout_mode = 0
+offset_right = 8.0
+offset_bottom = 8.0
+
+[node name="PressEnterLabel" type="Label" parent="." unique_id=916788035]
+layout_mode = 0
+offset_left = 509.0
+offset_top = 390.0
+offset_right = 549.0
+offset_bottom = 413.0
+theme_override_colors/font_color = Color(1, 1, 0.09803922, 1)
+theme_override_fonts/font = ExtResource("3_11y2r")
+theme_override_font_sizes/font_size = 22
