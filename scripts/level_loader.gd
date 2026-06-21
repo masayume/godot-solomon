@@ -99,7 +99,7 @@ func _on_player_fireball(_pos, _dir, _crouching):
 	
 func create_or_destroy_block(pos, dir, crouching, is_player=false):
 
-	print("[CAST] pos=", pos, " dir=", dir, " crouching=", crouching)
+#s	print("[CAST] pos=", pos, " dir=", dir, " crouching=", crouching)
 	var half_tile = tile_size / 2.0
 		
 	# 1. Find which cell the player is in

@@ -28,10 +28,10 @@ func _physics_process(_delta):
 
 	behave(_delta) # includes move_and_slide()
 
-#	if is_on_wall():
-#		#SIGNAL-demonhead-2 Emit the signal instead of calling a parent method directly
-#		wall_impact.emit(global_position, direction)				
-#		direction *= -1
+	if is_on_wall():
+		#SIGNAL-demonhead-2 Emit the signal instead of calling a parent method directly
+		wall_impact.emit(global_position, direction)				
+		direction *= -1
 
 func _setup_hitbox():
 	if not hitbox: return
