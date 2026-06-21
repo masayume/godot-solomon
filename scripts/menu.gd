@@ -7,6 +7,8 @@ const GAME_SCENE := "res://scenes/Main.tscn"
 @onready var press_enter: Label = $PressEnterLabel
 @onready var press_s: RichTextLabel = $PressSKey
 @onready var press_x: RichTextLabel = $PressXKey
+@onready var credit1: RichTextLabel = $Credit1
+@onready var credit2: RichTextLabel = $Credit2
 
 func _ready() -> void:
 
@@ -30,9 +32,12 @@ func _ready() -> void:
 
 	press_x.bbcode_enabled = true
 	press_s.bbcode_enabled = true
+	credit1.bbcode_enabled = true
+	credit2.bbcode_enabled = true
 	press_s.text = "Press [color=red]S[/color] to create/destroy blocks"
 	press_x.text = "Press [color=red]X[/color] to shoot a fireball"
-
+	credit1.text = "Solomon's Key (c) [color=red]TECMO[/color] 1986"
+	credit2.text = "[color=red]GODOT[/color] remake by masayume 2026"
 
 	$StartButton.pressed.connect(_on_start_pressed)
 	set_process_unhandled_input(true)
