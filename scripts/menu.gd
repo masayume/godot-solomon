@@ -4,7 +4,9 @@ extends Control
 const GAME_SCENE := "res://scenes/Main.tscn"
 
 @onready var bg_sprite: Sprite2D = $BackgroundSprite
-@onready var press_label: Label = $PressEnterLabel
+@onready var press_enter: Label = $PressEnterLabel
+@onready var press_s: Label = $PressSKey
+@onready var press_x: Label = $PressXKey
 
 func _ready() -> void:
 
@@ -23,8 +25,11 @@ func _ready() -> void:
 	bg_sprite.position.y = screen_size.y / 2.0
 
 	### Press Enter Text
-	press_label.text = "Press Enter to start"
+	press_enter.text = "Press Enter to start"
 	_blink_label()
+
+	press_x.text = "Press X to create/destroy blocks"
+	press_s.text = "Press S so shoot a fireball"
 
 
 	$StartButton.pressed.connect(_on_start_pressed)
@@ -40,6 +45,6 @@ func _on_start_pressed() -> void:
 func _blink_label() -> void:
 	var t := create_tween()
 	t.set_loops()
-	t.tween_property(press_label, "modulate:a", 0.0, 0.8)
-	t.tween_property(press_label, "modulate:a", 1.0, 0.8)
+	t.tween_property(press_enter, "modulate:a", 0.0, 0.8)
+	t.tween_property(press_enter, "modulate:a", 1.0, 0.8)
 	
