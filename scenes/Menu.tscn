@@ -19,28 +19,46 @@ offset_bottom = 8.0
 
 [node name="PressEnterLabel" type="Label" parent="." unique_id=916788035]
 layout_mode = 0
-offset_left = 509.0
-offset_top = 390.0
-offset_right = 549.0
-offset_bottom = 413.0
+offset_left = 504.0
+offset_top = 394.0
+offset_right = 544.0
+offset_bottom = 417.0
 theme_override_colors/font_color = Color(1, 1, 0.09803922, 1)
 theme_override_fonts/font = ExtResource("3_11y2r")
 theme_override_font_sizes/font_size = 22
 
-[node name="PressXKey" type="Label" parent="." unique_id=174885296]
+[node name="PressSKey" type="RichTextLabel" parent="." unique_id=194217676]
 layout_mode = 0
-offset_left = 370.0
-offset_top = 460.0
-offset_right = 410.0
-offset_bottom = 483.0
-theme_override_fonts/font = ExtResource("3_11y2r")
-theme_override_font_sizes/font_size = 22
+offset_left = 372.0
+offset_top = 454.0
+offset_right = 1095.0
+offset_bottom = 496.0
+theme_override_fonts/normal_font = ExtResource("3_11y2r")
+theme_override_fonts/bold_font = ExtResource("3_11y2r")
+theme_override_fonts/bold_italics_font = ExtResource("3_11y2r")
+theme_override_fonts/italics_font = ExtResource("3_11y2r")
+theme_override_fonts/mono_font = ExtResource("3_11y2r")
+theme_override_font_sizes/normal_font_size = 22
+theme_override_font_sizes/bold_font_size = 22
+theme_override_font_sizes/bold_italics_font_size = 22
+theme_override_font_sizes/italics_font_size = 22
+theme_override_font_sizes/mono_font_size = 22
+bbcode_enabled = true
 
-[node name="PressSKey" type="Label" parent="." unique_id=2100678939]
+[node name="PressXKey" type="RichTextLabel" parent="." unique_id=763730215]
 layout_mode = 0
-offset_left = 420.0
-offset_top = 494.0
-offset_right = 460.0
-offset_bottom = 517.0
-theme_override_fonts/font = ExtResource("3_11y2r")
-theme_override_font_sizes/font_size = 22
+offset_left = 410.0
+offset_top = 508.0
+offset_right = 1142.0
+offset_bottom = 550.0
+theme_override_fonts/normal_font = ExtResource("3_11y2r")
+theme_override_fonts/bold_font = ExtResource("3_11y2r")
+theme_override_fonts/bold_italics_font = ExtResource("3_11y2r")
+theme_override_fonts/italics_font = ExtResource("3_11y2r")
+theme_override_fonts/mono_font = ExtResource("3_11y2r")
+theme_override_font_sizes/normal_font_size = 22
+theme_override_font_sizes/bold_font_size = 22
+theme_override_font_sizes/bold_italics_font_size = 22
+theme_override_font_sizes/italics_font_size = 22
+theme_override_font_sizes/mono_font_size = 22
+bbcode_enabled = true

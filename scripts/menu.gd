@@ -5,8 +5,8 @@ const GAME_SCENE := "res://scenes/Main.tscn"
 
 @onready var bg_sprite: Sprite2D = $BackgroundSprite
 @onready var press_enter: Label = $PressEnterLabel
-@onready var press_s: Label = $PressSKey
-@onready var press_x: Label = $PressXKey
+@onready var press_s: RichTextLabel = $PressSKey
+@onready var press_x: RichTextLabel = $PressXKey
 
 func _ready() -> void:
 
@@ -28,8 +28,10 @@ func _ready() -> void:
 	press_enter.text = "Press Enter to start"
 	_blink_label()
 
-	press_x.text = "Press X to create/destroy blocks"
-	press_s.text = "Press S so shoot a fireball"
+	press_x.bbcode_enabled = true
+	press_s.bbcode_enabled = true
+	press_s.text = "Press [color=red]S[/color] to create/destroy blocks"
+	press_x.text = "Press [color=red]X[/color] to shoot a fireball"
 
 
 	$StartButton.pressed.connect(_on_start_pressed)
