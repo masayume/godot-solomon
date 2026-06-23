@@ -7,14 +7,14 @@
   "block_width": 16,
   "block_height": 12,
 
-  "player_start": [6, 10],
+  "player_start": [5, 9],
 
   "items": [
 
 	{"pos": [7,10],"family":"red-potion"},
 
 	{"pos": [8,11],"family":"door"},	
-	{"pos": [5,9],"family":"key"},	
+	{"pos": [3,9],"family":"key"},	
 	{"pos": [8,10],"family":"gold-bell"},	
 	{"pos": [7,8],"family":"fire-potion"},	
 	{"pos": [9,8],"family":"fire-potion"},	
@@ -45,7 +45,6 @@
 
 	{"pos": [12,11],"family":"ghost", "direction":"right"},
 
-	{"pos": [4,8],"family":"spark","attached":"left"},
 
 	{"pos": [8,4],"family":"goblin"},
 
@@ -55,14 +54,17 @@
 
 	{"pos": [13,10],"family":"gargoyle"},
 	{"pos": [15,11],"family":"pannel", "shoot_direction":"left"},
+
+	{"pos": [13,10],"family":"ghost"},
 	
   ],
 	
   "monsters": [
 
+	{"pos": [4,8],"family":"spark","attached":"left"},
+
 	{"pos": [4,5],"family":"blueflame"},	{"pos": [12,5],"family":"blueflame"},
 
-	{"pos": [13,10],"family":"ghost"},
 
 	
   ],
