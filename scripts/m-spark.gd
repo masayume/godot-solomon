@@ -66,6 +66,8 @@ func _ready():
 		cell = Vector2i(3, row)
 		print("[BLOCK CHECK](col 3) cell=", cell, " has_block=", loader.blocks.has(cell))
 
+	var cell_here = GameConfig.world_to_grid(Vector2(-85.00317, -127.0), loader.x_off, loader.y_off, loader.tile_size)
+	print("[WHAT IS BELOW] world_y=-127 resolves to cell=", cell_here, " has_block=", loader.blocks.has(cell_here))
 		
 func _setup_hitbox():
 	if not hitbox: return
@@ -89,23 +91,47 @@ func _physics_process(_delta):
 	behave(_delta) # includes move_and_slide()
 
 func behave(_delta):
+	
+	print("[VELOCITY-CHECK] rotation=", rad_to_deg(rotation), " move_dir=", Vector2.RIGHT.rotated(rotation), " velocity=", velocity, " direction=", direction)
+
 	up_direction = surface_normals.get(current_surface, Vector2.UP)
 	var move_dir = Vector2.RIGHT.rotated(rotation)
+
+	print("[SPEED-CHECK] speed=", GameConfig.monsterdata[family].speed, " move_dir=", move_dir, " direction=", direction, " product=", move_dir * direction * GameConfig.monsterdata[family].speed)
+
 	velocity = move_dir * direction * GameConfig.monsterdata[family].speed
 	move_and_slide()
 
+	if get_slide_collision_count() > 0:
+		for i in range(get_slide_collision_count()):
+			var col = get_slide_collision(i)
+			print("[COLLISION] collider=", col.get_collider(), " normal=", col.get_normal(), " position=", col.get_position())
+		
 	var ahead_dir = move_dir * direction
 	var concave_hit = _raycast_from(global_position, ahead_dir, SHORT_PROBE)
+#	var concave_hit = _is_wall_ahead(ahead_dir)
 	if concave_hit:
-		print("[STOP-CONCAVE] pos=", global_position, " ahead_dir=", ahead_dir)
+
+		print("[CONCAVE] pos=", global_position, " surface_before=", current_surface,
+			  " rotation_before=", rad_to_deg(rotation), " ahead_dir=", ahead_dir)
+
 		rotation += PI/2 * direction
 		_update_current_surface()
-		global_position -= ahead_dir * 4.0
-		return
+		global_position -= ahead_dir * 8.0
 
+		print("[CONCAVE] surface_after=", current_surface, " rotation_after=", rad_to_deg(rotation))
+		
+#		return
+		pass
+
+#	var still_attached = _is_still_attached()
 	var still_attached = _raycast_from(global_position, -up_direction, PROBE_DIST)
+
+#	print("[ATTACH] surface=", current_surface, " up_direction=", up_direction, " probe_dir=", -up_direction, " attached=", still_attached)
+	print("[ATTACH] pos=", global_position, " surface=", current_surface, " attached=", still_attached)
+
 	if still_attached:
-		return
+		return # Still crawling normally, nothing to do
 
 #	print("[STOP-CONVEX-CHECK] pos=", global_position, " surface=", current_surface, " still_attached=", still_attached)
 
@@ -123,15 +149,26 @@ func behave(_delta):
 			trial_pos = candidate_pos
 			break
 
+	print("[CONVEX-CHECK] pos=", global_position, " surface=", current_surface,
+		  " prospective_surface=", prospective_surface, " found=", found)
+
 	if found:
 		rotation = prospective_rotation
 		current_surface = prospective_surface
 		global_position = trial_pos
 #		direction *= -1   # ADD THIS — convex wrap reverses effective travel direction		
 		print("[TURN-CONVEX] surface=", current_surface, " rotation=", rad_to_deg(rotation), " direction=", direction, " move_dir_after=", Vector2.RIGHT.rotated(rotation))
+		pass
 	else:
 		velocity.y += gravity * _delta
 
+func _is_wall_ahead(ahead_dir: Vector2) -> bool:
+	if _raycast_from(global_position, ahead_dir, SHORT_PROBE):
+		return true
+	if _raycast_from(global_position, -ahead_dir, SHORT_PROBE):
+		return true
+	return false
+	
 func behave2DEL(_delta):
 	up_direction = surface_normals.get(current_surface, Vector2.UP)
 	var move_dir = Vector2.RIGHT.rotated(rotation)
@@ -147,7 +184,7 @@ func behave2DEL(_delta):
 	if concave_hit:
 		rotation += PI/2 * direction
 		_update_current_surface()
-		global_position -= ahead_dir * 4.0
+		global_position -= ahead_dir * 8.0
 		print("[CONCAVE TURN] new_rotation=", rad_to_deg(rotation), " new_surface=", current_surface)
 		return
 			
@@ -193,6 +230,15 @@ func _raycast_from(origin: Vector2, dir: Vector2, distance: float) -> bool:
 	var result = space_state.intersect_ray(query)
 	return not result.is_empty()
 
+func _is_still_attached() -> bool:
+	# Try both perpendicular directions — whichever finds a wall is correct.
+	# This avoids relying on surface_normals' sign convention, which has
+	# proven unreliable to reason about directly.
+	var hit_down = _raycast_from(global_position, up_direction, PROBE_DIST)
+	var hit_up = _raycast_from(global_position, -up_direction, PROBE_DIST)
+	print("[ATTACH-DETAIL] pos=", global_position, " probe_down(", up_direction, ")=", hit_down,
+		  " probe_up(", -up_direction, ")=", hit_up)
+	return hit_down or hit_up
 
 func _raycast_hits_wall(dir: Vector2, distance: float) -> bool:
 	var space_state = get_world_2d().direct_space_state

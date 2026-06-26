@@ -195,7 +195,7 @@ func _physics_process(delta):
 
 		# Snap global_position to the nearest grid cell center before emitting.
 		# This eliminates all floor() sensitivity to sub-pixel position and jump height.
-		var half   : float = tile_size / 2.0
+		var _half   : float = tile_size / 2.0
 
 #		var snap_x : float = floor((global_position.x - tile_size) / tile_size) * tile_size
 #		# AFTER — shift up by quarter tile to avoid sitting on cell boundary

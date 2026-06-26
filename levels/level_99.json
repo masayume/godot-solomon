@@ -56,12 +56,14 @@
 	{"pos": [15,11],"family":"pannel", "shoot_direction":"left"},
 
 	{"pos": [13,10],"family":"ghost"},
+
+	{"pos": [12,10],"family":"spark","attached":"bottom"},
 	
   ],
 	
   "monsters": [
 
-	{"pos": [4,8],"family":"spark","attached":"left"},
+	{"pos": [2,8],"family":"spark","attached":"right"},
 
 	{"pos": [4,5],"family":"blueflame"},	{"pos": [12,5],"family":"blueflame"},
 
@@ -70,6 +72,8 @@
   ],
 
   "blocks": [
+
+	{"pos": [4,9],"family":"earth"},	
 
 	{"pos": [10,9],"family":"earth"},	
 

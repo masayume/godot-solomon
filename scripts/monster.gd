@@ -349,14 +349,7 @@ func is_ledge_ahead(ahead_offset: float, dir: int) -> bool:
 	query.exclude = [self]
 	var result = space_state.intersect_ray(query)
 	return result.is_empty()   # empty = no ground found = ledge
-	# Find the bottom of this monster's collision shape, not just its origin
-	var collider = get_node_or_null("CollisionShape2D")
-	var feet_y_offset = 0.0
-	if collider and collider.shape:
-		feet_y_offset = collider.shape.get_rect().size.y / 2.0 + collider.position.y
-
-	return result.is_empty()
-
+	
 ## Call this from take_damage(), block-destroyed signals, or anywhere the floor
 ## disappears out from under a monster mid-walk.
 func start_fall_death():

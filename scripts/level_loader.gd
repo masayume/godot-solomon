@@ -922,6 +922,7 @@ func _on_bonus_tick():
 	if current_bonus <= 0:
 		current_bonus = 0
 		bonus_timer.stop()
+
 		room_outro.time_over_outro()
 	
 	_update_timer_display()
