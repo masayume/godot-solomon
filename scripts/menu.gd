@@ -43,7 +43,7 @@ func _ready() -> void:
 	set_process_unhandled_input(true)
 	
 func _unhandled_input(event: InputEvent) -> void:
-	if event.is_action_pressed("ui_accept"):
+	if event.is_action_pressed("start"):
 		_on_start_pressed()
 
 func _on_start_pressed() -> void:
