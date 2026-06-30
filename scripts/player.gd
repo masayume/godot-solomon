@@ -20,6 +20,8 @@ var crouch_texture = preload("res://sprites/player/player-crouch-frames.png")
 var idle_texture = preload("res://sprites/player/player-idle-frames.png")
 var score_tween: Tween
 
+var jump_delay_timer := 0.0
+
 var flags = []
 
 @export var block_scene: PackedScene
@@ -102,7 +104,7 @@ func _physics_process(delta):
 			else:
 				change_state("jump") # Add a [jump] section to player.cfg with a sound
 
-			change_state("jump")
+#			change_state("jump")
 		elif crouching:
 			if velocity.x != 0:
 				change_state("crouchwalk")
@@ -134,8 +136,16 @@ func _physics_process(delta):
 	velocity.x = direction * speed
 
 	# Jump
-	if Input.is_action_just_pressed("jump") and is_on_floor():
-		velocity.y = -jump_force
+#	if Input.is_action_just_pressed("jump") and is_on_floor():
+#		velocity.y = -jump_force
+
+	# Jump Input
+	if Input.is_action_just_pressed("jump") and is_on_floor() and jump_delay_timer <= 0.0:
+		# 0.012 seconds is 12ms. 
+		# (Note: at 60fps delta is ~0.016, so this will trigger the launch on the very next frame)
+		jump_delay_timer = 0.012 
+		velocity.x = 0
+
 
 	# PRESS "x" TO CAST FIREBALL
 	if Input.is_action_just_pressed("fireball"):
@@ -212,6 +222,20 @@ func _physics_process(delta):
 
 	if crouching: velocity.x = 0
 
+	# Handle the pre-jump delay countdown
+	if jump_delay_timer > 0.0:
+		jump_delay_timer -= delta
+		if jump_delay_timer <= 0.0:
+			# The delay is over! Launch the player upward
+			velocity.y = -jump_force
+			change_state("jump")
+		else:
+			# While waiting, force the crouch state and freeze horizontal speed
+			velocity.x = 0
+			change_state("crouch")
+			move_and_slide()
+			return # Skip the rest of the movement/input logic for this frame
+			
 	# Move the body
 	move_and_slide()
 
@@ -251,35 +275,6 @@ func handle_head_bump(block):
 	await get_tree().create_timer(0.12).timeout
 	is_hit = false
 
-func handle_head_bumpOLD(block):
-
-	if is_hit: 
-		return # Don't trigger multiple times per jump
-
-	is_hit = true
-
-	# Trigger the visual 'hit' state defined in player.cfg
-	change_state("hit")
-	
-	# Ensure the collider is a block with a 'family' property 
-	if not block or not block.get("family"):
-		return
-		
-	var type = block.family
-	
-	if type == "earth":
-		# Step 1: Replace earth with earthcrush
-		level_loader.replace_block(block.global_position, "earthcrush")
-		_play_secondary_sfx(type)
-		
-	elif type == "earthcrush":
-		# Step 2: Remove the earthcrush block entirely
-		level_loader.remove_block_at_pos(block.global_position)
-		_play_secondary_sfx(type)
-
-	# Wait for a fraction of a second before allowing state changes again
-	await get_tree().create_timer(0.12).timeout
-	is_hit = false
 
 func _play_secondary_sfx(type):
 	# Play the sound on the dedicated SFX player so it isn't cut off by movement sounds 
