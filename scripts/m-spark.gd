@@ -28,12 +28,16 @@ const SHORT_PROBE := 10.0   # tight distance to avoid hitting unrelated nearby b
 
 var last_floor_position: Vector2 = Vector2.ZERO
 
+# --- DEBUG VARIABLES ---
+var debug_rays: Array = []
+@export var show_debug_rays: bool = false # Set to true when you want to see them
+
 func _ready():
 	
 	# FIX: Target the Sprite node directly for transparency
-	if has_node("Sprite2D"):
+	if has_node("Sprite2D") and show_debug_rays:
 		$Sprite2D.modulate.a = 0.5
-	elif has_node("AnimatedSprite2D"):
+	elif has_node("AnimatedSprite2D") and show_debug_rays:
 		$AnimatedSprite2D.modulate.a = 0.5
 	
 	family = "spark"
@@ -57,7 +61,7 @@ func _ready():
 	hitbox = get_node_or_null("HitBox")
 	_setup_hitbox()
 
-	print("Spark layer:", collision_layer, " mask: ", collision_mask)
+#	print("Spark layer:", collision_layer, " mask: ", collision_mask)
 	# Ghost HitBox
 	collision_layer = 4   # (or anything, not important)
 	collision_mask = 1    # must match Player layer	
@@ -274,10 +278,14 @@ func _is_wall_ahead(ahead_dir: Vector2) -> bool:
 		return true
 	return false
 
-# --- DEBUG VARIABLES ---
-var debug_rays: Array = []
 
 func _draw():
+
+###DEBUG Spark raycasts
+	# If the toggle is off, do not draw the rays
+	if not show_debug_rays:
+		return
+		
 	# This native Godot function paints shapes on the screen.
 	for ray in debug_rays:
 		draw_line(ray.start, ray.end, ray.color, 2.0)
@@ -316,7 +324,7 @@ func _surface_for_rotation(rot: float) -> String:
 
 func _update_current_surface() -> void:
 	current_surface = _surface_for_rotation(rotation)
-	print("Spark swapped surface to: ", current_surface)
+#	print("Spark swapped surface to: ", current_surface)
 
 func _update_current_surfaceOLD():
 	# Use the current rotation (snapped to 90 deg) to find the new surface
