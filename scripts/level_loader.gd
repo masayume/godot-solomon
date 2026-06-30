@@ -308,8 +308,6 @@ func toggle_monsters(active: bool):
 		get_tree().call_group("monstergroup", "set_physics_process", active)
 
 func toggle_room_activity(active: bool):
-	# Toggle monsters
-	get_tree().call_group("monstergroup", "set_physics_process", active)
 	
 	# Visual darkening or revealing of elements 
 	for item in get_tree().get_nodes_in_group("itemgroup"):
@@ -325,6 +323,13 @@ func toggle_room_activity(active: bool):
 		
 	for block in get_tree().get_nodes_in_group("blockgroup"):
 		block.visible = active
+
+	# Toggle monsters
+	get_tree().call_group("monstergroup", "set_physics_process", active)
+
+	print("Start")
+	await get_tree().create_timer(5.0).timeout
+	print("Resumed after 5 seconds")
 
 func remove_block_at_pos(world_pos: Vector2):
 	# Find the block by node reference, not by coordinate conversion

@@ -294,6 +294,16 @@ func _reveal_all_content():
 		node.modulate.a = 1.0
 		node.visible = true
 	
+	if bg:
+		var tween = loader.create_tween()
+		# Fading from Black to a slightly dimmed state or full color
+		tween.tween_property(bg, "modulate", Color(0.5, 0.5, 0.5, 0.6), 0.5)\
+			.set_trans(Tween.TRANS_SINE)\
+			.set_ease(Tween.EASE_IN_OUT)
+
+	else:
+		print("Warning: Background node not found during play_intro")
+
 	loader.level_started.emit()
 	loader.get_tree().call_group("monstergroup", "set_physics_process", true)
 	var player = loader.get_tree().get_first_node_in_group("playergroup")
@@ -305,13 +315,3 @@ func _reveal_all_content():
 	GameManager.is_player_active = true
 
 	loader.start_level_timer()
-
-	if bg:
-		var tween = loader.create_tween()
-		# Fading from Black to a slightly dimmed state or full color
-		tween.tween_property(bg, "modulate", Color(0.5, 0.5, 0.5, 0.6), 0.5)\
-			.set_trans(Tween.TRANS_SINE)\
-			.set_ease(Tween.EASE_IN_OUT)
-
-	else:
-		print("Warning: Background node not found during play_intro")

@@ -73,6 +73,9 @@
 
   "blocks": [
 
+	{"pos": [1,8],"family":"earth"},	
+	{"pos": [2,7],"family":"earth"},	
+
 	{"pos": [4,9],"family":"earth"},	
 
 	{"pos": [10,9],"family":"earth"},	
