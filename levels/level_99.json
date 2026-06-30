@@ -58,12 +58,13 @@
 	{"pos": [13,10],"family":"ghost"},
 
 	{"pos": [12,10],"family":"spark","attached":"bottom"},
+	{"pos": [2,8],"family":"spark","attached":"right"},
 	
   ],
 	
   "monsters": [
 
-	{"pos": [2,8],"family":"spark","attached":"right"},
+	{"pos": [8,4],"family":"dragon"},
 
 	{"pos": [4,5],"family":"blueflame"},	{"pos": [12,5],"family":"blueflame"},
 
