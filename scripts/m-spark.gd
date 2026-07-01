@@ -67,7 +67,7 @@ func _ready():
 	collision_mask = 1    # must match Player layer	
 
 	# Run this once, e.g. in Spark's _ready() after a short delay, or via a button
-	var loader = get_tree().get_first_node_in_group("level_loader")
+#	var loader = get_tree().get_first_node_in_group("level_loader")
 
 ###DEBUG
 #	var block_world_pos = GameConfig.grid_to_local(4, 10, loader.tile_size, loader.x_off, loader.y_off)
