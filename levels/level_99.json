@@ -11,7 +11,7 @@
 
   "items": [
 
-	{"pos": [7,10],"family":"red-potion"},
+	{"pos": [7,11],"family":"red-potion"},
 
 	{"pos": [8,11],"family":"door"},	
 	{"pos": [3,9],"family":"key"},	
@@ -64,7 +64,9 @@
 	
   "monsters": [
 
-	{"pos": [8,4],"family":"dragon"},
+
+	{"pos": [8,10],"family":"dragon"},
+	{"pos": [12,11],"family":"ghost", "direction":"right"},
 
 	{"pos": [4,5],"family":"blueflame"},	{"pos": [12,5],"family":"blueflame"},
 

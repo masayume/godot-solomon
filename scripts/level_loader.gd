@@ -663,7 +663,7 @@ func _spawn_level_content_hidden(data):
 
 	var items_to_spawn : Array
 
-	print("[DATA]: ", data)
+#	print("[DATA]: ", data)
 	
 	if data.has("items_configs") and data["items_configs"].size() > 0:
 		var config_index : int = randi() % data["items_configs"].size()
@@ -797,7 +797,7 @@ func add_monster(monster_data): # i.e. monster_data: { "pos": [12.0, 5.0], "fami
 	#LAMBDA for wall impact to pass 'false' for the 'crouching' parameter
 	# Only connect if the specific monster has the signal defined
 	if instance.has_signal("wall_impact"):
-		print("Ghost signal connected")
+		print("SIGNAL: ", instance.name, " signal connected")
 		instance.wall_impact.connect(
 			func(pos, dir): create_or_destroy_block(pos, dir, false)
 		)

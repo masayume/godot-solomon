@@ -9,6 +9,9 @@ var was_on_floor: bool = true
 
 var hitbox: Area2D 
 
+#SIGNAL-dragon-1 Define the signal with parameters able to destroy a block when hit
+signal wall_impact(pos: Vector2, dir: int)
+
 func _ready():
 	family = "dragon"
 	add_to_group("monsters") 
@@ -37,9 +40,29 @@ func _physics_process(_delta):
 
 	behave(_delta) # includes move_and_slide()
 
-#	if is_on_wall():
+###DEBUG
+#	print("on_wall=", is_on_wall(), " slides=", get_slide_collision_count(),
+#		" my_layer=", collision_layer, " my_mask=", collision_mask,
+#		" collider_disabled=", collider.disabled)
+#	for i in get_slide_collision_count():
+#		var c = get_slide_collision(i)
+#		print("  -> hit:", c.get_collider().name, " layer=", c.get_collider().collision_layer)
+
+
+	if is_on_wall():
+		#SIGNAL-dragon-2 emits defined signal when it hits the wall
+		# Pass the Dragon's own position (like the player's cast does).
+		# create_or_destroy_block() already steps one tile forward in
+		# `dir` to find the target cell, so pre-shifting here caused a
+		# double offset that overshot past the actual block.
+#		wall_impact.emit(global_position, direction)
 #		direction *= -1
 
+		var probe_pos = global_position + Vector2(direction * tile_size * 0.5, 0)
+		wall_impact.emit(probe_pos, direction)
+		direction *= -1
+		
+		
 func _setup_hitbox():
 	if not hitbox: return
 	
@@ -79,8 +102,8 @@ func behave(_delta):
 #	if is_on_wall() or (avoid_ledges and is_on_floor() and is_ledge_ahead(20.0, direction)):
 #		direction *= -1
 
-	var wall = is_on_wall()
+#	var wall = is_on_wall()
 	var ledge = avoid_ledges and is_on_floor() and is_ledge_ahead(20.0, direction)
 
-	if wall or ledge:
+	if ledge:
 		direction *= -1
