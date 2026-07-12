@@ -7,7 +7,7 @@
   "block_width": 16,
   "block_height": 12,
 
-  "player_start": [4, 10],
+  "player_start": [12, 10],
 
   "items": [
 
@@ -65,8 +65,8 @@
   "monsters": [
 
 
-	{"pos": [7,10],"family":"dragon", "direction":"right"},
-	{"pos": [12,11],"family":"ghost", "direction":"right"},
+	{"pos": [7,10],"family":"dragon"},
+	{"pos": [12,11],"family":"ghost"},
 
 	{"pos": [4,5],"family":"blueflame"},	{"pos": [12,5],"family":"blueflame"},
 

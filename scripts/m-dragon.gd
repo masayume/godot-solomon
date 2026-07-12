@@ -43,9 +43,11 @@ func _ready():
 	collision_layer = 4   # (or anything, not important)
 	collision_mask = 1    # must match Player layer	
 	
-	if stats.get("direction", "left"):
+	if stats.get("direction") == "left":
 		direction = 1
-
+	elif stats.get("direction") == "right":
+		direction = -1
+		
 	state_animation_finished.connect(_on_state_animation_finished)
 
 
