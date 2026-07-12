@@ -43,6 +43,9 @@ func _ready():
 	collision_layer = 4   # (or anything, not important)
 	collision_mask = 1    # must match Player layer	
 	
+	if stats.get("direction", "left"):
+		direction = 1
+
 	state_animation_finished.connect(_on_state_animation_finished)
 
 
@@ -145,9 +148,26 @@ func _breathe_fire():
 	fb.is_monster_projectile = true
 	fb.loader = get_tree().get_first_node_in_group("level_loader")
  
+	# Same idea as Pannel's SPAWN_OFFSETS: the sprite pivot isn't symmetric,
+	# so LEFT needs its own tuned constant - it's not just a mirror/negation
+	# of RIGHT's value. RIGHT below is confirmed correct; nudge LEFT's
+	# Vector2 until the fireball lines up with the mouth when facing left.
+	const BREATH_SPAWN_OFFSETS := {
+		Vector2.RIGHT: Vector2(-0, 0),
+		Vector2.LEFT:  Vector2(-120, 0),  # TODO: tweak until it lines up
+	}
+
 	var shoot_dir = Vector2(direction, 0)
 	var spawn_distance = 40.0  # tweak to match the Dragon's mouth/sprite pivot
-	fb.global_position = global_position + shoot_dir * spawn_distance
+
+ 
+	# Spawn offset uses -direction (not +direction). The math for "front"
+	# was inverted relative to the Dragon's sprite/pivot, which is why the
+	# fireball was appearing on the tail side instead of the mouth side.
+	# Travel direction (shoot_dir/rotation below) is untouched - that part
+	# was already correct.
+#	fb.global_position = global_position + shoot_dir * spawn_distance
+	fb.global_position = global_position + BREATH_SPAWN_OFFSETS[shoot_dir]
 	fb.direction = shoot_dir
 	fb.rotation = shoot_dir.angle()
  

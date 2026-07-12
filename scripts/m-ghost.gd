@@ -29,7 +29,10 @@ func _ready():
 
 	# 3. SAFELY get gravity from the loaded stats, falling back to the default if missing
 	gravity = stats.get("gravity", gravity)
-		
+
+	if stats.get("direction", "left"):
+		direction = 1
+	
 	print("Ghost layer:", collision_layer, " mask: ", collision_mask)
 	# Ghost HitBox
 	collision_layer = 4   # (or anything, not important)
