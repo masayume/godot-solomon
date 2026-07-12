@@ -1,5 +1,11 @@
 extends Area2D
 
+# DESCRIPTION
+# handles both block-destruction and player-kill via is_monster_projectile, 
+# the blockgroup check, and trigger_death_from_monster(). 
+# Pannel's _attempt_shoot() is basically the template to follow for the Dragon's breath as well
+#
+
 var loader : Node = null
 
 @export var speed: float = 300.0

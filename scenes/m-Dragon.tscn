@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://nfjfyru0bmiq"]
 
 [ext_resource type="Script" uid="uid://cva1ed8062pi8" path="res://scripts/m-dragon.gd" id="1_pjlxh"]
+[ext_resource type="PackedScene" uid="uid://dv5huh2s3f0bf" path="res://scenes/p-Fireball.tscn" id="2_xrpnb"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_xrpnb"]
 size = Vector2(44, 50)
@@ -8,6 +9,7 @@ size = Vector2(44, 50)
 [node name="Dragon" type="CharacterBody2D" unique_id=1208613987]
 collision_layer = 2
 script = ExtResource("1_pjlxh")
+fireball_scene = ExtResource("2_xrpnb")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1493609481]
 shape = SubResource("RectangleShape2D_xrpnb")
