@@ -35,7 +35,7 @@ func _ready():
 	elif stats.get("direction") == "right":
 		direction = -1
 	
-	print("Ghost layer:", collision_layer, " mask: ", collision_mask)
+#	print("Ghost layer:", collision_layer, " mask: ", collision_mask)
 	# Ghost HitBox
 	collision_layer = 4   # (or anything, not important)
 	collision_mask = 1    # must match Player layer	
@@ -77,7 +77,7 @@ func _physics_process(_delta):
 
 func _setup_hitbox():
 	if not hitbox: return
-	
+			
 	# Ensure Hitbox is set to detect the Player (Layer 2)
 	hitbox.collision_layer = 4 # Hitbox needs to be found by fireballs...
 	hitbox.collision_mask = 2  # Monitor the Player's Layer

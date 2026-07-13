@@ -77,6 +77,10 @@ func _align_to_surface(normal: Vector2):
 	rotation = direction.angle()
 	
 func _on_area_entered(area):
+
+###DEBUG fireball hit
+	print("fireball area_entered: ", area.name, " owner=", area.get_parent().name, " groups=", area.get_parent().get_groups())
+
 	var target = area
 	# Check if the area itself or its parent is a monster
 	if not target.is_in_group("monsters"):
@@ -116,6 +120,12 @@ func _on_body_entered(body):
 			else:
 				explode(global_position)	
 
+	# 
+	if body.is_in_group("monsters") and body.has_method("take_damage"):
+		body.take_damage()
+		explode()
+		return
+		
 	# If we hit something we can't climb (like a solid door)
 	if not body.is_in_group("blockgroup"):
 		explode()

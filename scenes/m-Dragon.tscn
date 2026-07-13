@@ -7,7 +7,8 @@
 size = Vector2(44, 50)
 
 [node name="Dragon" type="CharacterBody2D" unique_id=1208613987]
-collision_layer = 2
+collision_layer = 0
+collision_mask = 0
 script = ExtResource("1_pjlxh")
 fireball_scene = ExtResource("2_xrpnb")
 

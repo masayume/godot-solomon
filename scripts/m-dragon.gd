@@ -16,7 +16,7 @@ var hitbox: Area2D
 
 # Fireball Logic
 @export var fireball_scene: PackedScene
-@export var detect_range: float = 220.0     # how far ahead the Dragon can "see"
+@export var detect_range: float = 80.0     # how far ahead the Dragon can "see"
 @export var charge_time: float = 0.8        # seconds spent winding up before breathing fire
 @export var breath_cooldown: float = 2.5    # seconds before it can charge again after breathing
 
@@ -37,7 +37,10 @@ func _ready():
 	
 	hitbox = get_node_or_null("HitBox")
 	_setup_hitbox()
-	
+#	print("Dragon hitbox found: ", hitbox)
+###DEBUG Hitbox
+	print("Dragon HitBox monitorable=", hitbox.monitorable, " monitoring=", hitbox.monitoring,
+	  " layer=", hitbox.collision_layer, " children=", hitbox.get_children())	
 #	print("Dragon layer:", collision_layer, " mask: ", collision_mask)
 	# Dragon HitBox
 	collision_layer = 4   # (or anything, not important)
