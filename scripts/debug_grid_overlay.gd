@@ -1,11 +1,13 @@
-## debug_grid_overlay.gd
-## Node2D, child of Level (LevelLoader), z_index = 1000, Process Mode = Inherit
-## Position = (0, 0) - do not set any position offset on this node.
+###DEBUG debug grid overlay
+## ENABLE/DISABLE adding/removing the debug_script_overlay.gd in Script
 ##
 ## Scene tree:
 ##   LevelRoot
 ##   └── Level  (LevelLoader)
-##       └── DebugGridOverlay  ← this script
+##       └── DebugOverlay  ← add this script here
+##
+## Node2D, child of Level (LevelLoader), z_index = 1000, Process Mode = Inherit
+## Position = (0, 0) - do not set any position offset on this node.
 
 extends Node2D
 
@@ -43,9 +45,20 @@ func _process(_dt: float) -> void:
 	if ts == null or float(ts) < 2.0:
 		return
 	_ts   = int(float(ts))
-	_xoff = float(_loader.get("x_off") or 0.0)
-	_yoff = float(_loader.get("y_off") or 0.0)
+#	_xoff = float(_loader.get("x_off") or 0.0)
+#	_yoff = float(_loader.get("y_off") or 0.0)
+	var raw_xoff = _loader.get("x_off")
+	_xoff = float(raw_xoff) if raw_xoff != null else 0.0
 
+	var raw_yoff = _loader.get("y_off")
+	_yoff = float(raw_yoff) if raw_yoff != null else 0.0
+
+###DEBUG overlay alignment
+#	print("[OVERLAY RAW] _ts=", _ts, " _xoff=", _xoff, " _yoff=", _yoff,
+#	  " | loader.tile_size=", _loader.get("tile_size"),
+#	  " loader.x_off=", _loader.get("x_off"),
+#	  " loader.y_off=", _loader.get("y_off"))
+	
 	var ld = _loader.get("current_level_data")
 	if ld is Dictionary:
 		_cols = int(ld.get("block_width",  0))
@@ -83,8 +96,21 @@ func _process(_dt: float) -> void:
 
 	queue_redraw()
 
-
 func _draw() -> void:
+	if _ts < 2 or _cols == 0 or _rows == 0:
+		return
+
+	# Expanded ranges to draw overlays for elements mapped outside block bounds (0 and max rows)
+	for c in range(0, _cols + 1):
+		for r in range(0, _rows + 2):
+			var rect := _cell_rect(c, r)
+			draw_rect(rect, C_FILL,  true)
+			draw_rect(rect, C_GRID,  false, LWIDTH)
+			draw_string(_font, rect.position + Vector2(2, FSIZE + 1),
+						"%d,%d" % [c, r],
+						HORIZONTAL_ALIGNMENT_LEFT, -1, FSIZE, C_LABEL)
+
+func _drawOLD() -> void:
 	if _ts < 2 or _cols == 0 or _rows == 0:
 		return
 
@@ -112,13 +138,55 @@ func _highlight(cell: Vector2i, col: Color) -> void:
 		"%d,%d" % [cell.x, cell.y],
 		HORIZONTAL_ALIGNMENT_LEFT, -1, FSIZE + 2, col)
 
-
 func _cell_rect(col: int, row: int) -> Rect2:
 	var half := _ts * 0.5
-	# Compute cell center in LevelLoader local space (mirrors grid_to_local exactly)
+
+	# 1. Bypass manual math and let GameConfig calculate the exact local coordinate 
+	#    the same way level_loader.gd does for blocks and items!
+	var local_pos: Vector2 = GameConfig.grid_to_local(col, row, _ts, _xoff, _yoff)
+		
+	# 2. Convert from loader local space to absolute global screen space
+	var global_pos : Vector2 = _loader.to_global(local_pos)
+			
+	# 3. Convert absolute screen space to this overlay canvas drawing layer
+	var local_draw_pos : Vector2 = to_local(global_pos)
+
+###DEBUG cell alignment position check
+#	if col == 8 and row == 11:
+#		print("[OVERLAY CHECK] local_pos=", local_pos,
+#			" loader.global=", _loader.global_position,
+#			" overlay.global=", global_position,
+#			" global_pos(door)=", global_pos,
+#			" local_draw_pos=", local_draw_pos)
+
+	# Rect2 draws from top-left, so offset by half the tile size to frame the block
+	return Rect2(local_draw_pos.x - half, local_draw_pos.y - half, _ts, _ts)
+
+func _cell_rectOLD(col: int, row: int) -> Rect2:
+	var half := _ts * 0.5
+
+	# Use the exact GameConfig positioning used to place blocks inside your loader
 	var cx : float = (col - 1) * _ts + _xoff + half
 	var cy : float = -(row - 1) * _ts - _yoff - half
-	# Convert to this node's local draw space via world space
+		
+	# 1. Match the exact grid_to_local mapping used by your level loader
+	# If GameConfig is globally accessible, you can use:
+#	var local_pos = GameConfig.grid_to_local(col, row, _ts, _xoff, _yoff)
+
+	# Convert from loader local space to absolute global screen space
+	var global_pos : Vector2 = _loader.to_global(Vector2(cx, cy))
+			
+	# Compute cell center in LevelLoader local space (mirrors grid_to_local exactly)
+#	var cx : float = (col - 1) * _ts + _xoff + half
+#	var cy : float = -(row - 1) * _ts - _yoff - half
+
+	# Convert absolute screen space to this overlay canvas drawing layer
+	var local_draw_pos : Vector2 = to_local(global_pos)
+	
+	# 2. Convert from the loader's local coordinate space directly to the overlay's space
 	var world : Vector2 = _loader.to_global(Vector2(cx, cy))
 	var local : Vector2 = to_local(world)
-	return Rect2(local.x - half, local.y - half, _ts, _ts)
+	
+#	return Rect2(local.x - half, local.y - half, _ts, _ts)
+	return Rect2(local_draw_pos.x - half, local_draw_pos.y - half, _ts, _ts)
+	

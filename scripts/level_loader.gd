@@ -287,6 +287,10 @@ func load_level(id: int):
 	# 2. Spawn the level content but keep it invisible
 	_spawn_level_content_hidden(data)
 
+###DEBUG cell coordinates
+	print("[CHECK] door(", doorx, ",", doory, ") -> grid_to_local=",
+	GameConfig.grid_to_local(doorx, doory, tile_size, x_off, y_off))
+	
 	# Instantiate the intro helper function
 	var intro_manager = RoomIntro.new(self)
 	print("calling play intro")
