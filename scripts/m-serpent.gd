@@ -3,9 +3,17 @@ class_name Serpent
 
 var direction := -1
 
+var bob_time := 0.0 # reusing Ghost's vertical bob horizontally 
+
 var gravity = GameConfig.monsterdata.serpent.gravity
 
 var hitbox: Area2D 
+
+# Fireball Logic
+@export var fireball_scene: PackedScene
+@export var detect_range: float = 80.0     # how far ahead the Dragon can "see"
+@export var charge_time: float = 0.8        # seconds spent winding up before breathing fire
+@export var breath_cooldown: float = 2.5    # seconds before it can charge again after breathing
 
 func _ready():
 	family = "serpent"
@@ -23,6 +31,8 @@ func _ready():
 
 func _physics_process(_delta):
 
+	bob_time += _delta
+	
 	velocity.x = direction * GameConfig.monsterdata.serpent.speed
 
 	behave(_delta) # includes move_and_slide()
@@ -54,11 +64,13 @@ func behave(_delta):
 	sprite.flip_h = velocity.x < 0
 
 	# Apply gravity
-	if not is_on_floor():
-		velocity.y += gravity * _delta
-	else:
-		velocity.y = 0
-		
+#	if not is_on_floor():
+#		velocity.y += gravity * _delta
+#	else:
+#		velocity.y = 0
+
+	velocity.x += sin(bob_time * 5.0) * 20.0
+
 	# simple back-and-forth
 #	if is_on_wall():
 #		direction *= -1
