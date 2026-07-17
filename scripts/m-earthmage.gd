@@ -1,7 +1,7 @@
 extends Monster
 class_name Earthmage
 
-var direction := -1
+# var direction := -1
 
 var gravity = GameConfig.monsterdata.earthmage.gravity
 

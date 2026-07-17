@@ -1,7 +1,7 @@
 extends Monster
 class_name Goblin
 
-var direction := -1
+# var direction := -1
 var gravity = GameConfig.monsterdata.goblin.gravity
 
 var fall_start_y: float = 0.0

@@ -1,7 +1,7 @@
 extends Monster
 class_name Chimera
 
-var direction := -1
+# var direction := -1
 
 var gravity = GameConfig.monsterdata.chimera.gravity
 

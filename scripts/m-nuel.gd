@@ -1,7 +1,7 @@
 extends Monster
 class_name Nuel
 
-var direction := -1
+# var direction := -1
 
 var gravity = GameConfig.monsterdata.nuel.gravity
 

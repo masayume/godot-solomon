@@ -1,6 +1,8 @@
 extends CharacterBody2D
 class_name Monster
 
+var direction := -1
+
 @export var tile_size: int = 64
 @export var variants: int = 6
 # @export var family: String = "ghost"
@@ -12,6 +14,8 @@ class_name Monster
 @export var ledge_check_distance: float = 44.0   # how far ahead/below to probe, in pixels
 
 var is_falling_to_death: bool = false
+
+var detect_range: float = 80.0     # how far ahead the Dragon can "see"
 
 var stats = {}
 
@@ -349,7 +353,30 @@ func is_ledge_ahead(ahead_offset: float, dir: int) -> bool:
 	query.exclude = [self]
 	var result = space_state.intersect_ray(query)
 	return result.is_empty()   # empty = no ground found = ledge
+
+## Raycasts straight ahead of the Dragon looking for a destructible block or
+## the Player, so it knows when to stop and charge up its fire breath.
+func _target_ahead() -> bool:
+	var space_state = get_world_2d().direct_space_state
+	var origin = global_position
+	var target = origin + Vector2(direction * detect_range, 0)
+ 
+	var query = PhysicsRayQueryParameters2D.create(origin, target)
+	query.collision_mask = 1 | 2  # Walls/blocks (Layer 1) + Player (Layer 2)
+	query.exclude = [self]
+ 
+	var result = space_state.intersect_ray(query)
+	if result.is_empty():
+		return false
+ 
+	var body = result.collider
+
+	if body.is_in_group("blockgroup"):
+		var bdata = GameConfig.blockdata.get(body.family, {})
+		return bdata.get("destructible", false)
 	
+	return  body.has_method("trigger_death_from_monster") 
+
 ## Call this from take_damage(), block-destroyed signals, or anywhere the floor
 ## disappears out from under a monster mid-walk.
 func start_fall_death():

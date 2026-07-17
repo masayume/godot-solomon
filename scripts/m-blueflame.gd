@@ -1,8 +1,6 @@
 extends Monster
 class_name Blueflame
 
-var direction := -1
-
 var gravity = GameConfig.monsterdata.blueflame.gravity
 
 var hitbox: Area2D 

@@ -1,7 +1,7 @@
 extends Monster
 class_name Ghost
 
-var direction := -1
+# var direction := -1
 var gravity = GameConfig.monsterdata.ghost.gravity
 # var gravity: float = 980.0
 

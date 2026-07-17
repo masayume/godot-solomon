@@ -1,7 +1,7 @@
 extends Monster
 class_name Spark
 
-var direction := -1
+# var direction := -1
 
 var current_surface: String = "bottom"
 

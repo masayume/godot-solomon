@@ -1,7 +1,8 @@
 extends Monster
 class_name Gargoyle
 
-var direction := -1
+# var direction := -1
+
 var gravity = GameConfig.monsterdata.gargoyle.gravity
 # var gravity: float = 980.0
 

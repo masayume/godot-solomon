@@ -1,7 +1,8 @@
 extends Monster
 class_name Pannel
 
-var direction := -1
+# var direction := -1
+
 var shoot_direction := Vector2.RIGHT # Fireball shooting direction
 
 var gravity = GameConfig.monsterdata.pannel.gravity

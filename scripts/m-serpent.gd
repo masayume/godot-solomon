@@ -1,7 +1,7 @@
 extends Monster
 class_name Serpent
 
-var direction := -1
+# var direction := -1
 
 var bob_time := 0.0 # reusing Ghost's vertical bob horizontally 
 
@@ -11,7 +11,6 @@ var hitbox: Area2D
 
 # Fireball Logic
 @export var fireball_scene: PackedScene
-@export var detect_range: float = 160.0     # how far ahead the Serpent can "see"
 @export var charge_time: float = 0.8        # seconds spent winding up before breathing fire
 @export var breath_cooldown: float = 2.5    # seconds before it can charge again after breathing
 @export var breath_duration: float = 0.5 	# how long the breathing pose holds
@@ -32,6 +31,8 @@ func _ready():
 	add_to_group("monsters") 
 	super._ready()
 
+	detect_range = 160.0  # how far ahead the Serpent can "see"
+	
 	hitbox = get_node_or_null("HitBox")
 	_setup_hitbox()
 	

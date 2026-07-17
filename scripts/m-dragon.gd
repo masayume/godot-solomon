@@ -6,7 +6,6 @@ class_name Dragon
 # A forward raycast to detect a block or the Player within range 
 # 	(reusing the same raycast pattern as is_ledge_ahead() in monster.gd)
 
-var direction := -1
 var gravity = GameConfig.monsterdata.dragon.gravity
 
 var fall_start_y: float = 0.0
@@ -16,7 +15,6 @@ var hitbox: Area2D
 
 # Fireball Logic
 @export var fireball_scene: PackedScene
-@export var detect_range: float = 80.0     # how far ahead the Dragon can "see"
 @export var charge_time: float = 0.8        # seconds spent winding up before breathing fire
 @export var breath_cooldown: float = 2.5    # seconds before it can charge again after breathing
 
@@ -34,6 +32,8 @@ func _ready():
 	family = "dragon"
 	add_to_group("monsters") 
 	super._ready()
+	
+	detect_range = 80.0     # how far ahead the Dragon can "see"
 	
 	hitbox = get_node_or_null("HitBox")
 	_setup_hitbox()
@@ -187,7 +187,7 @@ func _on_state_animation_finished(state_name: String):
 		
 ## Raycasts straight ahead of the Dragon looking for a destructible block or
 ## the Player, so it knows when to stop and charge up its fire breath.
-func _target_ahead() -> bool:
+func _target_ahead2DEL() -> bool:
 	var space_state = get_world_2d().direct_space_state
 	var origin = global_position
 	var target = origin + Vector2(direction * detect_range, 0)
@@ -201,9 +201,12 @@ func _target_ahead() -> bool:
 		return false
  
 	var body = result.collider
-	return body.is_in_group("blockgroup") or body.has_method("trigger_death_from_monster")
- 
-		
+
+	if body.is_in_group("blockgroup"):
+		var bdata = GameConfig.blockdata.get(body.family, {})
+		return bdata.get("destructible", false)
+	
+	return  body.has_method("trigger_death_from_monster") 
 		
 func _setup_hitbox():
 	if not hitbox: return
