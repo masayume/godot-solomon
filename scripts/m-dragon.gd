@@ -33,8 +33,9 @@ func _ready():
 	add_to_group("monsters") 
 	super._ready()
 	
-	detect_range = 80.0     # how far ahead the Dragon can "see"
-	
+#	detect_range = 80.0     # how far ahead the Dragon can "see"
+	detect_range = GameConfig.monsterdata[family].detect_range
+
 	hitbox = get_node_or_null("HitBox")
 	_setup_hitbox()
 #	print("Dragon hitbox found: ", hitbox)
@@ -171,7 +172,6 @@ func _breathe_fire():
 	# fireball was appearing on the tail side instead of the mouth side.
 	# Travel direction (shoot_dir/rotation below) is untouched - that part
 	# was already correct.
-#	fb.global_position = global_position + shoot_dir * spawn_distance
 	fb.global_position = global_position + BREATH_SPAWN_OFFSETS[shoot_dir]
 	fb.direction = shoot_dir
 	fb.rotation = shoot_dir.angle()
@@ -184,30 +184,7 @@ func _on_state_animation_finished(state_name: String):
 	if state_name == "dragon_breath":
 		breath_state = BreathState.PATROL
 		cooldown_timer = breath_cooldown
-		
-## Raycasts straight ahead of the Dragon looking for a destructible block or
-## the Player, so it knows when to stop and charge up its fire breath.
-func _target_ahead2DEL() -> bool:
-	var space_state = get_world_2d().direct_space_state
-	var origin = global_position
-	var target = origin + Vector2(direction * detect_range, 0)
- 
-	var query = PhysicsRayQueryParameters2D.create(origin, target)
-	query.collision_mask = 1 | 2  # Walls/blocks (Layer 1) + Player (Layer 2)
-	query.exclude = [self]
- 
-	var result = space_state.intersect_ray(query)
-	if result.is_empty():
-		return false
- 
-	var body = result.collider
 
-	if body.is_in_group("blockgroup"):
-		var bdata = GameConfig.blockdata.get(body.family, {})
-		return bdata.get("destructible", false)
-	
-	return  body.has_method("trigger_death_from_monster") 
-		
 func _setup_hitbox():
 	if not hitbox: return
 	

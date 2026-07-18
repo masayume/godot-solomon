@@ -31,7 +31,8 @@ func _ready():
 	add_to_group("monsters") 
 	super._ready()
 
-	detect_range = 160.0  # how far ahead the Serpent can "see"
+#	detect_range = 160.0  # how far ahead the Serpent can "see"
+	detect_range = GameConfig.monsterdata[family].detect_range
 	
 	hitbox = get_node_or_null("HitBox")
 	_setup_hitbox()
