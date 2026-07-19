@@ -137,7 +137,8 @@ func _breathe_fire():
 		return
  
 	var fb = fireball_scene.instantiate()
- 
+	fb.family = "poison"  # picks stats/sprite from projectiles.cfg
+
 	# Fly straight, ignore the player-fireball crawl/surface logic
 	fb.is_monster_projectile = true
 	fb.loader = get_tree().get_first_node_in_group("level_loader")

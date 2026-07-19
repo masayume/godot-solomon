@@ -7,6 +7,7 @@ var monsterdata = {}
 var itemdata = {}
 var fxdata = {}
 var playerdata = {}
+var projectiledata = {}
 
 var score = 0
 var fairy = 0
@@ -17,7 +18,9 @@ func _ready():
 
 func load_config():
 
+	#
 	# LOAD BLOCKS CONFIGURATION DATA	
+	#
 	var cfg = ConfigFile.new()
 	var err = cfg.load("res://config/blocks.cfg")
 	if err != OK:
@@ -30,7 +33,9 @@ func load_config():
 			data[key] = cfg.get_value(section, key)
 		blockdata[section] = data
 
+	#
 	# LOAD MONSTERS CONFIGURATION DATA	
+	#
 	var mcfg = ConfigFile.new()
 	err = mcfg.load("res://config/monsters.cfg")
 	if err != OK:
@@ -43,7 +48,9 @@ func load_config():
 			data[key] = mcfg.get_value(section, key)
 		monsterdata[section] = data
 
+	#
 	# LOAD GAME CONFIGURATION DATA	
+	#
 	var gdcfg = ConfigFile.new()
 	err = gdcfg.load("res://config/game.cfg")
 	if err != OK:
@@ -56,7 +63,9 @@ func load_config():
 			data[key] = gdcfg.get_value(section, key)
 		gamedata[section] = data
 
+	#
 	# LOAD ITEM CONFIGURATION DATA	
+	#
 	var icfg = ConfigFile.new()
 	err = icfg.load("res://config/items.cfg")
 	if err != OK:
@@ -70,7 +79,9 @@ func load_config():
 		itemdata[section] = data
 
 
-	# LOAD ITEM CONFIGURATION DATA	
+	#
+	# LOAD FX CONFIGURATION DATA	
+	#
 	var fxcfg = ConfigFile.new()
 	err = fxcfg.load("res://config/fx.cfg")
 	if err != OK:
@@ -83,7 +94,9 @@ func load_config():
 			data[key] = fxcfg.get_value(section, key)
 		fxdata[section] = data
 
+	#
 	# LOAD PLAYER CONFIGURATION DATA	
+	#
 	var plcfg = ConfigFile.new()
 	err = plcfg.load("res://config/player.cfg")
 	if err != OK:
@@ -96,6 +109,20 @@ func load_config():
 			data[key] = plcfg.get_value(section, key)
 		playerdata[section] = data
 
+	#
+	# LOAD PROJECTILE CONFIGURATION DATA	
+	#
+	var pjcfg = ConfigFile.new()
+	err = pjcfg.load("res://config/projectiles.cfg")
+	if err != OK:
+		print("ERROR: Failed to load projectiles.cfg")
+		return
+
+	for section in pjcfg.get_sections():
+		var data := {}
+		for key in pjcfg.get_section_keys(section):
+			data[key] = pjcfg.get_value(section, key)
+		projectiledata[section] = data
 
 func grid_to_local(tile_x: int, tile_y: int, tile_size: int, x_off: float, y_off: float) -> Vector2:    
 	var half_tile = tile_size / 2.0
@@ -109,12 +136,6 @@ func grid_to_local(tile_x: int, tile_y: int, tile_size: int, x_off: float, y_off
 	var world_y = -(tile_y - 1) * tile_size - y_off - half_tile
 
 	return Vector2(world_x, world_y)
-
-func world_to_gridNEW(world_pos: Vector2, x_off: float, y_off: float, tile_size: int) -> Vector2i:
-	var half_tile = tile_size / 2.0
-	var gx = int(round((world_pos.x - x_off - half_tile) / tile_size)) + 1
-	var gy = int(round(-(world_pos.y + y_off + half_tile) / tile_size)) + 1
-	return Vector2i(gx, gy)
 	
 func world_to_grid(world_pos: Vector2, x_off: float, y_off: float, tile_size: int) -> Vector2i:
 

@@ -8,8 +8,15 @@ extends Area2D
 
 var loader : Node = null
 
+# Which entry in projectiles.cfg this instance uses. Set this right after
+# instantiate() (before add_child) to pick a different projectile type -
+# e.g. fb.family = "rock" - without needing a different scene.
+@export var family: String = "fireball"
+ 
 @export var speed: float = 300.0
 var direction = Vector2.RIGHT # Initial direction
+var explosion_fx: String = "boom"   # which fx.cfg entry to spawn on impact 
+var velocity_y: float = 0.0   # vertical speed accumulated from gravity
 
 # Track if it touched a surface yet
 var is_crawling: bool = false 
@@ -24,6 +31,9 @@ var is_monster_projectile: bool = false
 var _burn_tween: Tween
 
 func _ready():
+	
+	_apply_projectile_data()
+	
 	# Connect to detect monsters
 	
 	collision_mask = 1 | 2 | 4 # Look for Layer 1 (World) Layer 2 (Player) and 3 (Monsters)
@@ -32,6 +42,29 @@ func _ready():
 	body_entered.connect(_on_body_entered)
 
 	_start_burn_effect()
+
+
+## Pulls this projectile's stats/appearance from projectiles.cfg (via
+## GameConfig.projectiledata), keyed by `family`. Any @export default above
+## is used as a fallback if the cfg is missing a key, so this stays safe
+## even for an unrecognized family.
+func _apply_projectile_data():
+	var data = GameConfig.projectiledata.get(family, {})
+	if data.is_empty():
+		push_warning("Projectile family '%s' not found in projectiles.cfg" % family)
+		return
+ 
+	speed = data.get("speed", speed)
+	gravity = data.get("gravity", gravity)
+	explosion_fx = data.get("explosion_fx", explosion_fx)
+ 
+	if data.has("sprite"):
+		var tex = load(data["sprite"])
+		if tex:
+			sprite.texture = tex
+ 
+	sprite.scale = Vector2(data.get("scalex", 1.0), data.get("scaley", 1.0))
+ 
 
 func _start_burn_effect():
 	_burn_tween = create_tween()
@@ -48,8 +81,12 @@ func _apply_random_scale(_t: float):
 		
 func _physics_process(delta):
 	# 1. Move the fireball
-	position += direction * speed * delta
-	
+
+	# velocity_y stays 0 for gravity=0 projectiles (e.g. fireball), so this
+	# is identical to the old `position += direction * speed * delta` then.
+	velocity_y += gravity * delta
+	position += direction * speed * delta + Vector2(0, velocity_y) * delta
+		
 	# 2. SURFACE DETECTION (ONLY for player fireballs)
 	if not is_monster_projectile:
 	# If we aren't crawling yet, look for the first wall
