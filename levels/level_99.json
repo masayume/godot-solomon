@@ -49,8 +49,9 @@
 	{"pos": [8,4],"family":"goblin"},
 
 	{"pos": [1,2],"family":"pannel"},
-	{"pos": [2,12],"family":"pannel", "shoot_direction":"down"},
+	{"pos": [15,11],"family":"pannel", "shoot_direction":"left"},
 	{"pos": [14,1],"family":"pannel", "shoot_direction":"up"},
+	{"pos": [2,12],"family":"pannel", "shoot_direction":"down"},
 
 	{"pos": [13,10],"family":"gargoyle"},
 	{"pos": [15,11],"family":"pannel", "shoot_direction":"left"},
@@ -64,11 +65,7 @@
 	
   "monsters": [
 
-	{"pos": [15,11],"family":"pannel", "shoot_direction":"left"},
-	{"pos": [1,2],"family":"pannel"},
-	{"pos": [14,1],"family":"pannel", "shoot_direction":"up"},
-
-	{"pos": [7,10],"family":"dragon"},
+	{"pos": [7,10],"family":"gargoyle"},
 	{"pos": [12,8],"family":"ghost"},
 
 	{"pos": [4,5],"family":"blueflame"},	{"pos": [12,5],"family":"blueflame"},

@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://uuy7iarlnv1"]
 
 [ext_resource type="Script" uid="uid://cdf4tl8cydk4w" path="res://scripts/m-gargoyle.gd" id="1_5sjxv"]
+[ext_resource type="PackedScene" uid="uid://dv5huh2s3f0bf" path="res://scenes/p-Fireball.tscn" id="2_iiuvy"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_iiuvy"]
 size = Vector2(44, 50)
@@ -8,6 +9,7 @@ size = Vector2(44, 50)
 [node name="Gargoyle" type="CharacterBody2D" unique_id=45146137]
 collision_layer = 2
 script = ExtResource("1_5sjxv")
+fireball_scene = ExtResource("2_iiuvy")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=411585139]
 shape = SubResource("RectangleShape2D_iiuvy")
