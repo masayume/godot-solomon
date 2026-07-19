@@ -64,8 +64,11 @@
 	
   "monsters": [
 
+	{"pos": [15,11],"family":"pannel", "shoot_direction":"left"},
+	{"pos": [1,2],"family":"pannel"},
+	{"pos": [14,1],"family":"pannel", "shoot_direction":"up"},
 
-	{"pos": [7,10],"family":"serpent"},
+	{"pos": [7,10],"family":"dragon"},
 	{"pos": [12,8],"family":"ghost"},
 
 	{"pos": [4,5],"family":"blueflame"},	{"pos": [12,5],"family":"blueflame"},

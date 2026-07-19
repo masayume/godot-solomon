@@ -40,9 +40,10 @@ func _ready():
 	_setup_hitbox()
 #	print("Dragon hitbox found: ", hitbox)
 ###DEBUG Hitbox
-	print("Dragon HitBox monitorable=", hitbox.monitorable, " monitoring=", hitbox.monitoring,
-	  " layer=", hitbox.collision_layer, " children=", hitbox.get_children())	
+#	print("Dragon HitBox monitorable=", hitbox.monitorable, " monitoring=", hitbox.monitoring,
+#	  " layer=", hitbox.collision_layer, " children=", hitbox.get_children())	
 #	print("Dragon layer:", collision_layer, " mask: ", collision_mask)
+
 	# Dragon HitBox
 	collision_layer = 4   # (or anything, not important)
 	collision_mask = 1    # must match Player layer	
@@ -149,7 +150,8 @@ func _breathe_fire():
 		return
  
 	var fb = fireball_scene.instantiate()
- 
+	fb.family = "fireball"  # picks stats/sprite from projectiles.cfg
+
 	# Fly straight, ignore the player-fireball crawl/surface logic
 	fb.is_monster_projectile = true
 	fb.loader = get_tree().get_first_node_in_group("level_loader")
@@ -184,6 +186,7 @@ func _on_state_animation_finished(state_name: String):
 	if state_name == "dragon_breath":
 		breath_state = BreathState.PATROL
 		cooldown_timer = breath_cooldown
+		change_state("dragon")
 
 func _setup_hitbox():
 	if not hitbox: return
