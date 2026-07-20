@@ -166,7 +166,6 @@ func _breathe_fire():
 	}
 
 	var shoot_dir = Vector2(direction, 0)
-	var spawn_distance = 40.0  # tweak to match the Dragon's mouth/sprite pivot
 
  
 	# Spawn offset uses -direction (not +direction). The math for "front"

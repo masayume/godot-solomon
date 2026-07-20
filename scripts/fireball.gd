@@ -142,8 +142,8 @@ func _on_body_entered(body):
 	# ── block hit ─────────────────────────────────────────────────────────
 	if body.is_in_group("blockgroup"):
 		print("block hit by fireball")
-		var family = body.get("family")
-		if family and GameConfig.blockdata.has(family):
+		var bfamily = body.get("family")
+		if bfamily and GameConfig.blockdata.has(family):
 			if GameConfig.blockdata[family]["destructible"]:
 				# Tell the level loader to remove it
 				if loader:
