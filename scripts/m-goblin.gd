@@ -1,6 +1,11 @@
 extends Monster
 class_name Goblin
 
+# DESCRIPTION
+# State machine: (PATROL → CHARGING → PUNCHING → back to PATROL)
+# A forward raycast to detect a block or the Player within range 
+# 	(reusing the same raycast pattern as is_ledge_ahead() in monster.gd)
+
 # var direction := -1
 var gravity = GameConfig.monsterdata.goblin.gravity
 
