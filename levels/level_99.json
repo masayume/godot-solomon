@@ -11,7 +11,7 @@
 
   "items": [
 
-	{"pos": [7,11],"family":"red-potion"},
+	{"pos": [13,11],"family":"red-potion"},
 
 	{"pos": [8,11],"family":"door"},	
 	{"pos": [3,9],"family":"key"},	
@@ -60,13 +60,14 @@
 
 	{"pos": [12,10],"family":"spark","attached":"bottom"},
 	{"pos": [2,8],"family":"spark","attached":"right"},
+
+	{"pos": [12,8],"family":"ghost"},
 	
   ],
 	
   "monsters": [
 
 	{"pos": [7,10],"family":"goblin"},
-	{"pos": [12,8],"family":"ghost"},
 
 	{"pos": [4,5],"family":"blueflame"},	{"pos": [12,5],"family":"blueflame"},
 

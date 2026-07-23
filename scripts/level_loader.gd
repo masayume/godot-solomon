@@ -114,7 +114,8 @@ func create_or_destroy_block(pos, dir, crouching, is_player=false):
 		cell.y -= 1
 
 	var target = Vector2i(cell.x + dir, cell.y)
-
+	print("[GOBLIN PUNCH?] cell=", cell, " target=", target, " has_block=", blocks.has(target))
+	
 ###DEBUG_2l
 #	print("[CAST] pos=", pos, " cell=", cell, " target=", target, " has=", blocks.has(target))
 #	print("[CAST] pos=", pos, " x_off=", x_off, " y_off=", y_off, " tile_size=", tile_size, " cell=", cell, " target=", target)
@@ -239,10 +240,14 @@ func spawn_fx(fx_type: String, world_pos: Vector2, grid_pos: Vector2i, should_sp
 	
 	fx.setup_fx(fx_type, grid_pos)
 
-
+### PLAYER BLOCK CREATOR FUNCTION !!!
 func _on_foop_finished(grid_pos, type):
 	# NOW create the actual block 
 	# add_block(grid_pos.x, grid_pos.y, type)
+
+###DEBUG block created position
+#	print("[PLAYER BLOCK CREATED] grid_pos=", grid_pos, " type=", type)
+	
 	add_block(grid_pos.x, grid_pos.y, type, true)
 
 
@@ -348,6 +353,24 @@ func spawn_block_at_world_pos(world_pos: Vector2, type: String):
 	var grid_pos = GameConfig.world_to_grid(world_pos, x_off, y_off, tile_size)
 	add_block(grid_pos.x, grid_pos.y, type, true)
 
+
+func destroy_block_at(cell: Vector2i) -> bool:
+	if not blocks.has(cell):
+		return false
+ 
+	var block = blocks[cell]
+	var bdata = GameConfig.blockdata.get(block.family, {})
+	if not bdata.get("destructible", false):
+		return false
+ 
+	var local_pos = GameConfig.grid_to_local(cell.x, cell.y, tile_size, x_off, y_off)
+	spawn_fx("poof", to_global(local_pos), cell, false)
+ 
+	blocks.erase(cell)
+	block.queue_free()
+	return true
+
+
 func replace_block(world_pos: Vector2, new_family: String):
 	var cell = GameConfig.world_to_grid(world_pos, x_off, y_off, tile_size)
 	if blocks.has(cell):
@@ -388,6 +411,7 @@ func add_block(bx, by, type, showing = false):
 	add_child(block)
 	var cell = Vector2i(bx, by)
 	blocks[cell] = block
+	block.set_meta("grid_pos", cell)   # 
 		
 	block.position = GameConfig.grid_to_local(
 		block_x,        # grid column

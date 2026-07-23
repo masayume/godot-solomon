@@ -24,6 +24,7 @@ var hitbox: Area2D
 # -- Goblin state machine -------------------
 enum GoblinState { PATROL, CHARGING, PUNCHING, FALLING }
 var goblin_state: GoblinState = GoblinState.PATROL
+var pending_punch_cell: Vector2i = Vector2i(-1, -1) # store punch target block
 
 func _ready():
 	family = "goblin"
@@ -61,6 +62,9 @@ func _physics_process(_delta):
 			start_fall_death()
 			return
 
+		if not is_on_floor() and goblin_state != GoblinState.FALLING:
+			_start_falling()
+			
 	match goblin_state:
 		GoblinState.PATROL:
 			_process_patrol(_delta)
@@ -118,7 +122,18 @@ func _process_charging(_delta):
 func _start_punch():
 	goblin_state = GoblinState.PUNCHING
 	change_state("goblin_punching")
+	
+	pending_punch_cell = Vector2i(-1, -1)  # reset in case there's nothing to hit
+	
+	if get_slide_collision_count() > 0:
+		var blockCollider = get_slide_collision(0).get_collider()
+		if blockCollider and blockCollider.is_in_group("blockgroup") and blockCollider.has_meta("grid_pos"):
+			var loader = get_parent()
+			print("destroy block at: ", blockCollider.get_meta("grid_pos"))
+			pending_punch_cell = blockCollider.get_meta("grid_pos")
+			return
 
+			
 	# Land the punch right as the pose starts. If the block ahead isn't
 	# destructible, whatever handles wall_impact on the receiving end
 	# just won't destroy it - same as the normal patrol bounce.
@@ -131,12 +146,18 @@ func _process_punching(_delta):
   
 	# destroy block 
 
+func _start_falling():
+	goblin_state = GoblinState.FALLING
+	change_state("goblin_falling")
+	
 func _process_falling(_delta):
 	velocity.x = 0
-	goblin_state = GoblinState.FALLING
-	change_state("goblin_falling")  # add this state to monster.cfg,
-  
-	# destroy block 
+	_apply_gravity(_delta)
+	move_and_slide()
+
+	if is_on_floor():
+		goblin_state = GoblinState.PATROL
+		change_state("goblin")
 	 
 func _apply_gravity(_delta):
 	if not is_on_floor():
@@ -146,6 +167,12 @@ func _apply_gravity(_delta):
 
 func _on_state_animation_finished(state_name: String):
 	if state_name == "goblin_punching":
+		if pending_punch_cell != Vector2i(-1, -1):
+			var loader = get_parent()
+			print("goblin punch block at: ", pending_punch_cell)
+			loader.destroy_block_at(pending_punch_cell)
+			pending_punch_cell = Vector2i(-1, -1)
+			
 		goblin_state = GoblinState.PATROL
 		direction *= -1   # turn away from what it just punched
 #		cooldown_timer = breath_cooldown

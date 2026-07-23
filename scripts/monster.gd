@@ -373,8 +373,11 @@ func _target_ahead() -> bool:
 
 	if body.is_in_group("blockgroup"):
 		var bdata = GameConfig.blockdata.get(body.family, {})
-		return bdata.get("destructible", false)
-	
+		var is_destructible = bdata.get("destructible", false)
+		print("target ahead: ", body.family, " destructible=", is_destructible)
+#		return bdata.get("destructible", false)
+		return is_destructible	
+		
 	return  body.has_method("trigger_death_from_monster") 
 
 ## Call this from take_damage(), block-destroyed signals, or anywhere the floor
