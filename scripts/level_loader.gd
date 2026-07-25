@@ -114,7 +114,7 @@ func create_or_destroy_block(pos, dir, crouching, is_player=false):
 		cell.y -= 1
 
 	var target = Vector2i(cell.x + dir, cell.y)
-	print("[GOBLIN PUNCH?] cell=", cell, " target=", target, " has_block=", blocks.has(target))
+#	print("[GOBLIN PUNCH?] cell=", cell, " target=", target, " has_block=", blocks.has(target))
 	
 ###DEBUG_2l
 #	print("[CAST] pos=", pos, " cell=", cell, " target=", target, " has=", blocks.has(target))

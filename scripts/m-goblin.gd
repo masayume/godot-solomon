@@ -129,7 +129,7 @@ func _start_punch():
 		var blockCollider = get_slide_collision(0).get_collider()
 		if blockCollider and blockCollider.is_in_group("blockgroup") and blockCollider.has_meta("grid_pos"):
 			var loader = get_parent()
-			print("destroy block at: ", blockCollider.get_meta("grid_pos"))
+#			print("destroy block at: ", blockCollider.get_meta("grid_pos"))
 			pending_punch_cell = blockCollider.get_meta("grid_pos")
 			return
 
@@ -169,7 +169,7 @@ func _on_state_animation_finished(state_name: String):
 	if state_name == "goblin_punching":
 		if pending_punch_cell != Vector2i(-1, -1):
 			var loader = get_parent()
-			print("goblin punch block at: ", pending_punch_cell)
+#			print("goblin punch block at: ", pending_punch_cell)
 			loader.destroy_block_at(pending_punch_cell)
 			pending_punch_cell = Vector2i(-1, -1)
 			

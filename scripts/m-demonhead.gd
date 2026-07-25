@@ -1,8 +1,6 @@
 extends Monster
 class_name Demonhead
 
-# var direction := 1
-
 var gravity = GameConfig.monsterdata.demonhead.gravity
 
 #SIGNAL-demonhead-1 Define the signal with parameters able to destroy a block when hit
@@ -15,11 +13,12 @@ func _ready():
 	add_to_group("monsters") 
 	super._ready()
 	
+	direction = 1
 
 	hitbox = get_node_or_null("HitBox")
 	_setup_hitbox()
 
-	print("Demonhead layer:", collision_layer, " mask: ", collision_mask)
+#	print("Demonhead layer:", collision_layer, " mask: ", collision_mask)
 	# Ghost HitBox
 	collision_layer = 4   # (or anything, not important)
 	collision_mask = 1    # must match Player layer	
@@ -30,8 +29,20 @@ func _physics_process(_delta):
 
 	if is_on_wall():
 		#SIGNAL-demonhead-2 Emit the signal instead of calling a parent method directly
-		wall_impact.emit(global_position, direction)				
+		_destroy_block_ahead()
 		direction *= -1
+
+func _destroy_block_ahead():
+	if get_slide_collision_count() > 0:
+		var collider = get_slide_collision(0).get_collider()
+		if collider and collider.is_in_group("blockgroup") and collider.has_meta("grid_pos"):
+			var loader = get_parent()
+			loader.destroy_block_at(collider.get_meta("grid_pos"))
+			return
+
+	# Hit something without grid metadata (not a registered block) -
+	# fall back to the old signal path, harmless no-op for non-blocks.
+	wall_impact.emit(global_position, direction)
 
 func _setup_hitbox():
 	if not hitbox: return
