@@ -28,8 +28,13 @@ func _physics_process(_delta):
 	behave(_delta) # includes move_and_slide()
 
 	if is_on_wall():
+
 		#SIGNAL-demonhead-2 Emit the signal instead of calling a parent method directly
-		_destroy_block_ahead()
+		_base_destroy_block_ahead()
+		# Hit something without grid metadata (not a registered block) -
+		# fall back to the old signal path, harmless no-op for non-blocks.
+		wall_impact.emit(global_position, direction)
+
 		direction *= -1
 
 func _destroy_block_ahead():

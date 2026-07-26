@@ -61,13 +61,17 @@
 	{"pos": [12,10],"family":"spark","attached":"bottom"},
 	{"pos": [2,8],"family":"spark","attached":"right"},
 
-	{"pos": [12,8],"family":"ghost"},
+	{"pos": [7,10],"family":"goblin"},
 	
   ],
 	
   "monsters": [
 
-	{"pos": [7,10],"family":"goblin"},
+	{"pos": [15,11],"family":"pannel", "shoot_direction":"left"},
+	{"pos": [1,12],"family":"pannel"},
+
+	{"pos": [12,8],"family":"ghost"},
+
 
 	{"pos": [4,5],"family":"blueflame"},	{"pos": [12,5],"family":"blueflame"},
 

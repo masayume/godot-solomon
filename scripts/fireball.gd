@@ -33,7 +33,7 @@ var _burn_tween: Tween
 func _ready():
 	
 	_apply_projectile_data()
-	
+	print("fireball ready: family=", family, " loader=", loader)	
 	# Connect to detect monsters
 	
 	collision_mask = 1 | 2 | 4 # Look for Layer 1 (World) Layer 2 (Player) and 3 (Monsters)
@@ -141,21 +141,37 @@ func _on_body_entered(body):
 
 	# ── block hit ─────────────────────────────────────────────────────────
 	if body.is_in_group("blockgroup"):
-		print("block hit by fireball")
+#		print("block hit by fireball")
 		var bfamily = body.get("family")
-		if bfamily and GameConfig.blockdata.has(family):
-			if GameConfig.blockdata[family]["destructible"]:
-				# Tell the level loader to remove it
-				if loader:
-					loader.remove_block_node(body)
-#				explode(body.global_position)
-				# Offset toward the block from the fireball's current position
-				var contact_pos = global_position + (body.global_position - global_position) * 0.5
-				explode(contact_pos)
-				return
-			# else: indestructible - fireball bounces/crawls, don't explode
-			else:
-				explode(global_position)	
+		var bdata = GameConfig.blockdata.get(bfamily, {})
+		var is_destructible = bdata.get("destructible", false)
+
+		var contact_pos = global_position  # fallback if no grid_pos found
+
+###DEBUG fireball expoding position
+#		print("EXPLODE dir=", direction, " has_grid_meta=", body.has_meta("grid_pos"),
+#		" cell=", (body.get_meta("grid_pos") if body.has_meta("grid_pos") else "n/a"),
+#		" contact_pos=", contact_pos, " fireball_pos=", global_position)
+				
+		if body.has_meta("grid_pos") and loader:
+			var cell = body.get_meta("grid_pos")
+			var local_pos = GameConfig.grid_to_local(cell.x, cell.y, loader.tile_size, loader.x_off, loader.y_off)
+	
+			contact_pos = loader.to_global(local_pos)
+
+		if is_destructible:
+			if loader:
+				loader.remove_block_node(body)
+			explode(contact_pos)
+		else:
+			explode(contact_pos)  # bounce/hit fx at the block's true position, don't destroy it
+		return
+
+
+	if body.is_in_group("monsters") and body.has_method("take_damage"):
+		body.take_damage()
+		explode()
+		return
 
 	# 
 	if body.is_in_group("monsters") and body.has_method("take_damage"):
@@ -168,8 +184,22 @@ func _on_body_entered(body):
 		explode()
 
 func explode(explosion_pos: Vector2 = global_position):
-	var local_pos = get_parent().to_local(explosion_pos)
-	get_parent().spawn_fx("boom", local_pos, Vector2i(-1,-1), false)
-	
+	if loader:
+		loader.spawn_fx("boom", explosion_pos, Vector2i(-1,-1), false)
+	else:
+		get_parent().spawn_fx("boom", explosion_pos, Vector2i(-1,-1), false)
+
+#	if loader:
+#		var local_pos = loader.to_local(explosion_pos)
+#		loader.spawn_fx("boom", local_pos, Vector2i(-1,-1), false)
+#	else:
+#		var local_pos = get_parent().to_local(explosion_pos)
+#		get_parent().spawn_fx("boom", local_pos, Vector2i(-1,-1), false)
+
 	queue_free()
+
+#	var local_pos = get_parent().to_local(explosion_pos)
+#	get_parent().spawn_fx("boom", local_pos, Vector2i(-1,-1), false)
+	
+#	queue_free()
 	

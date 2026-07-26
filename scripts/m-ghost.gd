@@ -71,9 +71,13 @@ func _physics_process(_delta):
 		#SIGNAL-ghost-2 emits defined signal when it hits the wall
 		# shift the Ghost's reported position forward by half a tile (in its direction of travel) 
 		# before emitting, so it samples from inside the block it's touching rather than from its center
-		var probe_pos = global_position + Vector2(direction * tile_size * 0.5, 0)
-		wall_impact.emit(probe_pos, direction)
+
+#2DEL		var probe_pos = global_position + Vector2(direction * tile_size * 0.5, 0)
+#		wall_impact.emit(probe_pos, direction)
+		_base_destroy_block_ahead()
+		wall_impact.emit(global_position, direction)
 		direction *= -1
+		
 
 func _setup_hitbox():
 	if not hitbox: return

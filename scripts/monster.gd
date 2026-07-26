@@ -257,6 +257,13 @@ func take_damage():
 	# 6. Destroy monster
 	queue_free.call_deferred()
 
+func _base_destroy_block_ahead():
+	if get_slide_collision_count() > 0:
+		var collider = get_slide_collision(0).get_collider()
+		if collider and collider.is_in_group("blockgroup") and collider.has_meta("grid_pos"):
+			var loader = get_parent()
+			loader.destroy_block_at(collider.get_meta("grid_pos"))
+			return
 
 func _physics_process(_delta: float):
 	# Let children define behavior
