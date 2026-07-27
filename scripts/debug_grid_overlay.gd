@@ -41,6 +41,15 @@ func _process(_dt: float) -> void:
 	if _loader == null:
 		return
 
+	var ld = _loader.get("current_level_data")
+
+	# Only show/update the grid when the current level's JSON explicitly
+	# opts in via "debug_grid": true. Bail out early (and stay hidden)
+	# otherwise, so there's no wasted work when it's off.
+	visible = ld is Dictionary and bool(ld.get("debug_grid", false))
+	if not visible:
+		return
+
 	var ts = _loader.get("tile_size")
 	if ts == null or float(ts) < 2.0:
 		return
@@ -59,7 +68,6 @@ func _process(_dt: float) -> void:
 #	  " loader.x_off=", _loader.get("x_off"),
 #	  " loader.y_off=", _loader.get("y_off"))
 	
-	var ld = _loader.get("current_level_data")
 	if ld is Dictionary:
 		_cols = int(ld.get("block_width",  0))
 		_rows = int(ld.get("block_height", 0))

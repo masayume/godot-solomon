@@ -259,16 +259,16 @@ func take_damage():
 
 func _base_destroy_block_ahead():
 	
-	print("[DESTROY_AHEAD] ", name, " frame=", Engine.get_physics_frames(),
-		" pos=", global_position, " slide_count=", get_slide_collision_count())
+#	print("[DESTROY_AHEAD] ", name, " frame=", Engine.get_physics_frames(),
+#		" pos=", global_position, " slide_count=", get_slide_collision_count())
 
 	for i in get_slide_collision_count():
 		var c = get_slide_collision(i)
 		var collider = c.get_collider()
-		print("  [", i, "] collider=", (collider.name if collider else "null"),
-			" family=", (collider.get("family") if collider else "n/a"),
-			" grid_pos=", (collider.get_meta("grid_pos") if collider and collider.has_meta("grid_pos") else "none"),
-			" normal=", c.get_normal())
+#		print("  [", i, "] collider=", (collider.name if collider else "null"),
+#			" family=", (collider.get("family") if collider else "n/a"),
+#			" grid_pos=", (collider.get_meta("grid_pos") if collider and collider.has_meta("grid_pos") else "none"),
+#			" normal=", c.get_normal())
 				
 	if get_slide_collision_count() > 0:
 		var collider = get_slide_collision(0).get_collider()
@@ -393,8 +393,7 @@ func _target_ahead() -> bool:
 	if body.is_in_group("blockgroup"):
 		var bdata = GameConfig.blockdata.get(body.family, {})
 		var is_destructible = bdata.get("destructible", false)
-		print("target ahead: ", body.family, " destructible=", is_destructible)
-#		return bdata.get("destructible", false)
+#		print("target ahead: ", body.family, " destructible=", is_destructible)
 		return is_destructible	
 		
 	return  body.has_method("trigger_death_from_monster") 

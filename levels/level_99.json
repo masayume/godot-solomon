@@ -9,6 +9,8 @@
 
   "player_start": [12, 10],
 
+  "debug_grid": true,
+
   "items": [
 
 	{"pos": [13,11],"family":"red-potion"},
