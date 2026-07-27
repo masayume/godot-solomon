@@ -117,6 +117,14 @@ func _block_monster_spawner(monster):
 	# 3. Start the spawning loop
 	while is_spawning and is_inside_tree():
 
+		# Don't spawn while the room is paused (e.g. during room_outro/room_intro
+		# after a player death) - wait here until it's active again.
+		while loader and not loader.room_active and is_spawning and is_inside_tree():
+			await get_tree().create_timer(0.25).timeout
+
+		if not is_spawning or not is_inside_tree():
+			break
+						
 		# 1. SPAWN FIRST (happens immediately when the level starts)
 		_spawn_monster_from_block(monster_type, loader)
 
@@ -131,7 +139,7 @@ func _block_monster_spawner(monster):
 func _spawn_monster_from_block(monster_type: String, loader):
 
 	var pos=Vector2i(int(global_position.x), int(global_position.y))
-	var cell = GameConfig.world_to_grid(pos, loader.x_off, loader.y_off, tile_size)
+	var cell = GameConfig.world_to_gridNEW(pos, loader.x_off, loader.y_off, tile_size)
 
 	var monster_data = { "pos": cell, "family": monster_type }
 	if loader:

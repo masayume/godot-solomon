@@ -37,6 +37,7 @@ signal level_started
 var current_bonus: int = 0
 var bonus_timer: Timer
 var room_outro: RoomOutro
+var room_active: bool = true
 
 @onready var bg = $"Background"
 
@@ -318,6 +319,8 @@ func toggle_monsters(active: bool):
 
 func toggle_room_activity(active: bool):
 	
+	room_active = active
+	
 	# Visual darkening or revealing of elements 
 	for item in get_tree().get_nodes_in_group("itemgroup"):
 		# If the room is waking up, ONLY reveal items that aren't marked as secret hidden items
@@ -353,8 +356,34 @@ func spawn_block_at_world_pos(world_pos: Vector2, type: String):
 	var grid_pos = GameConfig.world_to_grid(world_pos, x_off, y_off, tile_size)
 	add_block(grid_pos.x, grid_pos.y, type, true)
 
+func destroy_block_atUNUSED(cell: Vector2i) -> bool:
+	if not blocks.has(cell):
+		return false
+
+	var block = blocks[cell]
+	var bdata = GameConfig.blockdata.get(block.family, {})
+	if not bdata.get("destructible", false):
+		return false
+
+	# Disable collision immediately - queue_free() alone doesn't remove
+	# the physics body until end of frame, which leaves a brief window
+	# where a fast-moving body can still register a stale collision
+	# against this block (or overlap into it) before it's actually gone.
+	if block.has_node("CollisionShape2D"):
+		block.get_node("CollisionShape2D").set_deferred("disabled", true)
+	block.remove_from_group("blockgroup")
+
+	var local_pos = GameConfig.grid_to_local(cell.x, cell.y, tile_size, x_off, y_off)
+	spawn_fx("poof", to_global(local_pos), cell, false)
+
+	blocks.erase(cell)
+	block.queue_free()
+	return true
 
 func destroy_block_at(cell: Vector2i) -> bool:
+
+	print("[DESTROY_BLOCK_AT] frame=", Engine.get_physics_frames(), " cell=", cell, " has_block=", blocks.has(cell))
+	
 	if not blocks.has(cell):
 		return false
  
@@ -824,11 +853,11 @@ func add_monster(monster_data): # i.e. monster_data: { "pos": [12.0, 5.0], "fami
 	#SIGNAL-ghost-3 Connect the signal from Ghost			
 	#LAMBDA for wall impact to pass 'false' for the 'crouching' parameter
 	# Only connect if the specific monster has the signal defined
-	if instance.has_signal("wall_impact"):
-		print("SIGNAL: ", instance.name, " signal connected")
-		instance.wall_impact.connect(
-			func(pos, dir): create_or_destroy_block(pos, dir, false)
-		)
+#	if instance.has_signal("wall_impact"):
+#		print("SIGNAL: ", instance.name, " signal connected")
+#		instance.wall_impact.connect(
+#			func(pos, dir): create_or_destroy_block(pos, dir, false)
+#		)
 				
 	if monster_data.has("shoot_direction"):
 		var dir = monster_data["shoot_direction"]
@@ -901,6 +930,10 @@ func add_monster(monster_data): # i.e. monster_data: { "pos": [12.0, 5.0], "fami
 			x_off,
 			y_off
 		)
+
+	if instance.family == "demonhead":
+		spawn_fx("boom", instance.global_position, Vector2i(-1,-1), false)
+
 
 	if GameConfig.gamedata.game.collider_debug:
 		_debug_node_shapes(instance, Color(1, 0, 0, 0.7)) # Red

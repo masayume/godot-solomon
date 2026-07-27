@@ -23,9 +23,26 @@ func _ready():
 	collision_layer = 4   # (or anything, not important)
 	collision_mask = 1    # must match Player layer	
 
+
 func _physics_process(_delta):
 
 	behave(_delta) # includes move_and_slide()
+
+###DEBUG mega debug demonhead double collision
+#	if get_slide_collision_count() > 0:
+#		var c = get_slide_collision(0)
+#		var collider = c.get_collider()
+#		print("[DH] frame=", Engine.get_physics_frames(),
+#			" pos=", global_position,
+#			" dir=", direction,
+#			" vel=", velocity,
+#			" on_wall=", is_on_wall(),
+#			" on_floor=", is_on_floor(),
+#			" collider=", (collider.name if collider else "null"),
+#			" collider_global=", (collider.global_position if collider else "n/a"),
+#			" grid_pos=", (collider.get_meta("grid_pos") if collider and collider.has_meta("grid_pos") else "none"),
+#			" dist=", (global_position.distance_to(collider.global_position) if collider else -1))
+
 
 	if is_on_wall():
 
@@ -37,17 +54,18 @@ func _physics_process(_delta):
 
 		direction *= -1
 
-func _destroy_block_ahead():
-	if get_slide_collision_count() > 0:
-		var collider = get_slide_collision(0).get_collider()
-		if collider and collider.is_in_group("blockgroup") and collider.has_meta("grid_pos"):
-			var loader = get_parent()
-			loader.destroy_block_at(collider.get_meta("grid_pos"))
-			return
 
-	# Hit something without grid metadata (not a registered block) -
-	# fall back to the old signal path, harmless no-op for non-blocks.
-	wall_impact.emit(global_position, direction)
+#func _destroy_block_ahead():
+#	if get_slide_collision_count() > 0:
+#		var collider = get_slide_collision(0).get_collider()
+#		if collider and collider.is_in_group("blockgroup") and collider.has_meta("grid_pos"):
+#			var loader = get_parent()
+#			loader.destroy_block_at(collider.get_meta("grid_pos"))
+#			return
+
+#	# Hit something without grid metadata (not a registered block) -
+#	# fall back to the old signal path, harmless no-op for non-blocks.
+#	wall_impact.emit(global_position, direction)
 
 func _setup_hitbox():
 	if not hitbox: return
