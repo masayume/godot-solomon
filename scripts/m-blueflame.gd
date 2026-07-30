@@ -25,6 +25,24 @@ func _ready():
 	collision_layer = 4   # (or anything, not important)
 	collision_mask = 1    # must match Player layer	
 
+	# ==========================================
+	# --- BLUEFLAME-SPECIFIC SCALING FIX ---
+	# ==========================================
+	# Node2D/Sprite2D have no "pivot_offset" (that's a Control-only property),
+	# so instead we scale the SPRITE ONLY and shift it up by half the height
+	# it gained, which keeps the bottom edge pinned in place. This also leaves
+	# the collision shape / hitbox untouched, unlike scaling the root node.
+	if sprite and sprite.texture:
+		var tex_height = sprite.texture.get_height()
+		var old_scale = sprite.scale
+		var new_scale = Vector2(1.4, 1.5)
+
+		var height_diff = tex_height * (new_scale.y - old_scale.y)
+
+		sprite.scale = new_scale
+		sprite.position.y -= height_diff / 2.0
+	# ==========================================
+
 func _physics_process(_delta):
 	# behave() now handles velocity, gravity, wall bouncing, and move_and_slide()    
 	behave(_delta) # includes move_and_slide()
