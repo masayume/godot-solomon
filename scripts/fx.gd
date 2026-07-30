@@ -47,36 +47,21 @@ func setup_fx(fx_name: String, g_pos: Vector2i = Vector2i.ZERO, b_type: String =
 	timer.start() 
 
 
-
-
-func setup_fx2DEL(fx_name: String, g_pos: Vector2i = Vector2i.ZERO, b_type: String = "earth"):
-	target_grid_pos = g_pos
-	block_type = b_type
-	fx_name_stored = fx_name
-	
-	# Load data from GameConfig dictionary
-	var data = GameConfig.fxdata.get(fx_name, {})
-	if data.is_empty():
-		queue_free()
+func randomize_animation():
+	if frame_sequence.is_empty():
 		return
+		
+	# 1. Randomize the starting frame 
+	# This ensures stars don't all start their twinkle on the exact same frame
+	current_frame_index = randi() % frame_sequence.size()
+	sprite.frame = frame_sequence[current_frame_index]
 	
-	# Determine if this effect should loop (e.g., if it has a move_speed)
-	is_looping = data.has("move_speed") 
+	# 2. Randomize the animation speed (frame delay)
+	# This changes the "length" or rhythm of the twinkle. 
+	# We'll vary it between 70% and 130% of the original configured speed.
+	var base_speed = GameConfig.fxdata.get(fx_name_stored, {}).get("anim_speed", 0.1)
+	timer.wait_time = base_speed * randf_range(0.1, 5.0)
 
-	sprite.texture = load(data["sprite"])
-	sprite.hframes = data["hframes"]
-	frame_sequence = data["frames"]
-	
-	sprite.frame = frame_sequence[0]
-	timer.wait_time = data["anim_speed"]
-	# Ensure we don't connect the signal multiple times if setup is called again
-	if not timer.timeout.is_connected(_on_timer_timeout):
-		timer.timeout.connect(_on_timer_timeout)
-#	else:
-#		sprite.frame = frame_sequence[0]
-#		timer.wait_time = data["anim_speed"]
-#		timer.timeout.connect(_on_timer_timeout)	
-	timer.start()
 
 # even if an effect is manually cleaned up or reaches its end, it notifies the loader.
 func _on_timer_timeout():

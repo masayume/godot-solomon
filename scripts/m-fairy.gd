@@ -57,8 +57,38 @@ func _hint_nearby_hidden_items():
 			continue
 
 		if global_position.distance_to(item.global_position) <= HINT_RADIUS:
-			loader.spawn_fx("twinkle", item.global_position, Vector2i(-1, -1), false)
+			# --- NEW: Spawn a cluster of stars instead of just one ---
+			var star_count = randi_range(3, 4) 
 
+			for i in star_count:
+				# --- Staggering the spawn times ---
+				# Each star spawns 0.2 to 0.5 seconds after the previous one
+				var delay = i * randf_range(0.2, 0.5) 
+				get_tree().create_timer(delay).timeout.connect(_spawn_single_star.bind(item.global_position))
+				
+
+
+func _spawn_single_star(item_pos: Vector2):
+	# Safety check in case the fairy died or level changed during the delay
+	if not loader: 
+		return 
+		
+	# Randomize position slightly around the item (e.g., within a 20px radius)
+	var random_offset = Vector2(randf_range(-32.0, 32.0), randf_range(-32.0, 32.0))
+	var spawn_pos = item_pos + random_offset
+	
+	var fx_node = loader.spawn_fx("twinkle", spawn_pos, Vector2i(-1, -1), false)
+	
+	if fx_node:
+		# Apply scale
+		fx_node.scale *= randf_range(0.7, 1.3)
+		
+		# Apply animation randomization
+		if fx_node.has_method("randomize_animation"):
+			fx_node.randomize_animation()
+			
+		# Apply rotation
+		fx_node.rotation = randf_range(0.0, TAU)
 
 func _setup_hitbox():
 	if not hitbox: return
