@@ -294,12 +294,12 @@ func load_level(id: int):
 	_spawn_level_content_hidden(data)
 
 ###DEBUG cell coordinates
-	print("[CHECK] door(", doorx, ",", doory, ") -> grid_to_local=",
-	GameConfig.grid_to_local(doorx, doory, tile_size, x_off, y_off))
+#	print("[CHECK] door(", doorx, ",", doory, ") -> grid_to_local=",
+#	GameConfig.grid_to_local(doorx, doory, tile_size, x_off, y_off))
 	
 	# Instantiate the intro helper function
 	var intro_manager = RoomIntro.new(self)
-	print("calling play intro")
+#	print("calling play intro")
 	intro_manager.play_intro(data)
 	
 	# 1. Initialize value from game.cfg

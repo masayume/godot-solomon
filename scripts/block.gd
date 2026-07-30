@@ -88,7 +88,16 @@ func setup_animation():
 			# 3. CRITICAL: Set sprite properties for runtime sheets
 			sprite.region_enabled = false  # Disable region to use frames 
 			sprite.hframes = frames.size() # Tell Godot there are 8 columns 
-			sprite.vframes = 1             # Ensure it's a single row
+#			sprite.vframes = 1             # Ensure it's a single row
+			if data.has("vframes"):
+				var v = data.vframes
+				if typeof(v) != TYPE_INT or v <= 0:
+					push_error("CONFIG ERROR: 'vframes' must be a positive integer in state '%s' (got: %s)" % [v])
+					sprite.vframes = 1
+				else:
+					sprite.vframes = v
+			else:
+				sprite.vframes = 1
 			
 			frame_index = 0
 			sprite.frame = frames[0]

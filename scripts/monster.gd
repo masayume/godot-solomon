@@ -84,6 +84,17 @@ func change_state(new_state: String):
 	else:
 		sprite.hframes = 1
 
+	# Optional vframes: only applies if present in config, defaults to 1 row
+	if data.has("vframes"):
+		var v = data.vframes
+		if typeof(v) != TYPE_INT or v <= 0:
+			push_error("monster sprite parsing CONFIG ERROR: 'vframes' must be a positive integer in state '%s' (got: %s)" % [new_state, v])
+			sprite.vframes = 1
+		else:
+			sprite.vframes = v
+	else:
+		sprite.vframes = 1
+		
 	# FORCE disable region to prevent old slicing code from hiding the sprite
 	sprite.region_enabled = false
 	sprite.region_rect = Rect2(0, 0, 0, 0)
@@ -420,3 +431,17 @@ func start_fall_death():
 		loader.spawn_fx("star_death", global_position, Vector2i(-1,-1), false)
 
 	queue_free.call_deferred()
+
+## Scales the sprite while keeping its bottom edge anchored in place
+## (Node2D has no pivot_offset, so we compensate by shifting position).
+func scale_sprite_from_bottom(new_scale: Vector2) -> void:
+	if not sprite or not sprite.texture:
+		return
+
+#	var tex_height = sprite.texture.get_height()
+	var tex_height = tile_size
+	var old_scale = sprite.scale
+	var height_diff = tex_height * (new_scale.y - old_scale.y)
+
+	sprite.scale = new_scale
+	sprite.position.y -= height_diff / 2.0

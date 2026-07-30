@@ -125,7 +125,17 @@ func set_random_variant():
 		tile_index = data.frames[0]
 	else: 
 		tile_index = randi() % frame_count
-		
+
+	if data.has("vframes"):
+		var v = data.vframes
+		if typeof(v) != TYPE_INT or v <= 0:
+			push_error("CONFIG ERROR: 'vframes' must be a positive integer in state '%s' (got: %s)" % [ v])
+			sprite.vframes = 1
+		else:
+			sprite.vframes = v
+	else:
+		sprite.vframes = 1
+
 	var x = tile_index * tile_size
 	sprite.region_enabled = true
 	sprite.region_rect = Rect2(x, 0, tile_size, tile_size)

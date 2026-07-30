@@ -643,6 +643,16 @@ func change_state(new_state):
 	sprite.texture = load(data.sprite)
 	sprite.hframes = data.hframes
 
+	if data.has("vframes"):
+		var v = data.vframes
+		if typeof(v) != TYPE_INT or v <= 0:
+			push_error("CONFIG ERROR: 'vframes' must be a positive integer in state '%s' (got: %s)" % [current_state, v])
+			sprite.vframes = 1
+		else:
+			sprite.vframes = v
+	else:
+		sprite.vframes = 1
+		
 	sprite.region_enabled = false
 	sprite.region_rect = Rect2(0, 0, 0, 0)
 		

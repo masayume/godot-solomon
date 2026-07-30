@@ -37,7 +37,17 @@ func setup_fx(fx_name: String, g_pos: Vector2i = Vector2i.ZERO, b_type: String =
 	sprite.texture = load(data["sprite"]) 
 	sprite.hframes = data["hframes"] 
 	frame_sequence = data["frames"] 
-	
+
+	if data.has("vframes"):
+		var v = data.vframes
+		if typeof(v) != TYPE_INT or v <= 0:
+			push_error("CONFIG ERROR: 'vframes' must be a positive integer in state '%s' (got: %s)" % [v])
+			sprite.vframes = 1
+		else:
+			sprite.vframes = v
+	else:
+		sprite.vframes = 1
+
 	sprite.frame = frame_sequence[0] 
 	timer.wait_time = data["anim_speed"] 
 	
