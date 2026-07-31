@@ -1,0 +1,15 @@
+[gd_scene format=3 uid="uid://b67pnb6qto052"]
+
+[ext_resource type="Script" uid="uid://dwvmjietscklt" path="res://scripts/m-orangeflame.gd" id="1_vw46o"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_fixb6"]
+height = 36.0
+
+[node name="Orangeflame" type="CharacterBody2D" unique_id=2064629230]
+script = ExtResource("1_vw46o")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1872182529]
+scale = Vector2(1.6, 1.6)
+shape = SubResource("CapsuleShape2D_fixb6")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1521850482]

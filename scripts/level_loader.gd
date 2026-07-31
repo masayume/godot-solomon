@@ -10,6 +10,7 @@ var scenes = {
 	"fairy": preload("res://scenes/m-Fairy.tscn"),
 
 	"blueflame": preload("res://scenes/m-Blueflame.tscn"),
+	"orangeflame": preload("res://scenes/m-Orangeflame.tscn"),
 	"chimera": preload("res://scenes/m-Chimera.tscn"),
 	"demonhead": preload("res://scenes/m-Demonhead.tscn"),
 	"dragon": preload("res://scenes/m-Dragon.tscn"),
