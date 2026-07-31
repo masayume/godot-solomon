@@ -32,7 +32,7 @@ func _ready():
 	# so instead we scale the SPRITE ONLY and shift it up by half the height
 	# it gained, which keeps the bottom edge pinned in place. This also leaves
 	# the collision shape / hitbox untouched, unlike scaling the root node.
-	scale_sprite_from_bottom(Vector2(1.2, 1.4))
+	scale_sprite_from_bottom(Vector2(1.2, 1.4), 0.3)
 	# ==========================================
 	# ==========================================
 

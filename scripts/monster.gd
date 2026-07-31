@@ -434,7 +434,27 @@ func start_fall_death():
 
 ## Scales the sprite while keeping its bottom edge anchored in place
 ## (Node2D has no pivot_offset, so we compensate by shifting position).
-func scale_sprite_from_bottom(new_scale: Vector2) -> void:
+## variation_pct (0.0 - 1.0) randomizes the final scale by up to that
+## percentage in either direction, applied uniformly so proportions stay correct.
+func scale_sprite_from_bottom(base_scale: Vector2, variation_pct: float = 0.0) -> void:
+	if not sprite or not sprite.texture:
+		return
+
+	var new_scale = base_scale
+	if variation_pct > 0.0:
+		var factor = 1.0 + randf_range(-variation_pct, variation_pct)
+		new_scale = base_scale * factor
+
+#	var tex_height = sprite.texture.get_height()
+	var old_scale = sprite.scale
+	var height_diff = tile_size * (new_scale.y - old_scale.y)
+
+	sprite.scale = new_scale
+	sprite.position.y -= height_diff / 2.0
+	
+## Scales the sprite while keeping its bottom edge anchored in place
+## (Node2D has no pivot_offset, so we compensate by shifting position).
+func scale_sprite_from_bottom2DEL(new_scale: Vector2) -> void:
 	if not sprite or not sprite.texture:
 		return
 
