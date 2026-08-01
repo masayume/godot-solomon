@@ -10,7 +10,9 @@ var gravity = GameConfig.monsterdata.spark.gravity
 var hitbox: Area2D 
 
 var airborne_time: float = 0.0
-const MAX_AIRBORNE_BEFORE_FLY_STRAIGHT := 0.12  # seconds with no floor before giving up on corner-snapping
+var is_turning: bool = false
+var turn_duration: float = 0.25 # Seconds it takes to round the corner. Tweak to taste!
+
 const WALL_PROBE_DIST := 26.0 # Long enough to reach the wall from the center of a tile
 const WALL_REACH := 38.0      # How far to shoot rays inward to find the wall
 const EDGE_LOOKAHEAD := 36.0  # How far forward to shift the Yellow ray (should be about half your tile size)
@@ -111,10 +113,22 @@ func _on_hitbox_body_entered(body):
 		body.trigger_death_from_monster()
 
 func _physics_process(_delta):
+
+	# Force the visual sprite to remain perfectly upright
+	if has_node("Sprite2D"):
+		$Sprite2D.global_rotation = 0
+	elif has_node("AnimatedSprite2D"):
+		$AnimatedSprite2D.global_rotation = 0
+			
 	behave(_delta) # includes move_and_slide()
 
 
 func behave(_delta):
+
+	# [NEW] If we are animating around a corner, skip all physics this frame
+	if is_turning:
+		return
+			
 	debug_rays.clear()
 	velocity = Vector2.ZERO
 	
@@ -139,24 +153,37 @@ func behave(_delta):
 		queue_redraw()
 		return # CRITICAL: Skip physics this frame so we don't jam into the vertex
 		
-	# --- 2. CONVEX CHECK (Predictive Outer Edge) ---
-	# Because we check Concave first, we know for a fact there is no wall blocking us here.
+# --- 2. CONVEX CHECK (Predictive Outer Edge) ---
 	var front_edge = global_position + (local_forward * EDGE_LOOKAHEAD)
 	var floor_ahead = _raycast_from(front_edge, local_down, WALL_REACH, Color.YELLOW)
-
-	# [NEW] Check if the center of the Spark is actually touching a surface
 	var center_grounded = _raycast_from(global_position, local_down, WALL_REACH, Color.GREEN)
-		
+	
 	if center_grounded and not floor_ahead:
-		rotation += (PI / 2.0) * direction
-		_update_current_surface()
+		# Lock the physics brain so raycasts don't misfire while turning
+		is_turning = true 
 		
-		var new_down = Vector2.DOWN.rotated(rotation)
-		global_position += (local_forward * EDGE_LOOKAHEAD) + (new_down * 4.0)
+		# Calculate our final destination and rotation
+		var target_rotation = rotation + ((PI / 2.0) * direction)
+		var new_down = Vector2.DOWN.rotated(target_rotation)
+		var target_position = global_position + (local_forward * EDGE_LOOKAHEAD) + (new_down * 4.0)
+		
+		# Create a Tween to smoothly animate the turn
+		var tween = create_tween()
+		tween.set_parallel(true) # Make position and rotation happen simultaneously
+		
+		# Tween the properties over 'turn_duration' seconds
+		tween.tween_property(self, "global_position", target_position, turn_duration)
+		tween.tween_property(self, "rotation", target_rotation, turn_duration)
+				
+		# When the animation finishes, update the surface and unlock the brain
+		tween.chain().tween_callback(func():
+			_update_current_surface()
+			is_turning = false
+		)
 		
 		queue_redraw()
-		return # CRITICAL: Skip physics this frame so we don't fall diagonally
-
+		return # CRITICAL: Skip physics this frame
+		
 	# --- 3. MOVEMENT & ADHESION ---
 	velocity = local_forward * speed
 
