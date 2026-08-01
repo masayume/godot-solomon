@@ -143,8 +143,11 @@ func behave(_delta):
 	# Because we check Concave first, we know for a fact there is no wall blocking us here.
 	var front_edge = global_position + (local_forward * EDGE_LOOKAHEAD)
 	var floor_ahead = _raycast_from(front_edge, local_down, WALL_REACH, Color.YELLOW)
-	
-	if not floor_ahead:
+
+	# [NEW] Check if the center of the Spark is actually touching a surface
+	var center_grounded = _raycast_from(global_position, local_down, WALL_REACH, Color.GREEN)
+		
+	if center_grounded and not floor_ahead:
 		rotation += (PI / 2.0) * direction
 		_update_current_surface()
 		
@@ -156,7 +159,14 @@ func behave(_delta):
 
 	# --- 3. MOVEMENT & ADHESION ---
 	velocity = local_forward * speed
-	velocity += local_down * 15.0 # Pulls the crawler flush to the floor
+
+	# Only pull the crawler flush to the floor if there is a floor to pull towards.
+	# If there is no floor (block disappeared), this prevents the Spark from drifting downwards
+	# and ensures it flies perfectly straight across the gap!
+	if center_grounded:
+		velocity += local_down * 15.0
+
+#	velocity += local_down * 15.0 # Pulls the crawler flush to the floor
 
 	move_and_slide()
 	
