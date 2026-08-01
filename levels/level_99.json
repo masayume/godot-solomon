@@ -7,7 +7,7 @@
   "block_width": 16,
   "block_height": 12,
 
-  "player_start": [12, 10],
+  "player_start": [4, 10],
 
   "debug_grid": true,
 
@@ -57,11 +57,12 @@
 
 	{"pos": [13,10],"family":"gargoyle"},
 	{"pos": [15,11],"family":"pannel", "shoot_direction":"left"},
+	{"pos": [15,11],"family":"pannel", "shoot_direction":"left"},
+	{"pos": [1,12],"family":"pannel"},
 
 	{"pos": [13,10],"family":"ghost"},
 
 	{"pos": [12,10],"family":"spark","attached":"bottom"},
-	{"pos": [2,8],"family":"spark","attached":"right"},
 
 	{"pos": [7,10],"family":"goblin"},
 	
@@ -69,8 +70,7 @@
 	
   "monsters": [
 
-	{"pos": [15,11],"family":"pannel", "shoot_direction":"left"},
-	{"pos": [1,12],"family":"pannel"},
+	{"pos": [2,8],"family":"spark","attached":"right"},
 
 	{"pos": [12,8],"family":"ghost"},
 
@@ -82,6 +82,11 @@
   ],
 
   "blocks": [
+
+	{"pos": [1,11],"family":"earth"},	
+	{"pos": [2,12],"family":"earth"},	
+	{"pos": [3,11],"family":"earth"},	
+
 
 	{"pos": [5,9],"family":"earth"},	
 	{"pos": [1,8],"family":"earth"},	

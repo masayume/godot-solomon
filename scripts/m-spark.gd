@@ -113,7 +113,117 @@ func _on_hitbox_body_entered(body):
 func _physics_process(_delta):
 	behave(_delta) # includes move_and_slide()
 
+
 func behave(_delta):
+	debug_rays.clear()
+	velocity = Vector2.ZERO
+	
+	var speed = GameConfig.monsterdata[family].speed
+	
+	var local_forward = Vector2.RIGHT.rotated(rotation) * direction
+	var local_down = Vector2.DOWN.rotated(rotation)
+	up_direction = -local_down
+
+	# --- 1. CONCAVE CHECK (Predictive Inner Corner) ---
+	# Pivot exactly when we are EDGE_LOOKAHEAD pixels away, BEFORE we crash.
+	var wall_ahead = _raycast_from(global_position, local_forward, EDGE_LOOKAHEAD, Color.RED)
+	
+	if wall_ahead:
+		rotation -= (PI / 2.0) * direction
+		_update_current_surface()
+		
+		# We are 36 pixels away. We snap to 26 pixels away (WALL_PROBE_DIST) to mount perfectly.
+		var new_down = Vector2.DOWN.rotated(rotation)
+		global_position += new_down * (EDGE_LOOKAHEAD - WALL_PROBE_DIST)
+		
+		queue_redraw()
+		return # CRITICAL: Skip physics this frame so we don't jam into the vertex
+		
+	# --- 2. CONVEX CHECK (Predictive Outer Edge) ---
+	# Because we check Concave first, we know for a fact there is no wall blocking us here.
+	var front_edge = global_position + (local_forward * EDGE_LOOKAHEAD)
+	var floor_ahead = _raycast_from(front_edge, local_down, WALL_REACH, Color.YELLOW)
+	
+	if not floor_ahead:
+		rotation += (PI / 2.0) * direction
+		_update_current_surface()
+		
+		var new_down = Vector2.DOWN.rotated(rotation)
+		global_position += (local_forward * EDGE_LOOKAHEAD) + (new_down * 4.0)
+		
+		queue_redraw()
+		return # CRITICAL: Skip physics this frame so we don't fall diagonally
+
+	# --- 3. MOVEMENT & ADHESION ---
+	velocity = local_forward * speed
+	velocity += local_down * 15.0 # Pulls the crawler flush to the floor
+
+	move_and_slide()
+	
+	queue_redraw()
+	
+func behaveOLD(_delta): # <== this is actually the nearer solution
+	debug_rays.clear()
+	velocity = Vector2.ZERO
+	
+	var speed = GameConfig.monsterdata[family].speed
+	
+	var local_forward = Vector2.RIGHT.rotated(rotation) * direction
+	var local_down = Vector2.DOWN.rotated(rotation)
+	up_direction = -local_down
+
+	# 1. MOVEMENT & FLOOR ADHESION
+	velocity = local_forward * speed
+	velocity += local_down * 15.0 # Pulls the crawler flush to the floor
+
+	move_and_slide()
+
+	# Update vectors after movement
+	local_forward = Vector2.RIGHT.rotated(rotation) * direction
+	local_down = Vector2.DOWN.rotated(rotation)
+
+	# 2. CONCAVE CHECK
+	if get_slide_collision_count() > 0:
+		for i in range(get_slide_collision_count()):
+			var col = get_slide_collision(i)
+			if col.get_normal().dot(local_forward) < -0.5:
+				rotation -= (PI / 2.0) * direction
+				_update_current_surface()
+				queue_redraw()
+				return
+
+	# 3. CONVEX CHECK (Outer Edge Wrap)
+	var is_grounded = _raycast_from(global_position, local_down, WALL_REACH, Color.GREEN)
+	
+	if not is_grounded:
+		# We just stepped off the ledge. We need the EXACT pixel coordinate of the wall we left.
+		var space_state = get_world_2d().direct_space_state
+		var query = PhysicsRayQueryParameters2D.create(global_position, global_position - local_forward * WALL_REACH)
+		query.exclude = [self]
+		query.collision_mask = 1
+		var result = space_state.intersect_ray(query)
+		
+		if result:
+			# Turn the corner
+			rotation += (PI / 2.0) * direction
+			_update_current_surface()
+			
+			var new_forward = Vector2.RIGHT.rotated(rotation) * direction
+			var new_down = Vector2.DOWN.rotated(rotation)
+			
+			# THE FIX: Instant Wall-Mounting
+			# result.position is the precise point on the wall's surface.
+			# By subtracting (new_down * WALL_PROBE_DIST), we instantly snap the crawler's center 
+			# to exactly 26.0 pixels away from the wall—the perfect crawling distance.
+			# Adding (new_forward * 4.0) nudges it slightly down the new face so it doesn't snag the sharp corner tip.
+			global_position = result.position - (new_down * WALL_PROBE_DIST) + (new_forward * 4.0)
+			
+			queue_redraw()
+			return
+			
+	queue_redraw()
+
+func behaveVOLD(_delta):
 	# Clear old debug lines every frame
 	debug_rays.clear()
 	
@@ -180,7 +290,7 @@ func behave(_delta):
 	# Tell Godot to update the canvas drawings this frame
 	queue_redraw()	
 	
-func behaveOLD(_delta):
+func behaveVVOLD(_delta):
 
 	# 1. Calculate intended move direction
 	up_direction = surface_normals.get(current_surface, Vector2.UP)
