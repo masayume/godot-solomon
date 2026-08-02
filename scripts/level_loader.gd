@@ -46,12 +46,17 @@ var room_active: bool = true
 var tile_size
 var x_off: float
 var y_off: float
-var blocks := {} 	## blocks dictionary to check/update; Vector2i  →  Block node
 var current_level
 var player
 var doorx
 var doory
 
+# blocks dictionary to check/update; Vector2i  →  Block node
+# Delegated property access so external scripts reading level_loader.blocks don't break
+var blocks: Dictionary:
+	get: return block_manager.blocks
+	set(value): block_manager.blocks = value
+	
 var current_level_data: Dictionary
 #2DEL var item_nodes := {} ## NEW: tracks instantiated item nodes; Vector2i -> Item node
 #2DEL var monsters := {} 	## monsters dictionary to check/update; Vector2i  →  Block node
@@ -72,6 +77,19 @@ var entity_spawner: EntitySpawner:
 				add_child(_entity_spawner)
 				
 		return _entity_spawner
+
+# LAZY INIT of block_manager to avoid errors like object of type 'null instance'
+var _block_manager: BlockManager
+var block_manager: BlockManager:
+	get:
+		if not is_instance_valid(_block_manager):
+			_block_manager = get_node_or_null("BlockManager") as BlockManager
+			if not _block_manager:
+				_block_manager = BlockManager.new()
+				_block_manager.name = "BlockManager"
+				_block_manager.block_scene = block_scene
+				add_child(_block_manager)
+		return _block_manager
 		
 func _ready():
 	# Sets the engine's background clearing color to pure black
@@ -106,6 +124,41 @@ var item_nodes: Dictionary:
 var monsters: Dictionary:
 	get: return entity_spawner.monsters
 
+
+# ------------------------------------------------------------------
+#  BLOCK MANAGER DELEGATION (Facade)
+# ------------------------------------------------------------------
+
+func add_block(bx: int, by: int, type: String, showing: bool = false) -> Node2D:
+	return block_manager.add_block(bx, by, type, showing)
+
+func create_or_destroy_block(pos, dir, crouching, is_player = false):
+	block_manager.create_or_destroy_block(pos, dir, crouching, is_player)
+
+func _on_foop_finished(grid_pos, type):
+	block_manager.on_foop_finished(grid_pos, type)
+
+func destroy_block_at(cell: Vector2i) -> bool:
+	return block_manager.destroy_block_at(cell)
+
+func remove_block_at_pos(world_pos: Vector2):
+	block_manager.remove_block_at_pos(world_pos)
+
+func spawn_block_at_world_pos(world_pos: Vector2, type: String):
+	block_manager.spawn_block_at_world_pos(world_pos, type)
+
+func replace_block(world_pos: Vector2, new_family: String):
+	block_manager.replace_block(world_pos, new_family)
+
+func remove_block_node(block_node: Node):
+	block_manager.remove_block_node(block_node)
+
+func replace_block_node(block_node: Node, new_family: String):
+	block_manager.replace_block_node(block_node, new_family)
+	
+	
+	
+	
 func center_level():
 	# print("THIS NODE:", get_path())
 	var screen_size = get_viewport_rect().size
@@ -140,121 +193,6 @@ func _on_player_spell(pos, dir, crouching):
 
 func _on_player_fireball(_pos, _dir, _crouching):
 	return
-	
-func create_or_destroy_block(pos, dir, crouching, is_player=false):
-
-#s	print("[CAST] pos=", pos, " dir=", dir, " crouching=", crouching)
-	var half_tile = tile_size / 2.0
-		
-	# 1. Find which cell the player is in
-#	var cell = GameConfig.world_to_grid(pos, x_off, y_off, tile_size)
-	
-	var cell_x = int(round((pos.x - x_off - half_tile) / tile_size)) + 1
-	var cell_y = int(-floor((pos.y + y_off + half_tile) / tile_size)) + 1  # floor for Y
-
-	var cell = Vector2i(cell_x, cell_y)
-
-	if crouching:
-		cell.y -= 1
-
-	var target = Vector2i(cell.x + dir, cell.y)
-#	print("[GOBLIN PUNCH?] cell=", cell, " target=", target, " has_block=", blocks.has(target))
-	
-###DEBUG_2l
-#	print("[CAST] pos=", pos, " cell=", cell, " target=", target, " has=", blocks.has(target))
-#	print("[CAST] pos=", pos, " x_off=", x_off, " y_off=", y_off, " tile_size=", tile_size, " cell=", cell, " target=", target)
-	
-	### DESTROY BLOCK playing fx "poof"
-	
-	# 1. If there is already a block at the target position
-	if blocks.has(target):
-		var block = blocks[target]
-		
-		# Only destroy if the config says it is destructible
-		if GameConfig.blockdata[block.family]["destructible"]:
-
-			# Play "Poof" (Destruction)
-			spawn_fx("poof",  block.global_position, target, false)
-
-			if GameConfig.blockdata["earth"].has("sound"):
-				var sfx = load(GameConfig.blockdata["earth"].get("sound"))
-				if sfx:
-					player.audio_player.stream = sfx
-					player.audio_player.play() # Plays once when the state starts
-
-			# Force the block to instantly disappear before queue_free 
-			# removes it at the end of the frame
-			block.hide()
-			block.queue_free()
-			blocks.erase(target)
-
-			# ---------------------------------------------------------
-			# Check if destroying this block revealed a hidden item
-			# ---------------------------------------------------------
-			if item_nodes.has(target):
-				var item_node = item_nodes[target]
-				
-				# Ensure the item hasn't been collected and freed already
-				if is_instance_valid(item_node):
-					# Check if this node is flagged as a hidden item
-					if item_node.get_meta("is_hidden_item", false):
-
-						# 2. NEW: Brute force the Godot renderer
-						item_node.show() # Safer than visible = true
-						item_node.modulate.a = 1.0 # Force full opacity
-						item_node.z_index = 50 # Force it to draw over the background and grid
-						
-						# Explicitly force the child sprite to wake up
-						var sprite = item_node.get_node_or_null("Sprite2D")
-						if sprite:
-							sprite.show()
-							
-						item_node.set_meta("is_hidden_item", false) # No longer hidden
-						
-						# 3. Add a debug print just to prove it fired correctly
-						print("Item Revealed: ", item_node.name, " at ", item_node.global_position)
-						
-						# --- Re-enable the player collision mask SAFELY with a tiny delay ---
-						var area = item_node.get_node_or_null("Area2D")
-						if area:
-							get_tree().create_timer(0.15).timeout.connect(func():
-								if is_instance_valid(area):
-									area.set_collision_layer_value(3, true)
-									area.set_collision_mask_value(2, true)
-							)
-							
-				# The item was already collected. Clean up the dead reference!
-				else:
-					item_nodes.erase(target)					
-			# ---------------------------------------------------------
-
-		else:
-			# It's a stone block (not destructible)
-			# Do nothing here so it doesn't fall into the 'else' below
-			print("Hit indestructible block: ", block.family)
-			if GameConfig.blockdata[block.family].has("sound"):
-				var sfx = load(GameConfig.blockdata[block.family].get("sound"))
-				if sfx:
-					player.audio_player.stream = sfx
-					player.audio_player.play() # Plays once when the state starts
-
-			return
-			
-	# CREATE BLOCK after playing fx "foop"
-	# 2. ONLY create a block if the target space is confirmed EMPTY
-	elif not blocks.has(target) and is_player:
-
-		# PLAY FOOP FX; Calculate world position for the new block
-
-		# AFTER - spawns foop at target cell where the block will appear
-		# grid_to_local returns LOCAL coordinates. We must convert them to GLOBAL for spawn_fx.
-		var local_pos = GameConfig.grid_to_local(target[0], target[1], tile_size, x_off, y_off)
-		var global_pos = to_global(local_pos) 
-
-		# Play Foop and wait for it to finish before adding the block
-		spawn_fx("foop", global_pos, target, true)
-
-###TODO "tween" to these effects so they also scale or fade out while the frames are playing
 
 
 func spawn_fx(fx_type: String, world_pos: Vector2, grid_pos: Vector2i, should_spawn_block: bool):
@@ -283,16 +221,6 @@ func spawn_fx(fx_type: String, world_pos: Vector2, grid_pos: Vector2i, should_sp
 		fx.animation_finished.connect(_on_foop_finished)
 	
 	fx.setup_fx(fx_type, grid_pos)
-
-### PLAYER BLOCK CREATOR FUNCTION !!!
-func _on_foop_finished(grid_pos, type):
-	# NOW create the actual block 
-	# add_block(grid_pos.x, grid_pos.y, type)
-
-###DEBUG block created position
-#	print("[PLAYER BLOCK CREATED] grid_pos=", grid_pos, " type=", type)
-	
-	add_block(grid_pos.x, grid_pos.y, type, true)
 
 
 func load_level(id: int):
@@ -386,112 +314,6 @@ func toggle_room_activity(active: bool):
 	await get_tree().create_timer(5.0).timeout
 	print("Resumed after 5 seconds")
 
-func remove_block_at_pos(world_pos: Vector2):
-	# Find the block by node reference, not by coordinate conversion
-	var cell = GameConfig.world_to_grid(world_pos, x_off, y_off, tile_size)
-	if blocks.has(cell):
-		blocks[cell].queue_free()
-		blocks.erase(cell)
-
-
-func spawn_block_at_world_pos(world_pos: Vector2, type: String):
-	# Convert world position to grid and use the existing add_block logic 
-	var grid_pos = GameConfig.world_to_grid(world_pos, x_off, y_off, tile_size)
-	add_block(grid_pos.x, grid_pos.y, type, true)
-
-func destroy_block_atUNUSED(cell: Vector2i) -> bool:
-	if not blocks.has(cell):
-		return false
-
-	var block = blocks[cell]
-	var bdata = GameConfig.blockdata.get(block.family, {})
-	if not bdata.get("destructible", false):
-		return false
-
-	# Disable collision immediately - queue_free() alone doesn't remove
-	# the physics body until end of frame, which leaves a brief window
-	# where a fast-moving body can still register a stale collision
-	# against this block (or overlap into it) before it's actually gone.
-	if block.has_node("CollisionShape2D"):
-		block.get_node("CollisionShape2D").set_deferred("disabled", true)
-	block.remove_from_group("blockgroup")
-
-	var local_pos = GameConfig.grid_to_local(cell.x, cell.y, tile_size, x_off, y_off)
-	spawn_fx("poof", to_global(local_pos), cell, false)
-
-	blocks.erase(cell)
-	block.queue_free()
-	return true
-
-func destroy_block_at(cell: Vector2i) -> bool:
-
-	print("[DESTROY_BLOCK_AT] frame=", Engine.get_physics_frames(), " cell=", cell, " has_block=", blocks.has(cell))
-	
-	if not blocks.has(cell):
-		return false
- 
-	var block = blocks[cell]
-	var bdata = GameConfig.blockdata.get(block.family, {})
-	if not bdata.get("destructible", false):
-		return false
- 
-	var local_pos = GameConfig.grid_to_local(cell.x, cell.y, tile_size, x_off, y_off)
-	spawn_fx("poof", to_global(local_pos), cell, false)
- 
-	blocks.erase(cell)
-	block.queue_free()
-	return true
-
-
-func replace_block(world_pos: Vector2, new_family: String):
-	var cell = GameConfig.world_to_grid(world_pos, x_off, y_off, tile_size)
-	if blocks.has(cell):
-		blocks[cell].queue_free()
-		blocks.erase(cell)
-	add_block(cell.x, cell.y, new_family, true)
-
-func remove_block_node(block_node: Node) -> void:
-	for cell in blocks:
-		if blocks[cell] == block_node:
-			block_node.queue_free()
-			blocks.erase(cell)
-			return
-
-func replace_block_node(block_node: Node, new_family: String) -> void:
-	for cell in blocks:
-		if blocks[cell] == block_node:
-			block_node.queue_free()
-			blocks.erase(cell)
-			add_block(cell.x, cell.y, new_family, true)
-			return
-			
-
-func add_block(bx, by, type, showing = false):
-	var block = block_scene.instantiate()
-
-	var block_x = bx
-	var block_y = by
-
-	block.family = type
-	block.name = "BL_" + str(block.family)
-		
-	block.add_to_group("debug_collision")
-	block.add_to_group("blockgroup")
-
-	block.visible = showing
-	
-	add_child(block)
-	var cell = Vector2i(bx, by)
-	blocks[cell] = block
-	block.set_meta("grid_pos", cell)   # 
-		
-	block.position = GameConfig.grid_to_local(
-		block_x,        # grid column
-		block_y,        # grid row
-		tile_size,      # size of one tile in pixels
-		x_off,          # horizontal centering offset
-		y_off           # vertical centering offset
-	)	
 
 func spawn_player(px, py, xoff, yoff):
 
@@ -609,6 +431,10 @@ func show_ending_credits():
 	print("show_ending_credits")
 
 func clear_current_level():
+
+	block_manager.clear()
+	entity_spawner.clear()
+
 	# Clear the dictionaries [cite: 5, 6]
 	for block in blocks.values():
 		block.queue_free()
@@ -622,11 +448,9 @@ func clear_current_level():
 	item_nodes.clear()
 	item_nodes = {}
 
-	
 	for child in get_children(): 
-		if child.name != "Background":
+		if child.name != "Background" and child.name != "BlockManager" and child.name != "EntitySpawner":
 			child.queue_free()
-
 
 
 # DEBUGGING 
