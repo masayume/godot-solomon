@@ -426,7 +426,78 @@ func show_bonus_card(bonus):
 	intro_room_label.visible = false
 
 	print("your rest bonus: ", bonus)
-	
+
+# external blocks secret hint system
+func _inject_hidden_item_border_hints(level_data: Dictionary, hint_family: String = "stone_marker"):
+	if not level_data.has("items") or not level_data.has("blocks"):
+		return
+
+	# 1. Auto-detect outer wall boundaries (e.g., x=16, y=13)
+	var max_x: int = 0
+	var max_y: int = 0
+	for block in level_data["blocks"]:
+		max_x = max(max_x, block["pos"][0])
+		max_y = max(max_y, block["pos"][1])
+
+	# 2. Assign random border target positions for each hidden item
+	var hint_targets: Array[Dictionary] = []
+
+	for item in level_data["items"]:
+		if item.get("type") == "hidden" and item.has("pos"):
+			var h_pos = Vector2i(item["pos"][0], item["pos"][1])
+			
+			# Pick top (0) or bottom (max_y) for X coordinate hint
+			var target_row_for_x = [0, max_y].pick_random()
+			
+			# Pick left (0) or right (max_x) for Y coordinate hint
+			var target_col_for_y = [0, max_x].pick_random()
+
+			hint_targets.append({
+				"pos": h_pos,
+				"row_for_x": target_row_for_x,
+				"col_for_y": target_col_for_y
+			})
+
+	# 3. Swap wall blocks matching the chosen random coordinates
+	for block in level_data["blocks"]:
+		var bx: int = block["pos"][0]
+		var by: int = block["pos"][1]
+
+		for target in hint_targets:
+			# X-coordinate marker (at either top or bottom row)
+			if bx == target["pos"].x and by == target["row_for_x"]:
+				block["family"] = hint_family
+
+			# Y-coordinate marker (at either left or right column)
+			if bx == target["col_for_y"] and by == target["pos"].y:
+				block["family"] = hint_family
+
+
+func _inject_hidden_item_border_hints2DEL(level_data: Dictionary, hint_family: String = "stonehint"):
+	var hidden_positions: Array[Vector2i] = []
+
+	# 1. Collect coordinates of all hidden items
+	if level_data.has("items"):
+		for item in level_data["items"]:
+			if item.get("type") == "hidden" and item.has("pos"):
+				hidden_positions.append(Vector2i(item["pos"][0], item["pos"][1]))
+
+	# 2. Swap wall blocks matching top (X) and left (Y) coordinates
+	if level_data.has("blocks"):
+		for block in level_data["blocks"]:
+			var bx: int = block["pos"][0]
+			var by: int = block["pos"][1]
+
+			for h_pos in hidden_positions:
+				# Mark X coordinate on the top wall [hx, 0]
+				if bx == h_pos.x and by == 0:
+					block["family"] = hint_family
+				
+				# Mark Y coordinate on the left wall [0, hy]
+				if bx == 0 and by == h_pos.y:
+					block["family"] = hint_family
+
+
 func show_ending_credits():
 	print("show_ending_credits")
 
@@ -492,6 +563,8 @@ func _spawn_level_content_hidden(data):
 	blocks.clear()
 	monsters.clear()
 
+	_inject_hidden_item_border_hints(data, "stonehint")
+	
 	###############################
 	#  2. Spawn Blocks (Hidden)   #
 	###############################
