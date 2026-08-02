@@ -128,7 +128,7 @@ func _start_punch():
 	if get_slide_collision_count() > 0:
 		var blockCollider = get_slide_collision(0).get_collider()
 		if blockCollider and blockCollider.is_in_group("blockgroup") and blockCollider.has_meta("grid_pos"):
-			var loader = get_parent()
+#			var loader = get_parent()
 #			print("destroy block at: ", blockCollider.get_meta("grid_pos"))
 			pending_punch_cell = blockCollider.get_meta("grid_pos")
 			return

@@ -25,7 +25,7 @@ var scenes = {
 	"spark": preload("res://scenes/m-Spark.tscn"),
 }
 
-signal level_started
+signal level_started # used by room_intro.gd
 
 @onready var level_label: Label = $"../UI/LevelInfo"
 @onready var intro_room_label: Label = $"../UI/IntroRoomLabel"

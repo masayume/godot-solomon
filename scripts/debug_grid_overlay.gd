@@ -192,8 +192,8 @@ func _cell_rectOLD(col: int, row: int) -> Rect2:
 	var local_draw_pos : Vector2 = to_local(global_pos)
 	
 	# 2. Convert from the loader's local coordinate space directly to the overlay's space
-	var world : Vector2 = _loader.to_global(Vector2(cx, cy))
-	var local : Vector2 = to_local(world)
+#	var world : Vector2 = _loader.to_global(Vector2(cx, cy))
+#	var local : Vector2 = to_local(world)
 	
 #	return Rect2(local.x - half, local.y - half, _ts, _ts)
 	return Rect2(local_draw_pos.x - half, local_draw_pos.y - half, _ts, _ts)
