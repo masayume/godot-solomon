@@ -17,9 +17,9 @@ var is_spawning = true
 func _ready():
 	z_index = 10
 	set_texture()
-	set_random_variant()
+	setup_animation()      # 1. Sets sprite.hframes and sprite.vframes first!
+	set_random_variant()   # 2. Now sprite.frame = randi_range(...) won't go out of bounds
 	set_collidable()
-	setup_animation()
 
 	# Check if the loader has the signal (prevents errors if not set up yet)
 	if family == "demonshield":
@@ -38,7 +38,69 @@ func set_texture():
 	var path = GameConfig.blockdata[family].get("sprite")
 	sprite.texture = load(path)
 
+func setup_animation():
+	if not GameConfig.blockdata.has(family):
+		return
+
+	var data = GameConfig.blockdata[family]
+	
+	# 1. Read 2D grid dimensions directly from block data (matching player.gd logic)
+	sprite.hframes = data.get("hframes", 1)
+	
+	if data.has("vframes"):
+		var v = data.vframes
+		if typeof(v) != TYPE_INT or v <= 0:
+			push_error("CONFIG ERROR: 'vframes' must be a positive integer in block '%s'" % family)
+			sprite.vframes = 1
+		else:
+			sprite.vframes = v
+	else:
+		sprite.vframes = 1
+
+	# 2. Disable region mode to let Godot handle grid slicing via hframes/vframes
+	sprite.region_enabled = false
+
+	# 3. Configure animated frames sequence if defined
+	if data.has("frames"):
+		frames = data.frames
+		anim_speed = data.get("anim_speed", 0.1)
+		frame_index = 0
+		if frames.size() > 0:
+			sprite.frame = frames[0]
+
+
 func set_random_variant():
+	# Skip variant picking if block has an active animation sequence
+	if frames.size() > 1:
+		return
+
+	var data = GameConfig.blockdata.get(family, {})
+
+	# 1. Check for custom sprite_index_range = [min, max]
+	if data.has("sprite_index_range") and data["sprite_index_range"] is Array and data["sprite_index_range"].size() >= 2:
+		var min_frame: int = data["sprite_index_range"][0]
+		var max_frame: int = data["sprite_index_range"][1]
+		sprite.frame = randi_range(min_frame, max_frame)
+		return
+
+	# 2. Fallback: select random index across all grid frames or configured variants		
+	var total_frames = sprite.hframes * sprite.vframes
+
+	# Option A: If using 2D Spritesheets (hframes / vframes)
+	if total_frames > 1:
+		var num_variants = data.get("variants", total_frames)
+		var tile_index = randi() % num_variants if num_variants > 0 else 0
+	else:
+		# Fallback for legacy single-row region tilesets
+		var tile_index = randi() % variants if data.get("variants", 0) != 0 else variants
+		sprite.region_enabled = true
+		sprite.region_rect = Rect2(tile_index * tile_size, 0, tile_size, tile_size)
+
+
+
+func set_random_variantOLD():
+	var data = GameConfig.blockdata.get(family, {})
+
 	# 1. Check if we have animation frames first
 	# If we have frames, we skip the 'variant' region logic [cite: 19, 20]
 	if frames.size() > 1:
@@ -58,7 +120,28 @@ func set_random_variant():
 		sprite.region_enabled = true
 		sprite.region_rect = Rect2(x, 0, tile_size, tile_size)
 
+	# Use the 'hframes' from config if available, otherwise use the default export
+	var frame_count = data.get("hframes", variants)
 
+	var block_index	
+	if data.has("frames"):
+		block_index = data.frames[0]
+	else: 
+		block_index = randi() % frame_count
+
+	if data.has("vframes"):
+		var v = data.vframes
+		if typeof(v) != TYPE_INT or v <= 0:
+			push_error("CONFIG ERROR: 'vframes' must be a positive integer in state '%s' (got: %s)" % [ v])
+			sprite.vframes = 1
+		else:
+			sprite.vframes = v
+	else:
+		sprite.vframes = 1
+
+	var x = block_index * tile_size
+	sprite.region_enabled = true
+	sprite.region_rect = Rect2(x, 0, tile_size, tile_size)
 
 func set_collidable():
 	
@@ -78,7 +161,7 @@ func _process(delta):
 	if frames.size() > 1:
 		animate(delta)
 			
-func setup_animation():
+func setup_animationOLD():
 	if GameConfig.blockdata.has(family):
 		var data = GameConfig.blockdata[family]
 		if data.has("frames"):
