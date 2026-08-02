@@ -29,6 +29,7 @@ signal level_started # used by room_intro.gd
 
 @onready var level_label: Label = $"../UI/LevelInfo"
 @onready var intro_room_label: Label = $"../UI/IntroRoomLabel"
+# @onready var entity_spawner: EntitySpawner = $EntitySpawner
 # @onready var timer_label: RichTextLabel = $"../UI/Timer"
 
 # 1. Update your UI reference
@@ -46,15 +47,32 @@ var tile_size
 var x_off: float
 var y_off: float
 var blocks := {} 	## blocks dictionary to check/update; Vector2i  →  Block node
-var monsters := {} 	## monsters dictionary to check/update; Vector2i  →  Block node
 var current_level
 var player
 var doorx
 var doory
 
 var current_level_data: Dictionary
-var item_nodes := {} ## NEW: tracks instantiated item nodes; Vector2i -> Item node
+#2DEL var item_nodes := {} ## NEW: tracks instantiated item nodes; Vector2i -> Item node
+#2DEL var monsters := {} 	## monsters dictionary to check/update; Vector2i  →  Block node
 
+# LAZY INIT of entity_spawner to avoid errors like object of type 'null instance'
+var _entity_spawner: EntitySpawner
+var entity_spawner: EntitySpawner:
+	get:
+		if not is_instance_valid(_entity_spawner):
+			# 1. Try to find the node in the scene tree
+			_entity_spawner = get_node_or_null("EntitySpawner") as EntitySpawner
+			
+			# 2. If it's missing, create it automatically on the fly
+			if not _entity_spawner:
+				_entity_spawner = EntitySpawner.new()
+				_entity_spawner.name = "EntitySpawner"
+				_entity_spawner.item_scene = item_scene # pass scene reference
+				add_child(_entity_spawner)
+				
+		return _entity_spawner
+		
 func _ready():
 	# Sets the engine's background clearing color to pure black
 	RenderingServer.set_default_clear_color(Color.BLACK)
@@ -63,6 +81,30 @@ func _ready():
 	center_level()
 	current_level = GameConfig.gamedata.sequence.initial_level
 	load_level(current_level)
+
+# ------------------------------------------------------------------
+#  ENTITY SPAWNER DELEGATION (Facade)
+#  Keeps external calls from block.gd, room_intro.gd, player.gd working
+# ------------------------------------------------------------------
+
+func add_item(ix: int, iy: int, type: String, showing: bool = false, is_hidden: bool = false) -> Node2D:
+	return entity_spawner.add_item(ix, iy, type, showing, is_hidden)
+
+func add_monster(monster_data: Dictionary) -> Node2D:
+	return entity_spawner.add_monster(monster_data)
+
+func _spawn_all_monsters(data: Dictionary):
+	entity_spawner.spawn_all_monsters(data)
+
+func spawn_fairy():
+	entity_spawner.spawn_fairy()
+
+# Directly reference dictionaries from entity_spawner where needed:
+var item_nodes: Dictionary:
+	get: return entity_spawner.item_nodes
+
+var monsters: Dictionary:
+	get: return entity_spawner.monsters
 
 func center_level():
 	# print("THIS NODE:", get_path())
@@ -451,81 +493,6 @@ func add_block(bx, by, type, showing = false):
 		y_off           # vertical centering offset
 	)	
 
-
-func add_item(ix, iy, type, showing = false, is_hidden = false):
-	var item = item_scene.instantiate()
-
-	var item_x = ix
-	var item_y = iy
-
-	item.family = type
-	item.name = "IT_" + str(item.family)
-	
-	# Create a custom metadata property on the item node dynamically
-	item.set_meta("is_hidden_item", is_hidden)
-	
-#	item.add_to_group("debug_collision")
-	item.add_to_group("itemgroup")
-
-	if (item.family == "door"):
-		doorx = ix
-		doory = iy
-		item.add_to_group("doorgroup")
-
-	if (item.family == "key"):
-		item.add_to_group("keygroup")
-
-	# 2. Interaction Logic (The Sensor)
-	var area = item.get_node("Area2D")
-	
-	# Reset everything first to be safe
-	area.collision_layer = 0
-	area.collision_mask = 0
-	
-	# Who am I? (Layer 3: Interactables)
-	area.set_collision_layer_value(3, true)      # Sensor is on Interactable layer
-
-	# Who am I looking for? (Layer 2: Player)
-	# area.set_collision_mask_value(2, true)       # Sensor looks for the Player
-
-	# Disable both Layer AND Mask IF HIDDEN
-	if is_hidden:
-		area.set_collision_layer_value(3, false) # HIDDEN from the player
-		area.set_collision_mask_value(2, false)  # BLIND to the player
-	else:
-		area.set_collision_layer_value(3, true)  # Sensor is on Interactable layer
-		area.set_collision_mask_value(2, true)   # Sensor looks for the Player
-
-	###DEBUG item area layer check (interaction)
-#	print("DEBUG: ", item.name, " Area Layer: ", area.collision_layer)
-#	print("DEBUG: ", item.name, " Area Mask: ", area.collision_mask)
-
-
-	# 3. Add the Receiver component
-	var receiver = Receiver.new()
-	receiver.name = "Receiver"
-	receiver.data = GameConfig.itemdata[type]
-	item.add_child(receiver)
-
-	# Tell the item to refresh its debug info
-#	if item.has_method("_update_debug_text"):
-#		item._update_debug_text()
-	
-	item.visible = showing	
-	add_child(item)
-
-	# NEW: Store the item node in our dictionary by its grid position
-	var cell = Vector2i(ix, iy)
-	item_nodes[cell] = item
-	
-	item.position = GameConfig.grid_to_local(
-		item_x,        # grid column
-		item_y,        # grid row
-		tile_size,      # size of one tile in pixels
-		x_off,          # horizontal centering offset
-		y_off           # vertical centering offset
-	)	
-
 func spawn_player(px, py, xoff, yoff):
 
 	player = player_scene.instantiate()
@@ -756,199 +723,6 @@ func _spawn_level_content_hidden(data):
 	player = get_tree().get_first_node_in_group("playergroup")
 	player.visible = false
 	player.set_process_input(false)
-
-func spawn_fairy():
-	var instance = scenes["fairy"].instantiate()	
-	instance.family = "fairy"
-
-	instance.name = "MO_fairy"
-
-	instance.add_to_group("debug_collision")
-	instance.add_to_group("monstergroup")
-
-	# 2. Interaction Logic (The Sensor)
-	var area = Area2D.new()
-	area.name = "HitBox"
-
-	# ---  Give the HitBox an actual collision shape ---
-	var collision_shape = CollisionShape2D.new()
-	var box_shape = RectangleShape2D.new()
-
-	# Set the size of the hitbox. If your tiles are 64x64, 
-	# a 32x32 bounding box matches a standard collectible item size.
-	box_shape.size = Vector2(32, 32) 
-	collision_shape.shape = box_shape
-	area.add_child(collision_shape)
-	# -----------------------------------------------------
-		
-	# Reset everything first to be safe
-	instance.collision_mask = 0
-	area.collision_layer = 0
-	area.collision_mask = 3
-
-	area.set_deferred("monitoring", true)
-	area.set_deferred("monitorable", true) # can be seen by Player CollectionZone
-	
-	# Who am I? (Layer 3: Interactables)
-	area.set_collision_layer_value(4, true)      # Sensor is on Interactable layer
-
-	# Who am I looking for? (Layer 2: Player)
-	area.set_collision_mask_value(2, true)       # Sensor looks for the Player
-
-			# CONSOLIDATION: Force Layer 4 for Monsters
-	instance.collision_layer = 4
-	instance.collision_mask = 3 # Can see Walls (1) and Player (2)
-
-	# 3. Add the Receiver component
-	if not instance.has_node("Receiver"):
-		var receiver = Receiver.new()
-		receiver.name = "Receiver"
-		print("for ", instance.family, " added receiver for ",  GameConfig.monsterdata[instance.family] )
-		receiver.data = GameConfig.monsterdata[instance.family]
-		instance.add_child(receiver)
-
-	# IMPORTANT: Ensure the HitBox (Area2D) exists and is on Layer 4
-	var hitbox = instance.get_node_or_null("HitBox")
-	if hitbox:
-		hitbox.collision_layer = 4
-		hitbox.collision_mask = 0 # It just exists to be 'seen' by the player
-
-	print("fairy door coords: ", doorx, ", ", doory)
-
-	instance.position = GameConfig.grid_to_local(
-		doorx,
-		doory,
-		tile_size,
-		x_off,
-		y_off
-	)
-
-	#	add_child(instance)
-
-	# Safely defer adding the entire fairy to the level tree 
-	# until the physics engine finishes flushing queries
-	call_deferred("add_child", instance)
-	instance.add_child(area)
-	
-func add_monster(monster_data): # i.e. monster_data: { "pos": [12.0, 5.0], "family": "blueflame" }
-
-	# Create a new monster instance from scene		
-	var instance = scenes[monster_data["family"]].instantiate()
-	instance.family = monster_data["family"]
-
-	if instance.family == "spark":
-		var start_surface = monster_data["attached"]
-		print("spark attached to ", start_surface) 
-		instance.current_surface = start_surface 
-		# Adjust position to be flush with the block edge
-		var spawn_pos = GameConfig.grid_to_local(monster_data["pos"][0], monster_data["pos"][1], tile_size, x_off, y_off)
-
-		match start_surface:
-			"bottom": spawn_pos.y += (tile_size / 2) - 1 
-			"top":    spawn_pos.y -= (tile_size / 2) - 1
-			"left":   spawn_pos.x -= (tile_size / 2) - 1
-			"right":  spawn_pos.x += (tile_size / 2) - 1
-
-		instance.position = spawn_pos
-
-	#SIGNAL-ghost-3 Connect the signal from Ghost			
-	#LAMBDA for wall impact to pass 'false' for the 'crouching' parameter
-	# Only connect if the specific monster has the signal defined
-#	if instance.has_signal("wall_impact"):
-#		print("SIGNAL: ", instance.name, " signal connected")
-#		instance.wall_impact.connect(
-#			func(pos, dir): create_or_destroy_block(pos, dir, false)
-#		)
-				
-	if monster_data.has("shoot_direction"):
-		var dir = monster_data["shoot_direction"]
-		instance.set_meta("shoot_direction", dir)
-		if dir == "up":
-			instance.rotation_degrees = -90
-			print(instance.family, " UP")
-		elif dir == "down":
-			instance.rotation_degrees = 90
-			print(instance.family, " DOWN")
-		elif dir == "left":
-	#		monster.rotation_degrees = 180		
-			instance.scale.x = -1
-			print(instance.family, " LEFT")
-
-	instance.name = "MO_" + str(instance.family)
-
-	instance.add_to_group("debug_collision")
-	instance.add_to_group("monstergroup")
-
-	if instance.family == "ghost" or instance.family == "spark" or instance.family == "dragon" :
-		debug_monster(instance)
-
-	# 2. Interaction Logic (The Sensor)
-	var area = Area2D.new()
-	area.name = "HitBox"
-
-	# Reset everything first to be safe
-	instance.collision_mask = 0
-	area.collision_layer = 0
-	area.collision_mask = 3
-
-	area.set_deferred("monitoring", true)
-	area.set_deferred("monitorable", true) # can be seen by Player CollectionZone
-
-	# Who am I? (Layer 3: Interactables)
-	area.set_collision_layer_value(4, true)      # Sensor is on Interactable layer
-
-	# Who am I looking for? (Layer 2: Player)
-	area.set_collision_mask_value(2, true)       # Sensor looks for the Player
-
-	# CONSOLIDATION: Force Layer 4 for Monsters
-	instance.collision_layer = 4
-	instance.collision_mask = 3 # Can see Walls (1) and Player (2)
-
-	# 3. Add the Receiver component
-	if not instance.has_node("Receiver"):
-		var receiver = Receiver.new()
-		receiver.name = "Receiver"
-		print("for ", instance.family, " added receiver for ",  GameConfig.monsterdata[instance.family] )
-		receiver.data = GameConfig.monsterdata[instance.family]
-		instance.add_child(receiver)
-
-	# IMPORTANT: Ensure the HitBox (Area2D) exists and is on Layer 4
-	var hitbox = instance.get_node_or_null("HitBox")
-	if hitbox:
-		hitbox.collision_layer = 4
-		hitbox.collision_mask = 0 # It just exists to be 'seen' by the player
-		
-	# 2. Fix the collision mask at runtime just to be sure
-
-	add_child(instance)
-	instance.add_child(area)
-						
-	if instance.family != "spark":
-		instance.position = GameConfig.grid_to_local(
-			monster_data["pos"][0],
-			monster_data["pos"][1],
-			tile_size,
-			x_off,
-			y_off
-		)
-
-	if instance.family == "demonhead":
-		spawn_fx("boom", instance.global_position, Vector2i(-1,-1), false)
-
-
-	if GameConfig.gamedata.game.collider_debug:
-		_debug_node_shapes(instance, Color(1, 0, 0, 0.7)) # Red
-				
-	return instance
-
-func _spawn_all_monsters(data):
-	if data.has("monsters"):
-		for m in data["monsters"]:
-
-			var instance = add_monster(m)
-
-			instance.visible = false
-			instance.set_physics_process(false) 
 
 
 func start_level_timer():
