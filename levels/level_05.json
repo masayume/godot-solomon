@@ -9,6 +9,7 @@
 
   "player_start": [14, 6],
 
+
   "items": [
 	{"pos": [8,7],"family":"key"},	
 	{"pos": [2,6],"family":"door"},	
@@ -30,11 +31,11 @@
 
   "monsters": [
 
-	{"pos": [8,10],"family":"spark","attached":"bottom"},
-	{"pos": [8,6],"family":"spark","attached":"bottom"},
+	{"pos": [6,8],"family":"spark","attached":"right"},
+	{"pos": [9,7],"family":"spark","attached":"top"},
 	
-	{"pos": [6,8],"family":"spark","attached":"bottom"},
-	{"pos": [10,8],"family":"spark","attached":"bottom"},
+	{"pos": [7,5],"family":"spark","attached":"top"},
+	{"pos": [6,9],"family":"spark","attached":"top"},
 
 	{"pos": [5,4],"family":"spark","attached":"bottom"},	
 	{"pos": [11,4],"family":"spark","attached":"bottom"},	
