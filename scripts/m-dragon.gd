@@ -15,8 +15,10 @@ var hitbox: Area2D
 
 # Fireball Logic
 @export var fireball_scene: PackedScene
-@export var charge_time: float = 0.8        # seconds spent winding up before breathing fire
-@export var breath_cooldown: float = 2.5    # seconds before it can charge again after breathing
+@export var charge_time: float = 0.7        # seconds spent winding up before breathing fire
+@export var breath_cooldown: float = 2.0    # seconds before it can charge again after breathing
+
+var active_breath: Node2D = null 			#  Track the stationary fire breath
 
 #SIGNAL-dragon-1 Define the signal with parameters able to destroy a block when hit
 signal wall_impact(pos: Vector2, dir: int)
@@ -71,7 +73,7 @@ func _physics_process(_delta):
 		BreathState.PATROL:
 			_process_patrol(_delta)
 		BreathState.CHARGING:
-			_process_charging(_delta)
+			_process_charging(_delta) 	# and _breathe_fire() !!
 		BreathState.BREATHING:
 			_process_breathing(_delta)
 			
@@ -162,24 +164,30 @@ func _breathe_fire():
 	# Vector2 until the fireball lines up with the mouth when facing left.
 	const BREATH_SPAWN_OFFSETS := {
 		Vector2.RIGHT: Vector2(-0, 0),
-		Vector2.LEFT:  Vector2(-120, 0),  # TODO: tweak until it lines up
+		Vector2.LEFT:  Vector2(-130, 0),  # TODO: tweak until it lines up
 	}
 
 	var shoot_dir = Vector2(direction, 0)
 
- 
 	# Spawn offset uses -direction (not +direction). The math for "front"
 	# was inverted relative to the Dragon's sprite/pivot, which is why the
 	# fireball was appearing on the tail side instead of the mouth side.
 	# Travel direction (shoot_dir/rotation below) is untouched - that part
 	# was already correct.
 	fb.global_position = global_position + BREATH_SPAWN_OFFSETS[shoot_dir]
-	fb.direction = shoot_dir
+
+	# OVERRIDE: Set direction to ZERO so it stays completely still
+	fb.direction = Vector2.ZERO	
+#	fb.direction = shoot_dir
+	
 	fb.rotation = shoot_dir.angle()
  
 	# Add to the level (not to the Dragon) so it doesn't move with it
 	get_parent().add_child(fb)
 
+	# reference to delete fireball when the breath ends
+	active_breath = fb
+	
 
 func _on_state_animation_finished(state_name: String):
 	if state_name == "dragon_breath":
@@ -187,6 +195,10 @@ func _on_state_animation_finished(state_name: String):
 		cooldown_timer = breath_cooldown
 		change_state("dragon")
 
+		# Destroy the fire breath hazard when the attack is over
+		if is_instance_valid(active_breath):
+			active_breath.queue_free()
+			
 func _setup_hitbox():
 	if not hitbox: return
 	

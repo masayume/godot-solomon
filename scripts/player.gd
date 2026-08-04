@@ -180,7 +180,7 @@ func _physics_process(delta):
 			get_parent().add_child(fb)
 	
 			# FIX: Apply a spawn offset (adjust 32 and -10 to fit your player sprite)
-			var spawn_offset = Vector2(facing * 32, -10) 
+			var spawn_offset = Vector2(facing * 48, -10) 
 			fb.global_position = global_position + spawn_offset
 
 			fireball_pressed.emit(global_position, facing, crouching)

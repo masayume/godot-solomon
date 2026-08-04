@@ -16,7 +16,7 @@ script = ExtResource("1_v6fml")
 fireball_scene = ExtResource("2_mdl7e")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=2053116779]
-scale = Vector2(1.1, 1.8)
+scale = Vector2(1.8, 1.8)
 shape = SubResource("CapsuleShape2D_v6fml")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1724168563]
@@ -31,6 +31,7 @@ monitorable = false
 script = ExtResource("3_3li8b")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CollectionZone" unique_id=431477230]
+scale = Vector2(1.4, 1)
 shape = SubResource("RectangleShape2D_v6fml")
 
 [node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="." unique_id=346654754]

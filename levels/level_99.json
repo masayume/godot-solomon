@@ -7,7 +7,7 @@
   "block_width": 16,
   "block_height": 12,
 
-  "player_start": [4, 10],
+  "player_start": [7, 10],
 
   "debug_grid": true,
 
@@ -42,7 +42,6 @@
 	{"pos": [14,8],"family":"nuel"},
 	{"pos": [14,6],"family":"pannel"},
 	{"pos": [14,4],"family":"chimera"},
-	{"pos": [14,3],"family":"dragon"},
 	{"pos": [14,2],"family":"serpent"},
 
 	{"pos": [12,11],"family":"ghost", "direction":"right"},
@@ -55,7 +54,6 @@
 	{"pos": [14,1],"family":"pannel", "shoot_direction":"up"},
 	{"pos": [2,12],"family":"pannel", "shoot_direction":"down"},
 
-	{"pos": [13,10],"family":"gargoyle"},
 	{"pos": [15,11],"family":"pannel", "shoot_direction":"left"},
 	{"pos": [15,11],"family":"pannel", "shoot_direction":"left"},
 	{"pos": [1,12],"family":"pannel"},
@@ -63,14 +61,17 @@
 	{"pos": [13,10],"family":"ghost"},
 
 	{"pos": [12,10],"family":"spark","attached":"bottom"},
+	{"pos": [2,8],"family":"spark","attached":"right"},
 
 	{"pos": [7,10],"family":"goblin"},
+
+	{"pos": [13,10],"family":"gargoyle"},
 	
   ],
 	
   "monsters": [
 
-	{"pos": [2,8],"family":"spark","attached":"right"},
+	{"pos": [10,10],"family":"dragon"},
 
 	{"pos": [12,8],"family":"ghost"},
 
