@@ -146,6 +146,8 @@ Player tracks facing direction.
 
 Player sends its world _position_ and _direction_ as _signal_ to level_loader when pressing the fire key.
 
+Graphic Credits: [Otsoga: Eleanor The Salamander Witch](https://otsoga.itch.io/eleonore)
+
 # Interaction System
 
 The interaction system is designed to be data-driven and consistent. This means that it's possible to scale it up to handle new items, monsters, projectiles more easily.
