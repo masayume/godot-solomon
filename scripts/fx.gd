@@ -70,9 +70,12 @@ func randomize_animation():
 	# This changes the "length" or rhythm of the twinkle. 
 	# We'll vary it between 70% and 130% of the original configured speed.
 	var base_speed = GameConfig.fxdata.get(fx_name_stored, {}).get("anim_speed", 0.1)
-	timer.wait_time = base_speed * randf_range(0.1, 5.0)
+	timer.wait_time = base_speed * randf_range(0.8, 2.5)
 
-
+	# 3. Add a tiny initial delay before the first frame changes
+	# This prevents them from instantly flashing their first frame
+	timer.start(randf_range(0.0, 0.3)) 
+	
 # even if an effect is manually cleaned up or reaches its end, it notifies the loader.
 func _on_timer_timeout():
 	current_frame_index += 1
@@ -121,19 +124,3 @@ func setup_block_fx(fx_name: String, g_pos: Vector2i = Vector2i.ZERO, b_type: St
 	timer.wait_time = data["anim_speed"]
 	timer.timeout.connect(_on_timer_timeout)
 	timer.start()
-
-func _on_timer_timeout2DEL():
-	current_frame_index += 1
-	if current_frame_index < frame_sequence.size():
-		sprite.frame = frame_sequence[current_frame_index]
-	else:
-		animation_finished.emit(target_grid_pos, block_type) # Tell loader we are done
-		queue_free() # Destroy FX when animation finishes
-		
-#func _on_timer_timeout():
-#	current_frame_index += 1
-#	
-#	if current_frame_index < frame_sequence.size():
-#		sprite.frame = frame_sequence[current_frame_index]
-#	else:
-#		queue_free() # Destroy FX when animation finishes

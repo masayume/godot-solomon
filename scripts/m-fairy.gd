@@ -12,6 +12,8 @@ const HINT_RADIUS: float = 110.0     # ~1.7 tiles at 64px - tune to taste
 const HINT_INTERVAL: float = 3.2     # seconds between twinkle pulses while nearby
 
 var _hint_timer: float = 0.0
+var _trail_timer: float = 0.0
+const TRAIL_INTERVAL: float = 0.12 # (adjust for density)
 
 func _ready():
 	family = "fairy"
@@ -41,10 +43,18 @@ func _physics_process(_delta):
 	if is_on_wall():
 		direction *= -1
 
+	# --- star trail ---
+	_trail_timer -= _delta
+	if _trail_timer <= 0.0:
+		_trail_timer = TRAIL_INTERVAL
+		_spawn_startrail()
+	# --------------------------
+	
 	_hint_timer -= _delta
 	if _hint_timer <= 0:
 		_hint_timer = HINT_INTERVAL
 		_hint_nearby_hidden_items()
+
 
 func _hint_nearby_hidden_items():
 	if not loader:
@@ -89,6 +99,28 @@ func _spawn_single_star(item_pos: Vector2):
 			
 		# Apply rotation
 		fx_node.rotation = randf_range(0.0, TAU)
+
+func _spawn_startrail():
+	if not loader:
+		return
+		
+	# Calculate a position slightly behind the fairy based on its movement direction
+	# If moving right (direction = 1), offset is negative (left). 
+	# If moving left (direction = -1), offset is positive (right).
+	var behind_offset = -direction * randf_range(24.0, 32.0)
+	var vertical_offset = randf_range(-8.0, 8.0)
+	var spawn_pos = global_position + Vector2(behind_offset, vertical_offset)
+	
+	# Spawn the twinkle effect
+	var fx_node = loader.spawn_fx("startrail", spawn_pos, Vector2i(-1, -1), false)
+	
+	if fx_node:
+		# Make trail stars smaller than the hint stars for a delicate look
+		fx_node.scale *= randf_range(0.4, 0.7) 
+		
+		# Reuse the randomization we built earlier!
+		if fx_node.has_method("randomize_animation"):
+			fx_node.randomize_animation()
 
 func _setup_hitbox():
 	if not hitbox: return

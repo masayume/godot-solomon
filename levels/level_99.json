@@ -66,12 +66,12 @@
 	{"pos": [7,10],"family":"goblin"},
 	{"pos": [10,10],"family":"dragon"},
 
+	{"pos": [10,10],"family":"gargoyle"},
 	
   ],
 	
   "monsters": [
 
-	{"pos": [10,10],"family":"gargoyle"},
 
 	{"pos": [12,8],"family":"ghost"},
 
