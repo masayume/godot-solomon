@@ -222,6 +222,7 @@ func spawn_fx(fx_type: String, world_pos: Vector2, grid_pos: Vector2i, should_sp
 	
 	fx.setup_fx(fx_type, grid_pos)
 
+	return fx 
 
 func load_level(id: int):
 	var path = "res://levels/level_%02d.json" % id

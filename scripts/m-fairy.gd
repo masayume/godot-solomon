@@ -116,8 +116,10 @@ func _spawn_startrail():
 	
 	if fx_node:
 		# Make trail stars smaller than the hint stars for a delicate look
-		fx_node.scale *= randf_range(0.4, 0.7) 
-		
+		fx_node.scale *= randf_range(0.4, 0.8) 
+		fx_node.modulate.a = randf_range(0.5, 0.9) # Varies between 30% and 60% opacity
+
+				
 		# Reuse the randomization we built earlier!
 		if fx_node.has_method("randomize_animation"):
 			fx_node.randomize_animation()
