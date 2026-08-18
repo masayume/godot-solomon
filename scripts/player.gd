@@ -888,9 +888,11 @@ func _handle_time_potion2_collection(_target):
 
 # extend the range at which your fireballs can travel. +1 block
 func _handle_red_orb_collection(_target):
+	GameConfig.fb_duration += 1.0
 	return
 
 # extend the range at which your fireballs can travel. +2 block
 func _handle_green_orb_collection(_target):
+	GameConfig.fb_duration += 0.5
 	return
 		

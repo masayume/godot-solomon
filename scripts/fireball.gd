@@ -52,10 +52,12 @@ func _ready():
 	body_entered.connect(_on_body_entered)
 
 	_start_burn_effect()
-	if is_crawling and GameConfig.projectiledata["fireball"].has("duration"):
-		var duration = GameConfig.projectiledata["fireball"].get("duration")
-		get_tree().create_timer(duration).timeout.connect(explode)	
-	else:		
+	if is_crawling and GameConfig.fb_duration:
+#		var duration = GameConfig.projectiledata["fireball"].get("duration")
+		print("fireball duration: ", GameConfig.fb_duration)
+		get_tree().create_timer(GameConfig.fb_duration).timeout.connect(explode)	
+	else:
+		print("fireball duration: ", GameConfig.fb_duration)
 		get_tree().create_timer(lifetime).timeout.connect(explode)
 
 ## Pulls this projectile's stats/appearance from projectiles.cfg (via

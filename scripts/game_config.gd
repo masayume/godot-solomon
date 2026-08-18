@@ -10,6 +10,7 @@ var playerdata = {}
 var projectiledata = {}
 
 var score = 0
+var fb_duration = 0
 var fairy = 0
 var current_level_id
 
@@ -123,6 +124,8 @@ func load_config():
 		for key in pjcfg.get_section_keys(section):
 			data[key] = pjcfg.get_value(section, key)
 		projectiledata[section] = data
+
+	fb_duration = projectiledata["fireball"].get("duration")
 
 func grid_to_local(tile_x: int, tile_y: int, tile_size: int, x_off: float, y_off: float) -> Vector2:    
 	var half_tile = tile_size / 2.0
