@@ -172,15 +172,28 @@ func _physics_process(delta):
 			# Determine direction based on player facing
 			# (Using 'facing' is more direct than checking sprite.flip_h)
 			fb.direction = Vector2(facing, 0) 
-	
-			# FIX: Set the initial rotation so the sprite faces the correct way immediately
-			fb.rotation = fb.direction.angle()
-	
+
+			if current_state == "crouchcast":
+				fb.is_crawling = true
+				fb.crawl_dir   = facing      # 1 = right, -1 = left
+				fb.rotation    = 0           # floor orientation
+			else:
+				# FIX: Set the initial rotation so the sprite faces the correct way immediately
+#				fb.rotation = fb.direction.angle()
+				fb.get_node("Sprite2D").flip_h = (facing == -1)
+				
 			# Add to scene tree before setting global_position to ensure proper coordinates
 			get_parent().add_child(fb)
 	
 			# FIX: Apply a spawn offset (adjust 32 and -10 to fit your player sprite)
-			var spawn_offset = Vector2(facing * 48, -10) 
+	
+			# --- NEW: Adjust Y offset based on crouch state ---
+			# When standing, it spawns slightly above center (-10). 
+			# When crouching, it spawns lower (15). Tweak 15.0 to match your crouch sprite!
+			var spawn_y = 0.0 if crouching else -10.0 
+			var spawn_offset = Vector2(facing * 48, spawn_y) 
+			# -----------------------------------------------
+	
 			fb.global_position = global_position + spawn_offset
 
 			fireball_pressed.emit(global_position, facing, crouching)

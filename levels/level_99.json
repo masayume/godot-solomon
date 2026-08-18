@@ -20,7 +20,14 @@
 	{"pos": [8,10],"family":"gold-bell"},	
 	{"pos": [7,8],"family":"fire-potion"},	
 	{"pos": [9,8],"family":"fire-potion"},	
+
+	{"pos": [4,10],"family":"fire-potion"},	
+	{"pos": [5,10],"family":"fire-potion"},	
+	{"pos": [6,10],"family":"fire-potion"},	
+
 	{"pos": [9,10],"family":"fire-potion"},	
+	{"pos": [10,10],"family":"fire-potion"},	
+	{"pos": [12,10],"family":"fire-potion"},	
 
 	{"pos": [3,7],"family":"green-orb"},	
 	{"pos": [13,7],"family":"green-orb"},	
