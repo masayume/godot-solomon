@@ -56,9 +56,9 @@ func _ready():
 #		var duration = GameConfig.projectiledata["fireball"].get("duration")
 		print("fireball duration: ", GameConfig.fb_duration)
 		get_tree().create_timer(GameConfig.fb_duration).timeout.connect(explode)	
-	else:
-		print("fireball duration: ", GameConfig.fb_duration)
-		get_tree().create_timer(lifetime).timeout.connect(explode)
+#	else:
+#		print("fireball duration: ", GameConfig.fb_duration)
+#		get_tree().create_timer(lifetime).timeout.connect(explode)
 
 ## Pulls this projectile's stats/appearance from projectiles.cfg (via
 ## GameConfig.projectiledata), keyed by `family`. Any @export default above
@@ -69,13 +69,20 @@ func _apply_projectile_data():
 	if data.is_empty():
 		push_warning("Projectile family '%s' not found in projectiles.cfg" % family)
 		return
- 
+
 	speed = data.get("speed", speed)
 	gravity = data.get("gravity", gravity)
 	explosion_fx = data.get("explosion_fx", explosion_fx)
  
-	if data.has("sprite"):
-		var tex = load(data["sprite"])
+###SPRITE:4
+	# Useing a specific sprite if the fireball is crawling ---
+	# If is_crawling fireball flag is true AND the projectiles.cfg has "crawling_sprite" key, use it.
+	# Otherwise, fall back to the standard "sprite" key.
+	var sprite_key = "crawling" if is_crawling and data.has("crawling") else "sprite"
+		
+ 
+	if data.has(sprite_key):
+		var tex = load(data[sprite_key])
 		if tex:
 			sprite.texture = tex
  
