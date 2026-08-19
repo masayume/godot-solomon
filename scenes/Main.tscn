@@ -14,6 +14,9 @@
 [ext_resource type="Script" uid="uid://cse3vw5iqvimt" path="res://scripts/hud_lives.gd" id="11_wp0k4"]
 [ext_resource type="Texture2D" uid="uid://bcp2eoc0nsci7" path="res://sprites/ui/lives.png" id="12_bjd11"]
 [ext_resource type="Script" uid="uid://cy04j35iv7umo" path="res://scripts/fireball_scroll.gd" id="13_qmy6f"]
+[ext_resource type="Script" uid="uid://cakxryn5sl4yc" path="res://scripts/ui_spellbook.gd" id="15_3p2gp"]
+[ext_resource type="Texture2D" uid="uid://bbtrbgqphw35d" path="res://sprites/ui/spellbook/fireball-page.png" id="16_ft6cd"]
+[ext_resource type="Texture2D" uid="uid://0q1e7bee0v2h" path="res://sprites/ui/spellbook/blocks-page.png" id="17_bb450"]
 
 [sub_resource type="Gradient" id="Gradient_lhr70"]
 offsets = PackedFloat32Array(0.0295858, 1)
@@ -190,6 +193,26 @@ offset_right = 805.0
 offset_bottom = 657.0
 alignment = 2
 script = ExtResource("13_qmy6f")
+
+[node name="SpellbookLayer" type="CanvasLayer" parent="LevelRoot" unique_id=1956671551]
+script = ExtResource("15_3p2gp")
+fireball_page_texture = ExtResource("16_ft6cd")
+block_spell_page_texture = ExtResource("17_bb450")
+
+[node name="BookPanel" type="Control" parent="LevelRoot/SpellbookLayer" unique_id=1710579539]
+layout_mode = 3
+anchors_preset = 0
+offset_left = -638.0
+offset_top = 1.0
+offset_right = -374.0
+offset_bottom = 428.0
+
+[node name="PageImage" type="TextureRect" parent="LevelRoot/SpellbookLayer/BookPanel" unique_id=247683450]
+layout_mode = 0
+offset_left = -66.0
+offset_top = -4.0
+offset_right = 257.0
+offset_bottom = 433.0
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=324845360]
 zoom = Vector2(0.75, 0.75)

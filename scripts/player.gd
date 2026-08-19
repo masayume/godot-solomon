@@ -16,6 +16,8 @@ extends CharacterBody2D
 @onready var audio_player = $AudioStreamPlayer2D
 @onready var sfx_player = $SfxPlayer # The new dedicated SFX node
 
+@onready var spellbook_ui = $"../../SpellbookLayer" # Adjust path if you placed it elsewhere
+
 var crouch_texture = preload("res://sprites/player/player-crouch-frames.png")
 var idle_texture = preload("res://sprites/player/player-idle-frames.png")
 var score_tween: Tween
@@ -187,6 +189,11 @@ func _physics_process(delta):
 			fb.global_position = global_position + spawn_offset
 			
 			fireball_pressed.emit(global_position, facing, crouching)
+
+###Spellbook
+			if spellbook_ui:
+				spellbook_ui.show_spell("fireball")
+
 			print("fireball cast toward: ", fb.direction)
 		else:
 			print("No fireballs left!")
@@ -218,8 +225,12 @@ func _physics_process(delta):
 		var snap_x : float = floor((global_position.x - tile_size) / tile_size) * tile_size
 #		var snap_y : float = floor(global_position.y / tile_size) * tile_size  # floor, not round
 
-
 		var snapped_pos := Vector2(snap_x, global_position.y)
+
+###Spellbook
+		if spellbook_ui:
+			spellbook_ui.show_spell("blocks")		
+		
 		spell_pressed.emit(snapped_pos, facing, crouching)
 
 		return # Exit early to start the lock immediately
