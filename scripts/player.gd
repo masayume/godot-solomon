@@ -150,57 +150,48 @@ func _physics_process(delta):
 	# PRESS "x" TO CAST FIREBALL
 	if Input.is_action_just_pressed("fireball"):
 		is_casting = true
-
 		if crouching:
 			change_state("crouchcast")
 		else:
 			change_state("cast")
-
+			
 		var scroll_ui = get_tree().root.find_child("FireballHBox", true, false)
-	
 		if scroll_ui and scroll_ui.filled_slots > 0:
 			# 1. Spend the fireball
 			scroll_ui.filled_slots -= 1
 			scroll_ui.render_scroll()
-		
+			
 			# 2. Spawn the fireball entity
 			var fb = fireball_scene.instantiate()
-#			fb.global_position = self.global_position
-#			fb.direction = Vector2.RIGHT if sprite.flip_h == true else Vector2.LEFT
-#			get_parent().add_child(fb)
-
-			# Determine direction based on player facing
-			# (Using 'facing' is more direct than checking sprite.flip_h)
+			
+			# A. Set the movement direction vector (used for straight shots)
 			fb.direction = Vector2(facing, 0) 
-
+			
+			# B. Set crawling state AND direction if crouching
 			if current_state == "crouchcast":
 				fb.is_crawling = true
-				fb.crawl_dir   = facing      # 1 = right, -1 = left
-				fb.rotation    = 0           # floor orientation
-			else:
-				# FIX: Set the initial rotation so the sprite faces the correct way immediately
-#				fb.rotation = fb.direction.angle()
-				fb.get_node("Sprite2D").flip_h = (facing == -1)
+				fb.crawl_dir = facing  # <--- CRITICAL: Tells the crawler which way to go!
 				
-			# Add to scene tree before setting global_position to ensure proper coordinates
+			# C. Add to scene tree FIRST! 
+			# This triggers _ready() and initializes the @onready 'sprite' variable.
 			get_parent().add_child(fb)
-	
-			# FIX: Apply a spawn offset (adjust 32 and -10 to fit your player sprite)
-	
-			# --- NEW: Adjust Y offset based on crouch state ---
-			# When standing, it spawns slightly above center (-10). 
-			# When crouching, it spawns lower (15). Tweak 15.0 to match your crouch sprite!
-			var spawn_y = 0.0 if crouching else -10.0 
+			
+			# D. NOW it's safe to access the sprite. 
+			# Flip the sprite horizontally if facing left, but keep the NODE rotation at 0.
+			fb.sprite.flip_h = (facing == -1)
+			fb.rotation = 0.0 # Prevents the whole node from rotating upside down
+			
+			# E. Apply spawn offset (lower when crouching)
+			var spawn_y = 15.0 if crouching else -10.0
 			var spawn_offset = Vector2(facing * 48, spawn_y) 
-			# -----------------------------------------------
-	
 			fb.global_position = global_position + spawn_offset
-
+			
 			fireball_pressed.emit(global_position, facing, crouching)
-#			print("fireball cast toward: ", fb.direction)
+			print("fireball cast toward: ", fb.direction)
 		else:
 			print("No fireballs left!")
-				
+			
+		return # Exit early to start the lock immediately				
 
 		return # Exit early to start the lock immediately
 

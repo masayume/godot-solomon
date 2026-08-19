@@ -25,7 +25,7 @@ var is_crawling: bool = false
 var crawl_dir: int = 1              # 1 = forward, -1 = backward along the surface
 var is_turning: bool = false
 var turn_duration: float = 0.25
-const CRAWL_PROBE_DIST := 26.0      # center-to-surface distance while crawling (tune to sprite size)
+const CRAWL_PROBE_DIST := 16.0      # fireball-to-surface distance while crawling
 const CRAWL_LOOKAHEAD := 36.0       # how far ahead to look for corners
 const CRAWL_REACH := 38.0           # how far rays reach to find a surface
 const CRAWL_ADHESION := 15.0        # pull toward the surface

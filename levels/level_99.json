@@ -95,7 +95,6 @@
 	{"pos": [2,12],"family":"earth"},	
 	{"pos": [3,11],"family":"earth"},	
 
-
 	{"pos": [5,9],"family":"earth"},	
 	{"pos": [1,8],"family":"earth"},	
 	{"pos": [2,7],"family":"earth"},	
@@ -110,10 +109,10 @@
 
 	{"pos": [11,5],"family":"grass"},	
 
-	{"pos": [3,8],"family":"grass"},		{"pos": [5,8],"family":"grass"},	
+	{"pos": [3,8],"family":"earth"},	{"pos": [5,8],"family":"grass"},	
 	{"pos": [11,4],"family":"grass"},	
 
-	{"pos": [6,9],"family":"lava"},	{"pos": [10,9],"family":"stone"},
+	{"pos": [6,9],"family":"lava"},	 	{"pos": [10,9],"family":"stone"},
 	{"pos": [6,7],"family":"stone"},	{"pos": [10,7],"family":"stone"},
 	{"pos": [6,8],"family":"grass"},	{"pos": [10,8],"family":"grass"},
 
