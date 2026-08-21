@@ -8,6 +8,7 @@ var itemdata = {}
 var fxdata = {}
 var playerdata = {}
 var projectiledata = {}
+var spellbookdata = {}
 
 var score = 0
 var fb_duration = 0
@@ -124,6 +125,21 @@ func load_config():
 		for key in pjcfg.get_section_keys(section):
 			data[key] = pjcfg.get_value(section, key)
 		projectiledata[section] = data
+
+	#
+	# LOAD SPELLBOOK CONFIGURATION DATA	
+	#
+	var spcfg = ConfigFile.new()
+	err = spcfg.load("res://config/spellbook.cfg")
+	if err != OK:
+		print("ERROR: Failed to load spellbook.cfg")
+		return
+
+	for section in spcfg.get_sections():
+		var data := {}
+		for key in spcfg.get_section_keys(section):
+			data[key] = spcfg.get_value(section, key)
+		spellbookdata[section] = data
 
 	fb_duration = projectiledata["fireball"].get("duration")
 
