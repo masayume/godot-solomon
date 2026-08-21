@@ -229,7 +229,7 @@ func _physics_process(delta):
 
 ###Spellbook
 		if spellbook_ui:
-			spellbook_ui.show_spell("blocks")		
+			spellbook_ui.show_spell("block")		
 		
 		spell_pressed.emit(snapped_pos, facing, crouching)
 

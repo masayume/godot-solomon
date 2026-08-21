@@ -28,6 +28,9 @@ func _ready():
 
 # Called by the player when a spell is cast
 func show_spell(spell_name: String):
+
+	print(">>> SPELLBOOK OPENED FOR: ", spell_name) # <--- ADD THIS
+	
 	# 1. Determine which page to display
 	var target_texture: Texture2D
 	match spell_name:
