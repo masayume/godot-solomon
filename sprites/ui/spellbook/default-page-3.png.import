@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://q27p7nbitv7b"
-path="res://.godot/imported/default-page.png-7a80073fe65d9d8f73b23bb9a1503c6a.ctex"
+uid="uid://dysjslwmbcxhm"
+path="res://.godot/imported/default-page-3.png-e655e59b76a4558036fd824e1df8d41e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://sprites/ui/spellbook/default-page.png"
-dest_files=["res://.godot/imported/default-page.png-7a80073fe65d9d8f73b23bb9a1503c6a.ctex"]
+source_file="res://sprites/ui/spellbook/default-page-3.png"
+dest_files=["res://.godot/imported/default-page-3.png-e655e59b76a4558036fd824e1df8d41e.ctex"]
 
 [params]
 
