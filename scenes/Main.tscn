@@ -15,8 +15,6 @@
 [ext_resource type="Texture2D" uid="uid://bcp2eoc0nsci7" path="res://sprites/ui/lives.png" id="12_bjd11"]
 [ext_resource type="Script" uid="uid://cy04j35iv7umo" path="res://scripts/fireball_scroll.gd" id="13_qmy6f"]
 [ext_resource type="Script" uid="uid://cakxryn5sl4yc" path="res://scripts/ui_spellbook.gd" id="15_3p2gp"]
-[ext_resource type="Texture2D" uid="uid://bbtrbgqphw35d" path="res://sprites/ui/spellbook/fireball-page.png" id="16_ft6cd"]
-[ext_resource type="Texture2D" uid="uid://bey407dfn8naa" path="res://sprites/ui/spellbook/block-page.png" id="17_ft6cd"]
 
 [sub_resource type="Gradient" id="Gradient_lhr70"]
 offsets = PackedFloat32Array(0.0295858, 1)
@@ -196,8 +194,6 @@ script = ExtResource("13_qmy6f")
 
 [node name="SpellbookLayer" type="CanvasLayer" parent="LevelRoot" unique_id=1956671551]
 script = ExtResource("15_3p2gp")
-fireball_page_texture = ExtResource("16_ft6cd")
-block_spell_page_texture = ExtResource("17_ft6cd")
 
 [node name="BookPanel" type="Control" parent="LevelRoot/SpellbookLayer" unique_id=1710579539]
 custom_minimum_size = Vector2(512, 512)
