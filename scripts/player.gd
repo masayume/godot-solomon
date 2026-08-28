@@ -191,16 +191,18 @@ func _physics_process(delta):
 			fireball_pressed.emit(global_position, facing, crouching)
 
 ###Spellbook
+			# SUCCESS: Show the spell page 
 			if spellbook_ui:
 				spellbook_ui.show_spell("fireball")
 
-			print("fireball cast toward: ", fb.direction)
+#			print("fireball cast toward: ", fb.direction)
 		else:
+			# FIZZLE: Show the blank default page
 			print("No fireballs left!")
-			
+			if spellbook_ui:
+				spellbook_ui.show_spell("default")
+							
 		return # Exit early to start the lock immediately				
-
-		return # Exit early to start the lock immediately
 
 
 	# PRESS "s" TO CAST/DESTROY BLOCK

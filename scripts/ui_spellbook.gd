@@ -5,13 +5,75 @@ extends CanvasLayer
 
 var current_spell: String = "" 
 var _active_tween: Tween
+var base_pages: TextureRect # Spellbook backround created programmatically
 
 func _ready():
-	# Start completely hidden
-	book_panel.modulate.a = 0.0
-	book_panel.visible = false
-	book_panel.pivot_offset = book_panel.size / 2.0 # Scale the whole book from the center
+	
+	# START spellbook background via code -----------------------
+	base_pages = TextureRect.new()
+	base_pages.name = "BasePages"
 
+	# Make it scale nicely within the parent panel
+	base_pages.expand_mode = TextureRect.EXPAND_FIT_HEIGHT_PROPORTIONAL
+	base_pages.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+
+	# Pick a random default page from the config array
+	var default_data = GameConfig.spellbookdata.get("default", {})
+	var stack_textures = default_data.get("stack_textures", ["res://sprites/ui/spellbook/default-page-1.png"])
+
+	# Ensure we have at least one texture, then pick randomly
+	if stack_textures.size() > 0:
+		var random_tex_path = stack_textures[randi() % stack_textures.size()]
+		var stack_texture = load(random_tex_path)
+###DEBUG print log with visible icons
+		if stack_texture:
+			base_pages.texture = stack_texture
+			print("✅ Spellbook: Successfully loaded background texture: ", random_tex_path)
+		else:
+			print("❌ Spellbook ERROR: Failed to load background texture at: ", random_tex_path)
+	
+	# Offset slightly to create the "thick book" illusion
+	base_pages.set_anchors_preset(Control.PRESET_FULL_RECT)
+	base_pages.position = Vector2(4, 4) 
+
+	# Add to BookPanel and force it to be the FIRST child (rendered behind everything else)
+	book_panel.add_child(base_pages)
+	book_panel.move_child(base_pages, 0)
+	# END spellbook background via code -----------------------
+
+	# We wait 1 frame so Godot finishes calculating PageImage's exact layout.
+	# Then we clone its anchors/offsets and add the 4px "thickness" offset.
+	call_deferred("_sync_background_layout")
+
+	book_panel.visible = true
+	book_panel.modulate.a = 1.0
+	book_panel.scale = Vector2.ONE
+	book_panel.pivot_offset = book_panel.size / 2.0 
+
+	# But the active spell page is hidden until a spell is cast
+#	page_image.visible = false
+
+# Called automatically after _ready() finishes the current frame
+func _sync_background_layout():
+	if not base_pages or not page_image:
+		return
+		
+	# 1. Clone Anchors exactly
+	base_pages.anchor_left = page_image.anchor_left
+	base_pages.anchor_top = page_image.anchor_top
+	base_pages.anchor_right = page_image.anchor_right
+	base_pages.anchor_bottom = page_image.anchor_bottom
+	
+	# 2. Clone Offsets and add the 4px "thick book" shift
+	base_pages.offset_left = page_image.offset_left + 4
+	base_pages.offset_top = page_image.offset_top + 4
+	base_pages.offset_right = page_image.offset_right + 4
+	base_pages.offset_bottom = page_image.offset_bottom + 4
+	
+	# 3. Clone Texture stretch behaviors so it scales identically
+	base_pages.expand_mode = page_image.expand_mode
+	base_pages.stretch_mode = page_image.stretch_mode
+	
 func show_spell(spell_name: String):
 	# 1. If it's the exact same spell and the book is already open, do nothing!
 	if spell_name == current_spell and book_panel.visible:

@@ -89,7 +89,7 @@ func set_random_variant():
 	# Option A: If using 2D Spritesheets (hframes / vframes)
 	if total_frames > 1:
 		var num_variants = data.get("variants", total_frames)
-		var tile_index = randi() % num_variants if num_variants > 0 else 0
+		var _tile_index = randi() % num_variants if num_variants > 0 else 0
 	else:
 		# Fallback for legacy single-row region tilesets
 		var tile_index = randi() % variants if data.get("variants", 0) != 0 else variants
